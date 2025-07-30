@@ -59,7 +59,7 @@ class Step3:
         df = df[df['유사도'] >= 0.0]
 
         # 저장
-        df.to_csv('extract_end.csv', index=False)
+        df.to_csv('./extract_end.csv', index=False)
 
         # # 결과 출력
         # print("필터링 전 데이터 개수:", len(df))

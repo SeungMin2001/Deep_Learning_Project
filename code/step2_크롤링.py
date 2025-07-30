@@ -123,4 +123,4 @@ class Step2:
         #print(df)
 
         #df.to_csv("/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract.csv")
-        df.to_csv('extract.csv')
+        df.to_csv('./extract.csv')

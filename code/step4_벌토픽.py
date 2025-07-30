@@ -75,7 +75,7 @@ class Step4:
         nltk.download('stopwords')
         nltk.download('averaged_perceptron_tagger')
 
-        file_path = '/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract_end.csv'
+        file_path = './extract_end.csv'
         patent = pd.read_csv(file_path)
 
         summ = patent['astrtCont']+patent['발명명칭']
@@ -101,15 +101,15 @@ class Step4:
         okt = Okt()
 
         # 0.1) 불용어 목록 로드
-        with open('/Users/shinseungmin/Documents/벌토픽_전체코드/data/stopwords.txt', 'r', encoding='utf-8') as f:
+        with open('data/stopwords.txt', 'r', encoding='utf-8') as f:
             stop_words = set(f.read().splitlines())
 
         # 0.2) 영어 키워드 로드 → 모두 소문자로 통일
-        with open('/Users/shinseungmin/Documents/벌토픽_전체코드/data/eng_data.txt', 'r', encoding='utf-8') as f:
+        with open('data/eng_data.txt', 'r', encoding='utf-8') as f:
             eng_keywords = set(line.strip().lower() for line in f if line.strip())
 
         # 0.3) 복합 키워드(raw_phrases) 로드 → 소문자 키, 소문자 값(glued)으로 통일
-        with open('/Users/shinseungmin/Documents/벌토픽_전체코드/data/phrase_data.txt', 'r', encoding='utf-8') as f:
+        with open('data/phrase_data.txt', 'r', encoding='utf-8') as f:
             raw_phrases = [line.strip() for line in f if line.strip()]
 
         # 길이가 긴 순서대로 정렬한 뒤, 키와 값을 모두 소문자로 바꿔서 저장
@@ -328,7 +328,7 @@ class Step4:
         import os
         import matplotlib.font_manager as fm
         # PretendardVariable.ttf 파일 경로 (본인 환경에 맞춰 수정)
-        font_path = "/Users/shinseungmin/Documents/벌토픽_전체코드/data/Pretendard-1.3.9/public/variable/PretendardVariable.ttf"
+        font_path = "data/Pretendard-1.3.9/public/variable/PretendardVariable.ttf"
         if not os.path.exists(font_path):
             raise FileNotFoundError(f"Pretendard TTF 파일을 찾을 수 없습니다: {font_path}")
         # Matplotlib font_manager를 통해 Pretendard를 등록
