@@ -88,9 +88,9 @@ pykiwoom==0.0.6
 pyloco==0.0.139
 PyMsgBox==1.0.9
 PyMySQL==1.1.1
-pyobjc-core==10.3.1
-pyobjc-framework-Cocoa==10.3.1
-pyobjc-framework-Quartz==10.3.1
+# pyobjc-core==10.3.1
+# pyobjc-framework-Cocoa==10.3.1
+# pyobjc-framework-Quartz==10.3.1
 pyparsing==3.1.2
 pyperclip==1.9.0
 PyQt5==5.15.11
