@@ -419,7 +419,7 @@ def main():
                     <div style="width: 20px; height: 20px; background: #19c37d; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
                         <span style="color: white; font-size: 12px;">✏️</span>
                     </div>
-                    
+                    <label style="font-size: 14px; font-weight: 600; color: #14212a; margin: 0;">분석 키워드</label>
                 </div>
             </div>
         </div>
@@ -429,7 +429,7 @@ def main():
         keyword = st.text_input(
             "분석할 기술 키워드를 입력하세요",
             value=st.session_state.keyword_input,
-            placeholder="예: 자율주행 로봇"
+            placeholder="예: 자율주행 로봇",
             key="keyword_input_field"
         )
         
