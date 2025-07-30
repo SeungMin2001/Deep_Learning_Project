@@ -279,13 +279,20 @@ def main():
         padding-left: 0rem !important;
         padding-right: 0rem !important;
         max-width: 100% !important;
+        margin-top: 0rem !important;
     }
     .stApp > header {
         background-color: transparent;
         height: 0px;
+        display: none;
     }
     .stApp {
         padding-top: 0rem !important;
+        margin-top: 0rem !important;
+    }
+    .block-container {
+        padding-top: 0rem !important;
+        margin-top: 0rem !important;
     }
     /* 사이드바 폭 조정 */
     .css-1d391kg {
@@ -299,22 +306,27 @@ def main():
     }
     .top-banner {
         width: calc(100vw - 320px);
-        height: 400px;
+        height: 500px;
         margin: 0;
         padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: -2rem;
-        position: relative;
+        display: block;
+        margin-top: -3rem;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        position: absolute;
+        top: 0;
+        left: 320px;
         z-index: 999;
-        margin-left: 0;
     }
     .top-banner img {
         width: 100%;
-        height: 400px;
+        height: 500px;
         object-fit: contain;
         display: block;
+    }
+    /* 메인 콘텐츠를 이미지 아래로 이동 */
+    .main-title {
+        margin-top: 520px !important;
     }
     </style>
     """, unsafe_allow_html=True)
