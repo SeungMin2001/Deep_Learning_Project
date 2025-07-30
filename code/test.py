@@ -416,9 +416,10 @@ def main():
         <div style="margin-bottom: 1.5rem;">
             <div style="background: #2d2e3f; border-radius: 12px; padding: 1.5rem; border: 1px solid #444654;">
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                    
+                    <div style="width: 20px; height: 20px; background: #19c37d; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
                         <span style="color: white; font-size: 12px;">✏️</span>
                     </div>
+                    <label style="font-size: 14px; font-weight: 600; color: #ececf1; margin: 0;">분석 키워드</label>
                 </div>
             </div>
         </div>
