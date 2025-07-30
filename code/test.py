@@ -280,9 +280,9 @@ def main():
         width: 320px !important;
     }
     .top-banner {
-        width: 98vw;
-        height: 350px;
-        margin: 0 auto;
+        width: 100vw;
+        height: 400px;
+        margin: 0;
         padding: 0;
         display: flex;
         justify-content: center;
@@ -290,12 +290,13 @@ def main():
         margin-top: -2rem;
         position: relative;
         z-index: 999;
-        left: 50%;
-        transform: translateX(-50%);
+        margin-left: calc(-50vw + 50%);
     }
     .top-banner img {
-        width: 100%;
-        height: 350px;
+        max-width: 100%;
+        max-height: 400px;
+        width: auto;
+        height: auto;
         object-fit: contain;
         display: block;
     }
