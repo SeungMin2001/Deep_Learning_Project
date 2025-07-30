@@ -133,6 +133,7 @@ tensorboard==2.16.2
 tensorboard-data-server==0.7.2
 tensorflow==2.16.2
 #tensorflow-macos==2.16.2
+plotly
 termcolor==2.3.0
 threadpoolctl==3.6.0
 tokenizers==0.21.0
