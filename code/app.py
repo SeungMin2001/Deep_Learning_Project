@@ -276,6 +276,8 @@ def main():
     if os.path.exists(top_image_path):
         top_image = Image.open(top_image_path)
         st.image(top_image, use_column_width=True)
+    else:
+        st.warning(f"top.png 이미지를 찾을 수 없습니다. 현재 경로: {os.getcwd()}")
     
     # 메인 타이틀
     st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
