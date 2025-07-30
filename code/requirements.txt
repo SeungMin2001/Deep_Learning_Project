@@ -152,6 +152,7 @@ gensim
 kobert-transformers
 konlpy
 langchain
+langchain-community
 # ugtm  # Commented out due to scipy compatibility issue
 trio==0.26.2
 trio-websocket==0.11.1
