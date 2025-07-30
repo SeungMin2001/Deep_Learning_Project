@@ -271,30 +271,38 @@ def display_topic_results():
                 st.write(", ".join(words[:10]))  # 상위 10개 키워드만 표시
 
 def main():
+    # 상단 배경 이미지를 맨 위에 붙히기 위한 CSS
+    st.markdown("""
+    <style>
+    .main > div {
+        padding-top: 0rem;
+    }
+    .stApp > header {
+        background-color: transparent;
+    }
+    .top-banner {
+        width: 100%;
+        height: 150px;
+        margin: 0;
+        padding: 0;
+        display: block;
+        margin-top: -1rem;
+    }
+    .top-banner img {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+        display: block;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
     # 상단 배경 이미지
     possible_paths = ["./top.png", "top.png", "../top.png", "code/top.png"]
     
     for path in possible_paths:
         if os.path.exists(path):
             top_image = Image.open(path)
-            # 이미지를 컨테이너로 감싸서 높이 제한
-            st.markdown("""
-            <style>
-            .top-image-container {
-                width: 100%;
-                height: 200px;
-                overflow: hidden;
-                margin: 0;
-                padding: 0;
-            }
-            .top-image-container img {
-                width: 100%;
-                height: 200px;
-                object-fit: cover;
-                object-position: center;
-            }
-            </style>
-            """, unsafe_allow_html=True)
             
             # HTML로 이미지 직접 삽입
             import base64
@@ -306,7 +314,7 @@ def main():
             img_str = base64.b64encode(buffer.getvalue()).decode()
             
             st.markdown(f"""
-            <div class="top-image-container">
+            <div class="top-banner">
                 <img src="data:image/png;base64,{img_str}" alt="Top Banner">
             </div>
             """, unsafe_allow_html=True)
