@@ -296,7 +296,7 @@ def main():
     .banner-image {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         border-radius: 15px;
         transition: transform 0.3s ease;
     }
@@ -318,15 +318,16 @@ def main():
     
     .banner-title {
         position: absolute;
-        top: 30px;
-        left: 30px;
-        right: 30px;
-        color: white;
+        top: -60px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #1f77b4;
         font-size: 2.2rem;
         font-weight: bold;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         line-height: 1.2;
         z-index: 10;
+        margin: 0 auto;
     }
     
     /* 호버 효과 */
