@@ -5,6 +5,8 @@ import ast
 import sqlite3
 import json
 import os
+from dotenv import load_dotenv
+from openai import OpenAI
 
 class Step2:
     def cra(self,x):
@@ -12,7 +14,9 @@ class Step2:
         query=x
         KEYWORDS = ast.literal_eval(query)
         # ------------------ 설정 ------------------
-        API_KEY = os.getenv('KIPRIS_API_KEY', 'FlDibi21AbaJM8ifjFmXv5OUEuAMpjJYqq6/HGOpye0=')  # 환경변수에서 읽기
+        #API_KEY = os.getenv('KIPRIS_API_KEY', 'FlDibi21AbaJM8ifjFmXv5OUEuAMpjJYqq6/HGOpye0=')  # 환경변수에서 읽기
+        load_dotenv()
+        API_KEY=os.getenv('KIPRIS_API_KEY')
 
         # 제외할 특허 상태
         EXCLUDE_STATUSES = ['거절', '무효', '소멸', '포기', '불수리', '심사청구취하']
@@ -118,4 +122,5 @@ class Step2:
         df = pd.DataFrame(all_patents)
         #print(df)
 
-        df.to_csv("/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract.csv")
+        #df.to_csv("/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract.csv")
+        df.to_csv('extract.csv')

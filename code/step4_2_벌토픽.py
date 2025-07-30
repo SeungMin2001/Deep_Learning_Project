@@ -15,7 +15,7 @@ class Step4_2_GTM:
             csv_path (str): BERTopic 결과 CSV 파일 경로
         """
         if csv_path is None:
-            self.csv_path = "/Users/shinseungmin/Documents/벌토픽_전체코드/code/BERTopic_topic_distribution.csv"
+            self.csv_path = "BERTopic_topic_distribution.csv"
         else:
             self.csv_path = csv_path
             
@@ -304,7 +304,7 @@ class Step4_2_GTM:
             return False
             
         if output_path is None:
-            output_path = "/Users/shinseungmin/Documents/벌토픽_전체코드/code/GTM_inverse.csv"
+            output_path = "GTM_inverse.csv"
             
         # GTM 모델의 격자 좌표(matY) 추출 및 저장
         matY_modes = self.gtm_modes.optimizedModel.matY
@@ -323,7 +323,7 @@ class Step4_2_GTM:
             formats (list): 저장할 파일 형식 리스트 ['png', 'svg', 'html', 'json']
         """
         if output_dir is None:
-            output_dir = "/Users/shinseungmin/Documents/벌토픽_전체코드/code"
+            output_dir = "code"
             
         # 디렉토리가 없으면 생성
         if not os.path.exists(output_dir):
@@ -420,7 +420,7 @@ class Step4_2_GTM:
             import matplotlib.pyplot as plt
             
             if output_dir is None:
-                output_dir = "/Users/shinseungmin/Documents/벌토픽_전체코드/code"
+                output_dir = "code"
                 
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)

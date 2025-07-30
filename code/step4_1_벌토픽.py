@@ -13,7 +13,7 @@ class Step4_1_GTM:
         """
         try:
             # 필터링된 특허 데이터 읽기
-            filter_file_path = '/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract_end.csv'
+            filter_file_path = 'extract_end.csv'
             if os.path.exists(filter_file_path):
                 print("✅ 필터링된 데이터 사용")
                 filtered_df = pd.read_csv(filter_file_path)
@@ -25,7 +25,7 @@ class Step4_1_GTM:
                 patent_prep = filtered_df['text'].dropna().tolist()
             else:
                 # 대안으로 extract_end.csv 사용
-                filtered_df = pd.read_csv('/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract_end.csv')
+                filtered_df = pd.read_csv('extract_end.csv')
                 
                 if filtered_df.empty:
                     print("❌ 데이터가 없습니다.")
@@ -92,7 +92,7 @@ class Step4_1_GTM:
             prob_df["Dominant_Topic"] = topics
 
             # CSV 파일로 저장
-            output_path = "/Users/shinseungmin/Documents/벌토픽_전체코드/code/BERTopic_topic_distribution.csv"
+            output_path = "BERTopic_topic_distribution.csv"
             prob_df.to_csv(output_path, index=False)
 
             print(f"BERTopic 토픽 분포가 '{output_path}' 파일로 저장되었습니다.")

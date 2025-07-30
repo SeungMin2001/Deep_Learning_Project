@@ -456,7 +456,7 @@ class Step4:
         import plotly.io as pio
 
         # ─── 0. Pretendard TTF 등록 (Matplotlib을 통해 폰트 이름 추출) ─────────────────────────
-        font_path = "/Users/shinseungmin/Documents/벌토픽_전체코드/data/Pretendard-1.3.9/public/variable/PretendardVariable.ttf"
+        font_path = "data/Pretendard-1.3.9/public/variable/PretendardVariable.ttf"
         if not os.path.exists(font_path):
             raise FileNotFoundError(f"Pretendard TTF 파일을 찾을 수 없습니다: {font_path}")
 
@@ -799,7 +799,7 @@ class Step4:
         # 3. CSV 파일로 저장
         # --------------------------------------------------------------
 
-        output_path = "/Users/shinseungmin/Documents/벌토픽_전체코드/code/BERTopic_topic_distribution.csv"
+        output_path = "BERTopic_topic_distribution.csv"
         
         prob_df.to_csv(output_path, index=False)
 

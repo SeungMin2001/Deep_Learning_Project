@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 class Step3:
     def filter(self):
-        data = '/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract.csv'
+        data = 'extract.csv'
         df=pd.read_csv(data)
         print(df.shape)  # 합쳐진 데이터 크기 확인
         df['combined'] = df['발명명칭'].fillna('') + ' ' + df['astrtCont'].fillna('') + ' '# + df['청구항'].fillna('')
@@ -59,7 +59,7 @@ class Step3:
         df = df[df['유사도'] >= 0.0]
 
         # 저장
-        df.to_csv('/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract_end.csv', index=False)
+        df.to_csv('extract_end.csv', index=False)
 
         # # 결과 출력
         # print("필터링 전 데이터 개수:", len(df))
@@ -81,8 +81,8 @@ class Step3:
         df = df[df['출원년도'] >= (current_year - 20)]
 
         # 저장
-        output_path = '/Users/shinseungmin/Documents/벌토픽_전체코드/code/extract_end.csv'
-        #df.to_csv(output_path, index=False)
+        output_path = 'extract_end.csv'
+        df.to_csv(output_path, index=False)
 
         # 결과 출력
         #rint(f"최근 10년 데이터 개수: {len(recent_10_years)}")
