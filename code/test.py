@@ -509,8 +509,6 @@ def main():
             """, unsafe_allow_html=True)
             
             if st.button("새로운 분석", key="new_analysis"):
-                # CSS 클래스를 사용할 수 없으므로 HTML로 직접 버튼 생성
-                pass
                 st.session_state.analysis_complete = False
                 st.session_state.topic_results = None
                 st.session_state.step_progress = 0
