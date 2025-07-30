@@ -271,6 +271,12 @@ def display_topic_results():
                 st.write(", ".join(words[:10]))  # 상위 10개 키워드만 표시
 
 def main():
+    # 상단 배경 이미지
+    top_image_path = "./top.png"
+    if os.path.exists(top_image_path):
+        top_image = Image.open(top_image_path)
+        st.image(top_image, use_column_width=True)
+    
     # 메인 타이틀
     st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
     
