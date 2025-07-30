@@ -50,7 +50,7 @@ keras==3.8.0
 keyring==25.4.0
 kiwisolver==1.4.7
 libclang==18.1.1
-lxml==5.2.1
+#lxml==5.2.1
 Markdown==3.7
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
