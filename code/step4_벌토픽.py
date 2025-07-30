@@ -207,7 +207,8 @@ class Step4:
 
                 # 2.5) 형태소 분석 → 불용어 제거
                 if USE_KIWI:
-                    tokens = kiwi.morphs(kor_only, stemming=True)
+                    # Kiwi는 tokenize() 메서드를 사용하고 form을 추출
+                    tokens = [token.form for token in kiwi.tokenize(kor_only)]
                 else:
                     tokens = okt.morphs(kor_only, stem=True)
                 tokens = [t for t in tokens if t not in stop_words]
