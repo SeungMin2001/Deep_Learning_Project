@@ -146,6 +146,7 @@ sympy==1.13.1
 # tensorflow==2.16.2
 #tensorflow-macos==2.16.2
 plotly
+kaleido
 termcolor==2.3.0
 threadpoolctl==3.6.0
 tokenizers==0.21.0
