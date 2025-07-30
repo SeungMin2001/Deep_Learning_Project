@@ -287,15 +287,29 @@ def main():
     .stApp {
         padding-top: 0rem !important;
     }
+    /* 사이드바 폭 조정 */
+    .css-1d391kg {
+        width: 320px !important;
+    }
+    section[data-testid="stSidebar"] {
+        width: 320px !important;
+    }
+    .css-1cypcdb {
+        width: 320px !important;
+    }
     .top-banner {
-        width: 95vw;
+        width: 98vw;
         height: 350px;
         margin: 0 auto;
         padding: 0;
-        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-top: -2rem;
         position: relative;
         z-index: 999;
+        left: 50%;
+        transform: translateX(-50%);
     }
     .top-banner img {
         width: 100%;
