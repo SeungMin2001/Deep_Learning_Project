@@ -1,3 +1,4 @@
+nltk
 tabulate
 langchain_openai
 bertopic>=0.16.0
