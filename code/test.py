@@ -405,7 +405,7 @@ def main():
                 <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #19c37d 0%, #0fa968 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                     <span style="color: white; font-size: 18px; font-weight: bold;">🤖</span>
                 </div>
-                <h1 style="font-size: 20px; font-weight: 600; color: #ececf1; margin: 0; line-height: 1.2;">특허 분석 AI</h1>
+                <h1 style="font-size: 20px; font-weight: 600; color: #14212a; margin: 0; line-height: 1.2;">특허 분석 AI</h1>
             </div>
             <p style="font-size: 14px; color: #b4b4b4; margin: 0; font-weight: 400; line-height: 1.4;">고급 AI 기술로 특허 데이터를 분석하고 인사이트를 제공합니다</p>
         </div>
