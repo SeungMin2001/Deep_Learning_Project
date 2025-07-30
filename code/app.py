@@ -271,15 +271,14 @@ def display_topic_results():
                 st.write(", ".join(words[:10]))  # 상위 10개 키워드만 표시
 
 def main():
-    # 상단 배경 이미지를 맨 위에 붙히기 위한 CSS
+    # 멋진 배너 디자인을 위한 CSS
     st.markdown("""
     <style>
     .main > div {
         padding-top: 0rem !important;
-        padding-left: 0rem !important;
-        padding-right: 0rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
         max-width: 100% !important;
-        margin-top: 0rem !important;
     }
     .stApp > header {
         background-color: transparent;
@@ -288,11 +287,6 @@ def main():
     }
     .stApp {
         padding-top: 0rem !important;
-        margin-top: 0rem !important;
-    }
-    .block-container {
-        padding-top: 0rem !important;
-        margin-top: 0rem !important;
     }
     /* 사이드바 폭 조정 */
     .css-1d391kg {
@@ -304,27 +298,63 @@ def main():
     .css-1cypcdb {
         width: 320px !important;
     }
-    .top-banner {
-        width: 100vw;
-        height: 500px;
-        margin: 0;
-        padding: 0;
-        display: block;
-        margin-top: -3rem;
+    
+    /* 멋진 배너 컨테이너 */
+    .banner-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        margin: 1rem 0 2rem 0;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .banner-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+    }
+    
+    .banner-overlay {
         position: absolute;
         top: 0;
-        left: -200px;
-        z-index: 999;
-    }
-    .top-banner img {
+        left: 0;
         width: 100%;
-        height: 500px;
-        object-fit: contain;
-        display: block;
+        height: 100%;
+        background: linear-gradient(
+            135deg, 
+            rgba(0, 0, 0, 0.3) 0%, 
+            rgba(0, 0, 0, 0.1) 50%, 
+            rgba(0, 0, 0, 0.2) 100%
+        );
+        border-radius: 15px;
     }
-    /* 메인 콘텐츠를 이미지 아래로 이동 */
+    
+    .banner-title {
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        right: 30px;
+        color: white;
+        font-size: 2.2rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        line-height: 1.2;
+        z-index: 10;
+    }
+    
+    /* 호버 효과 */
+    .banner-container:hover .banner-image {
+        transform: scale(1.02);
+    }
+    
+    /* 메인 타이틀 숨기기 */
     .main-title {
-        margin-top: 520px !important;
+        display: none;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -336,7 +366,7 @@ def main():
         if os.path.exists(path):
             top_image = Image.open(path)
             
-            # HTML로 이미지 직접 삽입
+            # HTML로 멋진 배너 생성
             import base64
             from io import BytesIO
             
@@ -346,8 +376,10 @@ def main():
             img_str = base64.b64encode(buffer.getvalue()).decode()
             
             st.markdown(f"""
-            <div class="top-banner">
-                <img src="data:image/png;base64,{img_str}" alt="Top Banner">
+            <div class="banner-container">
+                <img src="data:image/png;base64,{img_str}" alt="Banner" class="banner-image">
+                <div class="banner-overlay"></div>
+                <div class="banner-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</div>
             </div>
             """, unsafe_allow_html=True)
             break
