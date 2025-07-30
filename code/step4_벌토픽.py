@@ -98,7 +98,16 @@ class Step4:
             else:
                 return 'n'  # default to noun
 
-        okt = Okt()
+        try:
+            okt = Okt()
+        except Exception as e:
+            print(f"⚠️ KoNLPy 초기화 실패 (Java 환경 문제): {e}")
+            print("💡 해결 방법:")
+            print("   macOS: brew install openjdk@11 && export JAVA_HOME=$(/usr/libexec/java_home)")
+            print("   Ubuntu: sudo apt-get install openjdk-11-jdk")  
+            print("   Windows: Oracle JDK 또는 OpenJDK 11+ 설치")
+            print("📖 자세한 설치 가이드는 README.md를 참조하세요")
+            raise RuntimeError("Java 환경이 설정되지 않았습니다. KoNLPy 사용을 위해 Java가 필요합니다.")
 
         # 0.1) 불용어 목록 로드
         with open('data/stopwords.txt', 'r', encoding='utf-8') as f:

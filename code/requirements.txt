@@ -1,3 +1,7 @@
+# System Requirements:
+# - Java 11+ (for KoNLPy Korean NLP)
+# - OpenAI API Key (set OPENAI_API_KEY environment variable)
+
 nltk
 tabulate
 langchain_openai
