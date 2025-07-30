@@ -318,16 +318,16 @@ def main():
     
     .banner-title {
         position: absolute;
-        top: -80px;
-        left: 0;
-        right: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         text-align: center;
-        color: #1f77b4;
+        color: white;
         font-size: 2.5rem;
         font-weight: bold;
         line-height: 1.2;
         z-index: 10;
-        margin: 0 auto;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         padding: 10px;
     }
     
@@ -344,7 +344,7 @@ def main():
     """, unsafe_allow_html=True)
     
     # 상단 배경 이미지
-    possible_paths = ["./top3.png", "top3.png", "../top3.png", "code/top3.png"]
+    possible_paths = ["./top4.png", "top4.png", "../top4.png", "code/top4.png"]
     
     for path in possible_paths:
         if os.path.exists(path):
