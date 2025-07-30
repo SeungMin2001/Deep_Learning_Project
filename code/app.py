@@ -305,7 +305,7 @@ def main():
         width: 320px !important;
     }
     .top-banner {
-        width: calc(100vw - 320px);
+        width: 100vw;
         height: 500px;
         margin: 0;
         padding: 0;
@@ -313,7 +313,7 @@ def main():
         margin-top: -3rem;
         position: absolute;
         top: 0;
-        left: 0;
+        left: -20px;
         z-index: 999;
     }
     .top-banner img {
