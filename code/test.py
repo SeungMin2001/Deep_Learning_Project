@@ -416,7 +416,7 @@ def main():
         st.markdown("""
         <div style="text-align: center; margin: 2rem 0 3rem 0;">
             <h1 style="font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
-                🎆 AI 특허 분석 플랫폼
+                AI 특허 분석 플랫폼
             </h1>
             <h2 style="font-size: 1.8rem; font-weight: 400; color: #64748b; margin-bottom: 1.5rem;">
                 지능형 기술 보고서 자동 생성
