@@ -1,5 +1,5 @@
 
-bertopic
+bertopic>=0.16.0
 hdbscan
 absl-py==2.1.0
 appdirs==1.4.4
@@ -146,7 +146,8 @@ tokenizers==0.21.0
 torch==2.6.0
 tqdm==4.66.4
 #transformers==4.48.2
-transformers<4.32.0
+transformers>=4.32.0
+sentence-transformers>=2.0.0
 trio==0.26.2
 trio-websocket==0.11.1
 twine==5.1.1
