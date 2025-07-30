@@ -254,12 +254,26 @@ def display_topic_results():
 
 def main():
     # 상단 배경 이미지
-    top_image_path = "./top.png"
-    if os.path.exists(top_image_path):
-        top_image = Image.open(top_image_path)
-        st.image(top_image, use_column_width=True)
-    else:
-        st.warning(f"top.png 이미지를 찾을 수 없습니다. 현재 경로: {os.getcwd()}")
+    import glob
+    possible_paths = ["./top.png", "top.png", "../top.png", "code/top.png"]
+    
+    # 현재 디렉토리의 모든 파일 확인
+    current_files = glob.glob("*")
+    st.write(f"현재 디렉토리 파일들: {current_files[:10]}")  # 처음 10개만 표시
+    
+    top_image_found = False
+    for path in possible_paths:
+        if os.path.exists(path):
+            try:
+                top_image = Image.open(path)
+                st.image(top_image, use_column_width=True)
+                top_image_found = True
+                break
+            except Exception as e:
+                continue
+    
+    if not top_image_found:
+        st.info("top.png 이미지를 찾을 수 없어 기본 레이아웃으로 표시합니다.")
     
     # 메인 타이틀
     st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
