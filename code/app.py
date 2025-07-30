@@ -311,11 +311,9 @@ def main():
         padding: 0;
         display: block;
         margin-top: -3rem;
-        margin-left: -2rem;
-        margin-right: -1rem;
         position: absolute;
         top: 0;
-        left: 310px;
+        left: 0;
         z-index: 999;
     }
     .top-banner img {
