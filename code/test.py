@@ -92,7 +92,7 @@ st.markdown("""
         border-radius: 10px;
         padding: 1rem;
         margin: 1rem 0;
-        background-color: #f0f8ff;
+        background-color: #004c8e;
     }
 </style>
 """, unsafe_allow_html=True)
