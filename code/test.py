@@ -318,17 +318,18 @@ def main():
     
     .banner-title {
         position: absolute;
-        top: 50%;
+        top: -80px;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
         text-align: center;
-        color: white;
+        color: #1f77b4;
         font-size: 2.5rem;
         font-weight: bold;
-        line-height: 1.2;
+        line-height: 1;
         z-index: 10;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         padding: 10px;
+        white-space: nowrap;
+        width: max-content;
     }
     
     /* 호버 효과 */
