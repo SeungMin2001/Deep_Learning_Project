@@ -196,7 +196,7 @@ def display_topic_visualization():
     """토픽 시각화 결과 표시"""
     st.subheader("📊 토픽 분석 시각화 결과")
     
-    # UMAP 이미지만 표시
+    # UMAP 이미지 표시
     st.markdown("### 🗺️ UMAP 2D 토픽 분포")
     umap_image_path = "umap2d_topics_custom_color_pret.png"
     if os.path.exists(umap_image_path):
@@ -204,6 +204,15 @@ def display_topic_visualization():
         st.image(image, caption="UMAP 2D 문서 임베딩과 BERTopic 토픽 분포", use_column_width=True)
     else:
         st.warning("UMAP 시각화 이미지를 찾을 수 없습니다.")
+    
+    # Topic Words Chart 이미지 표시
+    st.markdown("### 📈 토픽별 주요 키워드")
+    topic_words_image_path = "topic_words_chart.png"
+    if os.path.exists(topic_words_image_path):
+        image2 = Image.open(topic_words_image_path)
+        st.image(image2, caption="토픽별 상위 12개 주요 키워드 분포", use_column_width=True)
+    else:
+        st.info("토픽 키워드 차트 이미지를 찾을 수 없습니다.")
 
 def display_generated_reports():
     """생성된 보고서 목록 및 내용 표시"""

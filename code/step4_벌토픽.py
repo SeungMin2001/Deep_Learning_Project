@@ -500,6 +500,11 @@ class Step4:
         plt.savefig("umap2d_topics_custom_color_pret.png", dpi=300)
         # plt.savefig("umap2d_topics_custom_color_pret.svg", dpi=300)
 
+
+
+
+
+
         import os
         import matplotlib.font_manager as fm
         import plotly.graph_objects as go
@@ -623,7 +628,11 @@ class Step4:
             fig.layout.annotations[i].update(
                 font=dict(family=default_font, size=14)
             )
-
+        fig.write_image("topic_words_chart.png", width=1200, height=900, scale=2)
+        
+        
+        
+        
         # Vectorizer 모델 설정
         vectorizer_model = CountVectorizer(vocabulary=list(vocab), ngram_range=(1, 1), min_df=2, token_pattern=r"(?u)\b\w[\w_]+\b")  # min_df ,max_df=0.5,
 
