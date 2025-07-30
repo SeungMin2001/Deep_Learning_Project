@@ -285,7 +285,7 @@ def main():
     """, unsafe_allow_html=True)
     
     # 상단 배경 이미지
-    possible_paths = ["./top.png", "top.png", "../top.png", "code/top.png"]
+    possible_paths = ["./top2.png", "top2.png", "../top2.png", "code/top2.png"]
     
     for path in possible_paths:
         if os.path.exists(path):
