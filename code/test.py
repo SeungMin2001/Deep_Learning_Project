@@ -412,13 +412,20 @@ def main():
     
     # 메인 컨텐츠 영역
     if not st.session_state.analysis_complete and st.session_state.step_progress == 0:
-        # 첫 화면 - 간단한 테스트
-        st.markdown('<h1 style="color: blue;">HTML 테스트</h1>', unsafe_allow_html=True)
-        
-        # 기본 Streamlit 컴포넌트로 대체
-        st.title("🎆 AI 특허 분석 플랫폼")
-        st.subheader("지능형 기술 보고서 자동 생성")
-        st.write("최첨단 AI 기술로 특허 데이터를 분석하고 전문적인 인사이트가 담긴 기술 보고서를 자동 생성합니다.")
+        # 첫 화면 - 히어로 섹션
+        st.markdown("""
+        <div style="text-align: center; margin: 2rem 0 3rem 0;">
+            <h1 style="font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
+                🎆 AI 특허 분석 플랫폼
+            </h1>
+            <h2 style="font-size: 1.8rem; font-weight: 400; color: #64748b; margin-bottom: 1.5rem;">
+                지능형 기술 보고서 자동 생성
+            </h2>
+            <p style="font-size: 1.1rem; color: #64748b; line-height: 1.6; max-width: 600px; margin: 0 auto;">
+                최첨단 AI 기술로 특허 데이터를 분석하고<br>전문적인 인사이트가 담긴 기술 보고서를 자동 생성합니다
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # 3개 열로 나눠서 기능 소개
         col1, col2, col3 = st.columns(3)
@@ -447,7 +454,7 @@ def main():
             </div>
             """, unsafe_allow_html=True)
         
-        # CTA 버튼
+        # CTA 버튼 - 중앙 정렬
         st.markdown("""
         <div style="text-align: center; margin: 3rem 0;">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 2rem; border-radius: 50px; display: inline-block; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);">
@@ -455,7 +462,7 @@ def main():
                     🚀 왼쪽에서 키워드를 입력하고 분석을 시작하세요
                 </p>
             </div>
-            <p style="color: #94a3b8; margin-top: 1rem;">예시: 자율주행, 인공지능, 블록체인, 양자컴퓨팅</p>
+            <p style="color: #94a3b8; margin-top: 1rem; font-size: 0.9rem;">예시: 자율주행, 인공지능, 블록체인, 양자컴퓨팅</p>
         </div>
         """, unsafe_allow_html=True)
         
