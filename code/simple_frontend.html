@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>특허 보고서 생성기</title>
+    <style>
+        body { font-family: Pretendard, sans-serif; max-width: 1400px; margin: 40px auto; padding: 0 20px; }
+        label, input, button { font-size: 1.1em; }
+        .input-section { margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; }
+        .input-row { display: flex; gap: 10px; align-items: center; }
+        .input-row input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .input-row button { padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .input-row button:hover { background: #0056b3; }
+        .reports-section { margin-top: 30px; }
+        .reports-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+        .report-list { max-height: 400px; overflow-y: auto; border: 1px solid #eee; padding: 15px; border-radius: 8px; background: white; }
+        .report-item { padding: 12px; margin: 8px 0; background: #f9f9f9; border-radius: 6px; cursor: pointer; border-left: 4px solid transparent; position: relative; }
+        .report-item:hover { background: #e9e9e9; border-left-color: #007bff; }
+        .report-item.selected { background: #d4edda; border-left-color: #28a745; }
+        .report-item-content { padding-right: 30px; }
+        .delete-btn { position: absolute; top: 8px; right: 8px; background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; font-size: 0.8em; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+        .report-item:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { background: #c82333; }
+        .report-content { background: #f8f9fa; padding: 20px; border-radius: 8px; max-height: 600px; overflow-y: auto; border: 1px solid #eee; line-height: 1.6; }
+        .report-content h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .report-content h2 { color: #555; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        .report-content h3 { color: #666; }
+        .report-content table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        .report-content th, .report-content td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .report-content th { background-color: #f2f2f2; font-weight: bold; }
+        .report-content pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .report-content code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+        .section-title { margin-bottom: 15px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        .refresh-btn { margin-bottom: 10px; padding: 6px 12px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; }
+        .refresh-btn:hover { background: #545b62; }
+    </style>
+</head>
+<body>
+    <h2>특허 보고서 생성기</h2>
+    
+    <!-- 키워드 입력 섹션 -->
+    <div class="input-section">
+        <div class="input-row">
+            <label for="keyword">키워드:</label>
+            <input type="text" id="keyword" name="keyword" placeholder="보고서를 생성할 키워드를 입력하세요" required autocomplete="off">
+            <button type="button" id="generateBtn">보고서 생성</button>
+        </div>
+    </div>
+    
+    <!-- 저장된 보고서 섹션 -->
+    <div class="reports-section">
+        <h3 class="section-title">저장된 보고서</h3>
+        <div class="reports-grid">
+            <div>
+                <button type="button" class="refresh-btn" onclick="loadReportList()">목록 새로고침</button>
+                <div id="reportList" class="report-list">
+                    <p>보고서를 불러오는 중...</p>
+                </div>
+            </div>
+            
+            <div>
+                <div id="reportContent" class="report-content">
+                    보고서를 선택하면 여기에 내용이 표시됩니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let selectedReport = null;
+    
+    // 페이지 로드 시 보고서 목록 자동 로드
+    document.addEventListener('DOMContentLoaded', function() {
+        loadReportList();
+    });
+    
+    // 보고서 목록 로드
+    async function loadReportList() {
+        const reportListDiv = document.getElementById('reportList');
+        reportListDiv.innerHTML = '<p>보고서를 불러오는 중...</p>';
+        
+        try {
+            const response = await fetch('http://localhost:8000/list_reports');
+            const data = await response.json();
+            
+            if (data.reports.length === 0) {
+                reportListDiv.innerHTML = '<p>저장된 보고서가 없습니다.</p>';
+                return;
+            }
+            
+            let html = '';
+            data.reports.forEach(report => {
+                html += `
+                    <div class="report-item" onclick="selectReport('${report.filename}', '${report.title}')">
+                        <div class="report-item-content">
+                            <strong>${report.title}</strong><br>
+                            <small>생성일: ${report.created_at}</small>
+                        </div>
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteReport('${report.filename}')" title="보고서 삭제">삭제</button>
+                    </div>
+                `;
+            });
+            
+            reportListDiv.innerHTML = html;
+        } catch (error) {
+            console.error('보고서 목록 로드 실패:', error);
+            reportListDiv.innerHTML = `<p>보고서 목록을 불러오는데 실패했습니다.<br>에러: ${error.message}</p>`;
+        }
+    }
+    
+    // 보고서 선택
+    function selectReport(filename, title) {
+        // 이전 선택 해제
+        document.querySelectorAll('.report-item').forEach(item => item.classList.remove('selected'));
+        
+        // 현재 선택 표시
+        event.target.classList.add('selected');
+        selectedReport = filename;
+        
+        // 보고서 내용 로드
+        loadReportContent(filename);
+    }
+    
+    // 보고서 내용 로드
+    async function loadReportContent(filename) {
+        const contentDiv = document.getElementById('reportContent');
+        contentDiv.innerHTML = '보고서를 불러오는 중...';
+        
+        try {
+            const response = await fetch(`http://localhost:8000/get_report/${filename}`);
+            const data = await response.json();
+            
+            contentDiv.innerHTML = data.html_content;
+        } catch (error) {
+            console.error('보고서 내용 로드 실패:', error);
+            contentDiv.innerHTML = `보고서 내용을 불러오는데 실패했습니다.<br>에러: ${error.message}<br>서버가 실행 중인지 확인해주세요.`;
+        }
+    }
+    
+    // 보고서 삭제
+    async function deleteReport(filename) {
+        if (!confirm('정말로 이 보고서를 삭제하시겠습니까?')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`http://localhost:8000/delete_report/${filename}`, {
+                method: 'DELETE'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            alert('보고서가 성공적으로 삭제되었습니다.');
+            
+            // 삭제된 보고서가 현재 선택된 보고서라면 내용 초기화
+            if (selectedReport === filename) {
+                document.getElementById('reportContent').innerHTML = '보고서를 선택하면 여기에 내용이 표시됩니다.';
+                selectedReport = null;
+            }
+            
+            // 목록 새로고침
+            loadReportList();
+            
+        } catch (error) {
+            console.error('보고서 삭제 실패:', error);
+            alert('보고서 삭제 중 오류가 발생했습니다.');
+        }
+    }
+    document.getElementById('generateBtn').addEventListener('click', async function(e) {
+        const keywordInput = document.getElementById('keyword');
+        const keyword = keywordInput.value.trim();
+        
+        if (!keyword) {
+            alert('키워드를 입력해주세요.');
+            return;
+        }
+        
+        // 버튼 비활성화
+        const generateBtn = document.getElementById('generateBtn');
+        generateBtn.disabled = true;
+        generateBtn.textContent = '보고서 생성 중... (2-3분 소요)';
+        
+        try {
+            const response = await fetch('http://localhost:8080/generate_report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keyword })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Report generated successfully:', data);
+            
+            // 보고서 생성 완료 후 목록 새로고침
+            setTimeout(() => {
+                loadReportList();
+            }, 1000);
+            
+            alert('보고서가 성공적으로 생성되었습니다!');
+            
+        } catch (error) {
+            console.error('Error generating report:', error);
+            alert('보고서 생성 중 오류가 발생했습니다.');
+        } finally {
+            // 버튼 재활성화
+            generateBtn.disabled = false;
+            generateBtn.textContent = '보고서 생성';
+        }
+    });
+    </script>
+</body>
+</html> 

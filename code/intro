@@ -1,0 +1,11 @@
+code 폴더에서 이 두개의 서버를 켜줘야함
+    - python -m http.server 8080
+    - uvicorn web_api:app --reload
+
+<순서>
+1. cd code # code 폴더로 이동
+2. python -m http.server 8080 # http 서버 실행
+3. uvicorn web_api:app --reload # uvicorn 서버 실행
+4. code/simple_frontend.html # 웹 페이지 실행(폴더에서 클릭해서 실행)
+
+
