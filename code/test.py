@@ -414,48 +414,48 @@ def main():
     if not st.session_state.analysis_complete and st.session_state.step_progress == 0:
         # 첫 화면 - 히어로 섹션 (Above the Fold)
         st.markdown("""
-        <div style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
-            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-                <div style="margin-bottom: 3rem;">
-                    <h1 style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; line-height: 1.1;">
-                        AI 특허 분석
-                    </h1>
-                    <h2 style="font-size: 2.2rem; font-weight: 300; color: #64748b; margin-bottom: 2rem; line-height: 1.3;">
-                        지능형 기술 보고서 자동 생성 플랫폼
-                    </h2>
-                    <p style="font-size: 1.2rem; color: #64748b; line-height: 1.6; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                        최첨단 AI 기술로 특허 데이터를 분석하고<br>전문적인 인사이트가 담긴 기술 보고서를 자동 생성합니다
-                    </p>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem;">
-                    <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
-                        <h3 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">신속한 분석</h3>
-                        <p style="font-size: 0.9rem; color: #64748b; margin: 0; line-height: 1.4;">AI 기반 자동화로<br>5분 안에 완료</p>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
-                        <h3 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">정확한 인사이트</h3>
-                        <p style="font-size: 0.9rem; color: #64748b; margin: 0; line-height: 1.4;">최신 NLP 기술로<br>핵심 토픽 추출</p>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📈</div>
-                        <h3 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">전문 보고서</h3>
-                        <p style="font-size: 0.9rem; color: #64748b; margin: 0; line-height: 1.4;">GPT-4 기반 고품질<br>기술 보고서 생성</p>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 2rem;">
-                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 2rem; border-radius: 50px; display: inline-block; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); cursor: pointer; transition: all 0.3s ease;">
-                        <p style="color: white; font-size: 1.1rem; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
-                            <span>🚀</span> 왼쪽에서 키워드를 입력하고 분석을 시작하세요
-                        </p>
-                    </div>
-                    <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 1rem; margin-bottom: 0;">예시: 자율주행, 인공지능, 블록체인, 양자컴퓨팅</p>
-                </div>
+<div style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
+    <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+        <div style="margin-bottom: 3rem;">
+            <h1 style="font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem; line-height: 1.1;">
+                AI 특허 분석
+            </h1>
+            <h2 style="font-size: 2.2rem; font-weight: 300; color: #64748b; margin-bottom: 2rem; line-height: 1.3;">
+                지능형 기술 보고서 자동 생성 플랫폼
+            </h2>
+            <p style="font-size: 1.2rem; color: #64748b; line-height: 1.6; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                최첨단 AI 기술로 특허 데이터를 분석하고<br>전문적인 인사이트가 담긴 기술 보고서를 자동 생성합니다
+            </p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem;">
+            <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
+                <h3 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">신속한 분석</h3>
+                <p style="font-size: 0.9rem; color: #64748b; margin: 0; line-height: 1.4;">AI 기반 자동화로<br>5분 안에 완료</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎯</div>
+                <h3 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">정확한 인사이트</h3>
+                <p style="font-size: 0.9rem; color: #64748b; margin: 0; line-height: 1.4;">최신 NLP 기술로<br>핵심 토픽 추출</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">📈</div>
+                <h3 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">전문 보고서</h3>
+                <p style="font-size: 0.9rem; color: #64748b; margin: 0; line-height: 1.4;">GPT-4 기반 고품질<br>기술 보고서 생성</p>
             </div>
         </div>
+        
+        <div style="margin-top: 2rem;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 2rem; border-radius: 50px; display: inline-block; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); cursor: pointer; transition: all 0.3s ease;">
+                <p style="color: white; font-size: 1.1rem; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>🚀</span> 왼쪽에서 키워드를 입력하고 분석을 시작하세요
+                </p>
+            </div>
+            <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 1rem; margin-bottom: 0;">예시: 자율주행, 인공지능, 블록체인, 양자컴퓨팅</p>
+        </div>
+    </div>
+</div>
         
         <div style="text-align: center; margin: 2rem 0; animation: bounce 2s infinite;">
             <div style="font-size: 1.5rem; color: #cbd5e1;">↓</div>
