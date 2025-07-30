@@ -426,7 +426,7 @@ def main():
         
         # 키워드 입력 필드
         keyword = st.text_input(
-            #"분석할 기술 키워드를 입력하세요",
+            "분석할 기술 키워드를 입력하세요",
             value=st.session_state.keyword_input,
             placeholder="예: 자율주행 로봇",
             key="keyword_input_field"
