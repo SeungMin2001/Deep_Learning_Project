@@ -2,6 +2,12 @@ import os
 os.environ["USE_TF"] = "0"
 os.environ["USE_TORCH"] = "1"
 
+# Compatibility patch for scipy.linalg.triu issue
+import numpy as np
+import scipy.linalg
+if not hasattr(scipy.linalg, 'triu'):
+    scipy.linalg.triu = np.triu
+
 from tqdm import tqdm
 import itertools
 from umap import UMAP
