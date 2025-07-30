@@ -51,7 +51,7 @@ st.markdown("""
         border-radius: 10px;
         padding: 1rem;
         margin: 1rem 0;
-        background-color: #f8f9fa;
+        background-color: #cbd3da; 
     }
     .step-title {
         font-size: 1.2rem;
