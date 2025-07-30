@@ -318,7 +318,7 @@ def main():
     
     .banner-title {
         position: absolute;
-        top: -80px;
+        top: -30px;
         left: 50%;
         transform: translateX(-50%);
         text-align: center;
