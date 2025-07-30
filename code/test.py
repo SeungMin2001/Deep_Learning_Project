@@ -412,73 +412,121 @@ def main():
     
     # 메인 컨텐츠 영역
     if not st.session_state.analysis_complete and st.session_state.step_progress == 0:
-        # 초기 화면
+        # 초기 화면 - 세련된 인트로 섹션
         st.markdown("""
-        ## 🎯 시스템 소개
+        <div style="text-align: center; margin: 3rem 0 4rem 0;">
+            <h1 style="font-size: 2.8rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
+                AI 특허 분석 플랫폼
+            </h1>
+            <p style="font-size: 1.3rem; color: #64748b; font-weight: 400; line-height: 1.6; max-width: 600px; margin: 0 auto;">
+                최첨단 AI 기술로 특허 데이터를 분석하고<br>인사이트가 담긴 기술 보고서를 자동 생성합니다
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        이 시스템은 AI를 활용하여 특허 데이터를 분석하고 기술 보고서를 자동 생성합니다.
+        # 핵심 기능 카드 섹션
+        st.markdown("""
+        <div style="margin: 4rem 0;">
+            <h2 style="text-align: center; font-size: 2.2rem; font-weight: 600; color: #1e293b; margin-bottom: 3rem;">✨ 핵심 기능</h2>
+        </div>
+        """, unsafe_allow_html=True)
         
-        ### 📋 주요 기능
-        
-        1. **🔍 특허식 생성**: 입력 키워드를 바탕으로 KIPRIS 검색식 자동 생성
-        2. **📊 특허 크롤링**: KIPRIS API를 통한 관련 특허 데이터 수집
-        3. **🔧 데이터 필터링**: AI 임베딩을 활용한 유사도 기반 필터링
-        4. **🤖 토픽 모델링**: BERTopic을 이용한 토픽 추출 및 시각화
-        5. **📝 보고서 생성**: LLM을 활용한 기술 보고서 자동 작성
-        
-        ### 🚀 시작하기
-        
-        왼쪽 사이드바에서 분석하고 싶은 기술 키워드를 입력하고 '분석 시작' 버튼을 클릭하세요.
-        """)
-        
-        # 시스템 아키텍처 다이어그램
-        st.markdown("### 🏗️ 시스템 구조")
-        col1, col2, col3, col4, col5 = st.columns(5)
+        # 기능 카드들을 2x3 그리드로 배치
+        col1, col2 = st.columns(2, gap="large")
         
         with col1:
             st.markdown("""
-            <div class="step-container">
-                <div class="step-title">Step 1</div>
-                <p>특허식 생성</p>
-                <p>🔍 GPT-3.5</p>
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); transform: translateY(0); transition: all 0.3s ease;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">스마트 특허식 생성</h3>
+                <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">GPT-3.5 기반으로 입력 키워드를 분석하여 KIPRIS 검색에 최적화된 특허식을 자동 생성합니다.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🔧</div>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">AI 데이터 필터링</h3>
+                <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">OpenAI 임베딩을 활용한 의미론적 유사도 분석으로 관련성 높은 특허만 선별합니다.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">자동 보고서 생성</h3>
+                <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">GPT-4를 활용하여 분석 결과를 바탕으로 전문적인 기술 보고서를 자동 작성합니다.</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col2:
             st.markdown("""
-            <div class="step-container">
-                <div class="step-title">Step 2</div>
-                <p>특허 크롤링</p>
-                <p>📊 KIPRIS API</p>
+            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(250, 112, 154, 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">대용량 특허 크롤링</h3>
+                <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">KIPRIS API를 통해 관련 특허 데이터를 체계적으로 수집하고 구조화합니다.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 2rem; border-radius: 20px; color: #333; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(168, 237, 234, 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: #333;">BERTopic 토픽 모델링</h3>
+                <p style="font-size: 1rem; opacity: 0.8; line-height: 1.5; color: #333;">최신 NLP 기술로 특허 문서에서 핵심 토픽을 추출하고 직관적으로 시각화합니다.</p>
             </div>
             """, unsafe_allow_html=True)
         
-        with col3:
-            st.markdown("""
-            <div class="step-container">
-                <div class="step-title">Step 3</div>
-                <p>데이터 필터링</p>
-                <p>🔧 OpenAI Embedding</p>
+        # 시작하기 섹션
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 3rem 2rem; border-radius: 25px; text-align: center; margin: 4rem 0; color: white; box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);">
+            <h2 style="font-size: 2rem; font-weight: 600; margin-bottom: 1rem; color: white;">🚀 지금 시작하세요</h2>
+            <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem; color: white;">왼쪽 사이드바에서 분석하고 싶은 기술 키워드를 입력하고 '분석 시작' 버튼을 클릭하세요</p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 15px; backdrop-filter: blur(10px);">
+                <p style="font-size: 1rem; margin: 0; color: white; opacity: 0.9;">💡 예시: 자율주행 로봇, 인공지능, 블록체인, 양자컴퓨팅</p>
             </div>
-            """, unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
         
-        with col4:
-            st.markdown("""
-            <div class="step-container">
-                <div class="step-title">Step 4</div>
-                <p>토픽 모델링</p>
-                <p>🤖 BERTopic</p>
-            </div>
-            """, unsafe_allow_html=True)
+        # 분석 프로세스 플로우
+        st.markdown("""
+        <div style="margin: 4rem 0;">
+            <h2 style="text-align: center; font-size: 2.2rem; font-weight: 600; color: #1e293b; margin-bottom: 3rem;">⚡ 분석 프로세스</h2>
+        </div>
+        """, unsafe_allow_html=True)
         
-        with col5:
-            st.markdown("""
-            <div class="step-container">
-                <div class="step-title">Step 5</div>
-                <p>보고서 생성</p>
-                <p>📝 GPT-4</p>
-            </div>
-            """, unsafe_allow_html=True)
+        # 5단계 프로세스를 가로로 배치
+        col1, col2, col3, col4, col5 = st.columns(5, gap="medium")
+        
+        processes = [
+            {"step": "01", "title": "특허식 생성", "desc": "AI 키워드 분석", "icon": "🔍", "color": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"},
+            {"step": "02", "title": "데이터 크롤링", "desc": "KIPRIS API 연동", "icon": "📊", "color": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"},
+            {"step": "03", "title": "스마트 필터링", "desc": "AI 임베딩 분석", "icon": "🔧", "color": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"},
+            {"step": "04", "title": "토픽 모델링", "desc": "BERTopic 분석", "icon": "🤖", "color": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"},
+            {"step": "05", "title": "보고서 생성", "desc": "GPT-4 작성", "icon": "📝", "color": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"}
+        ]
+        
+        columns = [col1, col2, col3, col4, col5]
+        
+        for i, (col, process) in enumerate(zip(columns, processes)):
+            with col:
+                st.markdown(f"""
+                <div style="text-align: center; position: relative;">
+                    <div style="background: {process['color']}; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(0,0,0,0.15); position: relative;">
+                        <span style="font-size: 2rem;">{process['icon']}</span>
+                        <div style="position: absolute; top: -10px; right: -10px; background: #1e293b; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600;">{process['step']}</div>
+                    </div>
+                    <h4 style="font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">{process['title']}</h4>
+                    <p style="font-size: 0.85rem; color: #64748b; margin: 0;">{process['desc']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # 화살표 추가 (마지막 단계 제외)
+                if i < len(processes) - 1:
+                    st.markdown("""
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <span style="font-size: 1.5rem; color: #cbd5e1;">→</span>
+                    </div>
+                    """, unsafe_allow_html=True)
     
     elif st.session_state.step_progress > 0 and not st.session_state.analysis_complete:
         # 분석 진행 중 화면
