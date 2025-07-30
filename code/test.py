@@ -457,7 +457,6 @@ def main():
             </div>
         </div>
         
-        <!-- 스크롤 인디케이터 -->
         <div style="text-align: center; margin: 2rem 0; animation: bounce 2s infinite;">
             <div style="font-size: 1.5rem; color: #cbd5e1;">↓</div>
             <p style="font-size: 0.9rem; color: #94a3b8; margin: 0.5rem 0 0 0;">아래로 스크롤하여 더 알아보기</p>
