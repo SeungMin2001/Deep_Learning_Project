@@ -628,7 +628,36 @@ class Step4:
             fig.layout.annotations[i].update(
                 font=dict(family=default_font, size=14)
             )
-        fig.write_image("topic_words_chart.png", width=1200, height=900, scale=2)
+        
+        # Chrome 의존성 문제 해결을 위해 matplotlib으로 동일한 차트 생성
+        fig_mpl, axes = plt.subplots(2, 3, figsize=(15, 10))
+        fig_mpl.suptitle('Topic 0~5: Top 12 words 분포', fontsize=20, y=0.98)
+        
+        colors_mpl = {
+            0: "#8dd3c7", 1: "#4eb3d3", 2: "#08589e", 
+            3: "#fdb462", 4: "#fb8072", 5: "#b30000"
+        }
+        
+        for t in range(6):
+            row = t // 3
+            col = t % 3
+            ax = axes[row, col]
+            
+            terms = topic_terms[t]
+            scores = topic_scores[t]
+            
+            if terms:
+                y_pos = range(len(terms))
+                ax.barh(y_pos, scores, color=colors_mpl[t], alpha=0.8)
+                ax.set_yticks(y_pos)
+                ax.set_yticklabels(terms, fontsize=10)
+                ax.set_xlabel('c-TF-IDF', fontsize=12)
+                ax.set_title(f'Topic {t}: Top 12 words', fontsize=14, pad=10)
+                ax.grid(axis='x', alpha=0.3)
+                
+        plt.tight_layout()
+        plt.savefig("topic_words_chart.png", dpi=300, bbox_inches='tight')
+        plt.close(fig_mpl)
         
         
         
