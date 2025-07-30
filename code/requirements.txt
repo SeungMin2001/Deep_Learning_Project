@@ -156,7 +156,7 @@ transformers>=4.32.0
 sentence-transformers>=2.0.0
 gensim
 kobert-transformers
-konlpy
+kiwipiepy
 langchain
 langchain-community
 # ugtm  # Commented out due to scipy compatibility issue

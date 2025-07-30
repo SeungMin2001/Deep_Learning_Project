@@ -49,11 +49,16 @@ from nltk.tokenize import word_tokenize
 from nltk import pos_tag
 from sklearn.preprocessing import normalize
 import pandas as pd
-from nltk.corpus import stopwords
-from konlpy.tag import Okt
-import jpype
-import jpype.imports
-from jpype.types import *
+# Java 불필요한 한국어 NLP 라이브러리 사용
+try:
+    from kiwipiepy import Kiwi
+    USE_KIWI = True
+except ImportError:
+    try:
+        from konlpy.tag import Okt
+        USE_KIWI = False
+    except ImportError:
+        USE_KIWI = None
 from transformers import BertModel, BertTokenizer
 from transformers import AutoModel
 from bertopic import BERTopic
@@ -98,16 +103,23 @@ class Step4:
             else:
                 return 'n'  # default to noun
 
-        try:
-            okt = Okt()
-        except Exception as e:
-            print(f"⚠️ KoNLPy 초기화 실패 (Java 환경 문제): {e}")
-            print("💡 해결 방법:")
-            print("   macOS: brew install openjdk@11 && export JAVA_HOME=$(/usr/libexec/java_home)")
-            print("   Ubuntu: sudo apt-get install openjdk-11-jdk")  
-            print("   Windows: Oracle JDK 또는 OpenJDK 11+ 설치")
-            print("📖 자세한 설치 가이드는 README.md를 참조하세요")
-            raise RuntimeError("Java 환경이 설정되지 않았습니다. KoNLPy 사용을 위해 Java가 필요합니다.")
+        # 한국어 NLP 라이브러리 초기화
+        if USE_KIWI:
+            kiwi = Kiwi()
+            print("✅ Kiwi 형태소 분석기 사용 (Java 불필요)")
+        elif USE_KIWI == False:
+            try:
+                okt = Okt()
+                print("✅ KoNLPy Okt 형태소 분석기 사용")
+            except Exception as e:
+                print(f"⚠️ KoNLPy 초기화 실패 (Java 환경 문제): {e}")
+                print("💡 해결 방법:")
+                print("   pip install kiwipiepy  # Java 불필요한 대안")
+                print("   또는 Java 환경 설정 필요")
+                raise RuntimeError("한국어 형태소 분석기를 사용할 수 없습니다.")
+        else:
+            print("⚠️ 한국어 형태소 분석기를 사용할 수 없습니다. kiwipiepy 또는 konlpy를 설치하세요.")
+            raise RuntimeError("한국어 형태소 분석기가 없습니다.")
 
         # 0.1) 불용어 목록 로드
         with open('data/stopwords.txt', 'r', encoding='utf-8') as f:
@@ -194,7 +206,10 @@ class Step4:
                 kor_only = re.sub(r'\s+', ' ', kor_only).strip()
 
                 # 2.5) 형태소 분석 → 불용어 제거
-                tokens = okt.morphs(kor_only, stem=True)
+                if USE_KIWI:
+                    tokens = kiwi.morphs(kor_only, stemming=True)
+                else:
+                    tokens = okt.morphs(kor_only, stem=True)
                 tokens = [t for t in tokens if t not in stop_words]
 
                 components = set()
@@ -228,7 +243,11 @@ class Step4:
                 text = doc if isinstance(doc, str) else ""
 
                 # 3.1) 형태소 태깅
-                tokens_with_pos = okt.pos(text, stem=True)
+                if USE_KIWI:
+                    # Kiwi의 경우 pos() 메서드 사용
+                    tokens_with_pos = [(token.form, token.tag) for token in kiwi.tokenize(text)]
+                else:
+                    tokens_with_pos = okt.pos(text, stem=True)
 
                 # 3.2) 복합어(glued) 등장 횟수만큼 수집
                 found_phrases = []
