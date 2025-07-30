@@ -8,6 +8,14 @@ import scipy.linalg
 if not hasattr(scipy.linalg, 'triu'):
     scipy.linalg.triu = np.triu
 
+# Compatibility patch for huggingface_hub
+try:
+    from huggingface_hub import cached_download
+except ImportError:
+    from huggingface_hub import hf_hub_download as cached_download
+    import huggingface_hub
+    huggingface_hub.cached_download = cached_download
+
 from tqdm import tqdm
 import itertools
 from umap import UMAP
