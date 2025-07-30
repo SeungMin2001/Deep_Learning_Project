@@ -254,26 +254,45 @@ def display_topic_results():
 
 def main():
     # 상단 배경 이미지
-    import glob
     possible_paths = ["./top.png", "top.png", "../top.png", "code/top.png"]
     
-    # 현재 디렉토리의 모든 파일 확인
-    current_files = glob.glob("*")
-    st.write(f"현재 디렉토리 파일들: {current_files[:10]}")  # 처음 10개만 표시
-    
-    top_image_found = False
     for path in possible_paths:
         if os.path.exists(path):
-            try:
-                top_image = Image.open(path)
-                st.image(top_image, use_column_width=True)
-                top_image_found = True
-                break
-            except Exception as e:
-                continue
-    
-    if not top_image_found:
-        st.info("top.png 이미지를 찾을 수 없어 기본 레이아웃으로 표시합니다.")
+            top_image = Image.open(path)
+            # 이미지를 컨테이너로 감싸서 높이 제한
+            st.markdown("""
+            <style>
+            .top-image-container {
+                width: 100%;
+                height: 200px;
+                overflow: hidden;
+                margin: 0;
+                padding: 0;
+            }
+            .top-image-container img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                object-position: center;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # HTML로 이미지 직접 삽입
+            import base64
+            from io import BytesIO
+            
+            # 이미지를 base64로 인코딩
+            buffer = BytesIO()
+            top_image.save(buffer, format='PNG')
+            img_str = base64.b64encode(buffer.getvalue()).decode()
+            
+            st.markdown(f"""
+            <div class="top-image-container">
+                <img src="data:image/png;base64,{img_str}" alt="Top Banner">
+            </div>
+            """, unsafe_allow_html=True)
+            break
     
     # 메인 타이틀
     st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
