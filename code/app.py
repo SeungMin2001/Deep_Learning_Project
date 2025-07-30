@@ -446,7 +446,6 @@ def main():
                     </p>
                 </div>
                 
-                <!-- 핵심 가치 제안 3개 -->
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem;">
                     <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
                         <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
@@ -465,7 +464,6 @@ def main():
                     </div>
                 </div>
                 
-                <!-- CTA 버튼 -->
                 <div style="margin-top: 2rem;">
                     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 2rem; border-radius: 50px; display: inline-block; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); cursor: pointer; transition: all 0.3s ease;">
                         <p style="color: white; font-size: 1.1rem; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
