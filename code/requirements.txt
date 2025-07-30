@@ -150,6 +150,7 @@ transformers>=4.32.0
 sentence-transformers>=2.0.0
 gensim
 kobert-transformers
+konlpy
 # ugtm  # Commented out due to scipy compatibility issue
 trio==0.26.2
 trio-websocket==0.11.1
