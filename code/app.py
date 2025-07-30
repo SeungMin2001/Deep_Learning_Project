@@ -314,7 +314,7 @@ def main():
     .banner-image {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         border-radius: 15px;
         transition: transform 0.3s ease;
     }
@@ -336,7 +336,7 @@ def main():
     
     .banner-title {
         position: absolute;
-        bottom: 30px;
+        top: 30px;
         left: 30px;
         right: 30px;
         color: white;
