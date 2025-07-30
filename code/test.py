@@ -212,7 +212,7 @@ def display_topic_visualization():
     # 두 번째 이미지 (경로는 나중에 지정)
     with col2:
         st.markdown("### 📈 토픽 히트맵")
-        heatmap_image_path = "gtm_modes_matplotlib.png"  # 2번 그림
+        heatmap_image_path = "gtm_modes_matplotlib_chart.png"  # 2번 그림
         if os.path.exists(heatmap_image_path):
             image2 = Image.open(heatmap_image_path)
             st.image(image2, caption="토픽별 키워드 히트맵", use_column_width=True)
