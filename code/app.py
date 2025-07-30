@@ -313,7 +313,7 @@ def main():
         margin-top: -3rem;
         position: absolute;
         top: 0;
-        left: -20px;
+        left: -200px;
         z-index: 999;
     }
     .top-banner img {
