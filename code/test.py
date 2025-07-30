@@ -407,7 +407,7 @@ def main():
                 </div>
                 <h1 style="font-size: 20px; font-weight: 600; color: #14212a; margin: 0; line-height: 1.2;">특허 분석 AI</h1>
             </div>
-            <p style="font-size: 14px; color: #b4b4b4; margin: 0; font-weight: 400; line-height: 1.4;">고급 AI 기술로 특허 데이터를 분석하고 인사이트를 제공합니다</p>
+            <p style="font-size: 14px; color: #14212a; margin: 0; font-weight: 400; line-height: 1.4;">고급 AI 기술로 특허 데이터를 분석하고 인사이트를 제공합니다</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -419,7 +419,7 @@ def main():
                     <div style="width: 20px; height: 20px; background: #19c37d; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
                         <span style="color: white; font-size: 12px;">✏️</span>
                     </div>
-                    <label style="font-size: 14px; font-weight: 600; color: #ececf1; margin: 0;">분석 키워드</label>
+                    
                 </div>
             </div>
         </div>
@@ -429,7 +429,7 @@ def main():
         keyword = st.text_input(
             "분석할 기술 키워드를 입력하세요",
             value=st.session_state.keyword_input,
-            placeholder="예: 자율주행, 인공지능, 블록체인, 양자컴퓨팅",
+            placeholder="예: 자율주행 로봇"
             key="keyword_input_field"
         )
         
