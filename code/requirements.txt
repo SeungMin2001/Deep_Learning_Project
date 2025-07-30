@@ -1,4 +1,4 @@
-
+langchain_openai
 bertopic>=0.16.0
 hdbscan
 absl-py==2.1.0
