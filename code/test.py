@@ -270,21 +270,19 @@ def main():
         padding-top: 0rem !important;
     }
     .top-banner {
-        width: 100vw;
+        width: 95vw;
         height: 350px;
-        margin: 0;
+        margin: 0 auto;
         padding: 0;
         display: block;
         margin-top: -2rem;
-        margin-left: calc(-50vw + 50%);
-        margin-right: calc(-50vw + 50%);
         position: relative;
         z-index: 999;
     }
     .top-banner img {
         width: 100%;
         height: 350px;
-        object-fit: cover;
+        object-fit: contain;
         display: block;
     }
     </style>
