@@ -411,55 +411,99 @@ def main():
         </div>
         """, unsafe_allow_html=True)
         
-        # 고급 입력 섹션
+        # 개선된 키워드 입력 섹션
         st.markdown("""
-        <div style="margin-bottom: 1.5rem;">
-            <div style="background: #2d2e3f; border-radius: 12px; padding: 1.5rem; border: 1px solid #444654;">
-                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                    <div style="width: 20px; height: 20px; background: #19c37d; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: white; font-size: 12px;">✏️</span>
+        <div style="margin-bottom: 2rem;">
+            <div style="background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%); border-radius: 20px; padding: 2rem; border: 1px solid rgba(0, 123, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1), 0 1px 8px rgba(0, 123, 255, 0.05); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #007bff, #0056b3, #007bff); background-size: 200% 100%; animation: shimmer 3s ease-in-out infinite;"></div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(145deg, #007bff, #0056b3); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);">
+                        <span style="color: white; font-size: 16px; font-weight: bold;">🔍</span>
                     </div>
-                    <label style="font-size: 14px; font-weight: 600; color: #ececf1; margin: 0;">분석 키워드</label>
+                    <label style="font-size: 16px; font-weight: 600; color: #2c3e50; margin: 0; letter-spacing: -0.02em;">분석 키워드</label>
                 </div>
+                <p style="font-size: 14px; color: #6c757d; margin: 0 0 16px 0; line-height: 1.5;">분석하고 싶은 기술 키워드를 입력하세요</p>
             </div>
         </div>
+        
+        <style>
+        @keyframes shimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: -200% 0; }
+        }
+        </style>
         """, unsafe_allow_html=True)
         
-        # 키워드 입력 필드
+        # 개선된 키워드 입력 필드
+        st.markdown("""
+        <style>
+        .stTextInput > div > div > input {
+            background: #ffffff !important;
+            border: 2px solid #e3f2fd !important;
+            border-radius: 12px !important;
+            padding: 15px 20px !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+            color: #2c3e50 !important;
+        }
+        .stTextInput > div > div > input:focus {
+            border-color: #007bff !important;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1), inset 0 2px 4px rgba(0,0,0,0.05) !important;
+            outline: none !important;
+            transform: translateY(-1px) !important;
+        }
+        .stTextInput > div > div > input::placeholder {
+            color: #9ca3af !important;
+            font-weight: 400 !important;
+        }
+        .stTextInput > label {
+            display: none !important;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
         keyword = st.text_input(
             "분석할 기술 키워드를 입력하세요",
             value=st.session_state.keyword_input,
-            placeholder="예: 자율주행 로봇",
-            key="keyword_input_field"
+            placeholder="예: 자율주행 로봇, 인공지능, 블록체인",
+            key="keyword_input_field",
+            label_visibility="collapsed"
         )
         
-        # 고급 ChatGPT 스타일 버튼
+        # 개선된 분석 시작 버튼 스타일
         st.markdown("""
         <style>
         .stButton > button {
-            background: linear-gradient(135deg, #19c37d 0%, #0fa968 100%) !important;
+            background: linear-gradient(145deg, #007bff, #0056b3) !important;
             color: white !important;
             border: none !important;
             border-radius: 12px !important;
-            padding: 14px 24px !important;
+            padding: 15px 30px !important;
             font-weight: 600 !important;
-            font-size: 15px !important;
+            font-size: 16px !important;
             width: 100% !important;
             margin: 20px 0 !important;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 4px 12px rgba(25, 195, 125, 0.3) !important;
-            font-family: 'Segoe UI', system-ui, sans-serif !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3) !important;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            position: relative !important;
+            overflow: hidden !important;
         }
         .stButton > button:hover {
-            background: linear-gradient(135deg, #0fa968 0%, #0d8f5a 100%) !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 6px 20px rgba(25, 195, 125, 0.4) !important;
+            background: linear-gradient(145deg, #0056b3, #004085) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4) !important;
+        }
+        .stButton > button:active {
+            transform: translateY(0) !important;
         }
         .stButton > button:disabled {
-            background: #565869 !important;
-            color: #8e8ea0 !important;
+            background: linear-gradient(145deg, #6c757d, #5a6268) !important;
+            color: #adb5bd !important;
             transform: none !important;
-            box-shadow: none !important;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2) !important;
         }
         </style>
         """, unsafe_allow_html=True)
