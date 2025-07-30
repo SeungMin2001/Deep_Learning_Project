@@ -196,28 +196,14 @@ def display_topic_visualization():
     """토픽 시각화 결과 표시"""
     st.subheader("📊 토픽 분석 시각화 결과")
     
-    # 2개 컬럼으로 이미지 레이아웃 구성
-    col1, col2 = st.columns(2)
-    
-    # 첫 번째 이미지
-    with col1:
-        st.markdown("### 🗺️ UMAP 2D 토픽 분포")
-        umap_image_path = "umap2d_topics_custom_color_pret.png"
-        if os.path.exists(umap_image_path):
-            image1 = Image.open(umap_image_path)
-            st.image(image1, caption="UMAP 2D 문서 임베딩과 BERTopic 토픽 분포", use_column_width=True)
-        else:
-            st.warning("UMAP 시각화 이미지를 찾을 수 없습니다.")
-    
-    # 두 번째 이미지 (경로는 나중에 지정)
-    with col2:
-        st.markdown("### 📈 토픽 히트맵")
-        heatmap_image_path = "topic_heatmap.png"  # 나중에 실제 경로로 변경 예정
-        if os.path.exists(heatmap_image_path):
-            image2 = Image.open(heatmap_image_path)
-            st.image(image2, caption="토픽별 키워드 히트맵", use_column_width=True)
-        else:
-            st.info("두 번째 시각화 이미지 경로를 설정해주세요.")
+    # UMAP 이미지만 표시
+    st.markdown("### 🗺️ UMAP 2D 토픽 분포")
+    umap_image_path = "umap2d_topics_custom_color_pret.png"
+    if os.path.exists(umap_image_path):
+        image = Image.open(umap_image_path)
+        st.image(image, caption="UMAP 2D 문서 임베딩과 BERTopic 토픽 분포", use_column_width=True)
+    else:
+        st.warning("UMAP 시각화 이미지를 찾을 수 없습니다.")
 
 def display_generated_reports():
     """생성된 보고서 목록 및 내용 표시"""

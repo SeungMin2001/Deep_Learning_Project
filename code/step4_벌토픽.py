@@ -831,33 +831,8 @@ class Step4:
         topics, probabilities = topic_model.fit_transform(lemmatized_patents)
         
         #-----------------GTM1-----------------
-        
-        n_topics = probabilities.shape[1]
-        prob_df = pd.DataFrame(
-            probabilities,
-            columns=[f"Topic_{i}" for i in range(n_topics)]
-        )
-
-        # 2.2. 문서 식별용 컬럼(Document)을 확률 분포 DataFrame 앞에 추가
-        #       여기서는 patent_prep 리스트를 그대로 문자열 형태로 사용
-        prob_df.insert(0, "Document", patent_prep)
-
-        # 2.3. 대표 토픽(최댓값을 가진 토픽 인덱스) 컬럼 추가(선택 사항)
-        #       이미 topics 리스트가 있으므로 DataFrame에 추가해두면 나중 분석에 유용합니다.
-        prob_df["Dominant_Topic"] = topics
-
-        # --------------------------------------------------------------
-        # 3. CSV 파일로 저장
-        # --------------------------------------------------------------
-
-        output_path = "BERTopic_topic_distribution.csv"
-        
-        prob_df.to_csv(output_path, index=False)
-
-        print(f"BERTopic 토픽 분포가 '{output_path}' 파일로 저장되었습니다.")
-
         #------------------------------------------------------------------
-
+        
         # 토픽 번호를 가져오고 첫 번째 토픽(-1)을 제외
         topics_dict = {}
         for topic_num in list(topic_model.get_topics())[1:]:  # -1 토픽(노이즈) 제외

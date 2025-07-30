@@ -2,8 +2,8 @@ from step1_특허식 import Step1
 from step2_크롤링 import Step2
 from step3_필터링 import Step3
 from step4_벌토픽 import Step4
-from step4_1_벌토픽 import Step4_1_GTM
-from step4_2_벌토픽 import Step4_2_GTM
+#from step4_1_벌토픽 import Step4_1_GTM
+#from step4_2_벌토픽 import Step4_2_GTM
 from step5_보고서작성 import Step5
 from multiprocessing import freeze_support
 
@@ -28,8 +28,8 @@ def generate_report(keyword):
         s4 = Step4()
         topic_list = s4.ber()  # 토픽 추출
         
-        s4_2=Step4_2_GTM()
-        s4_2.run_full_analysis()
+        # s4_2=Step4_2_GTM()
+        # s4_2.run_full_analysis()
         
         print("Step 4 완료")
 
