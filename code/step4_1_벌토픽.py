@@ -109,7 +109,11 @@ class Step4_1_GTM:
         import pandas as pd
         import numpy as np
         try:
-            from ugtm import eGTM
+            try:
+                from ugtm import eGTM
+            except ImportError:
+                eGTM = None
+                print("Warning: ugtm not available due to compatibility issues")
             import altair as alt
             from sklearn.preprocessing import StandardScaler
             

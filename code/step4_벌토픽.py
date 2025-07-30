@@ -45,7 +45,11 @@ from transformers import AutoModel
 from bertopic import BERTopic
 from bertopic.vectorizers import ClassTfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
-from ugtm import eGTM
+try:
+    from ugtm import eGTM
+except ImportError:
+    eGTM = None
+    print("Warning: ugtm not available due to compatibility issues")
 import umap
 import hdbscan
 import re
