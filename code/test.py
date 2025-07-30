@@ -270,26 +270,40 @@ def main():
     .stApp {
         padding-top: 0rem !important;
     }
-    /* 세련된 사이드바 스타일링 */
+    /* ChatGPT 스타일 사이드바 */
     .css-1d391kg {
-        width: 350px !important;
+        width: 280px !important;
     }
     section[data-testid="stSidebar"] {
-        width: 350px !important;
-        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
-        border-right: 1px solid #e2e8f0 !important;
+        width: 280px !important;
+        background: #f7f7f8 !important;
+        border-right: 1px solid #e5e5e5 !important;
     }
     .css-1cypcdb {
-        width: 350px !important;
-    
+        width: 280px !important;
     }
     
     /* 사이드바 컨테이너 패딩 */
     .css-1d391kg .block-container {
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
-        padding-left: 1.5rem !important;
-        padding-right: 1.5rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    /* 입력 필드 스타일 */
+    .stTextInput input {
+        background: white !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease !important;
+    }
+    .stTextInput input:focus {
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+        outline: none !important;
     }
     
     /* 멋진 배너 컨테이너 */
@@ -382,80 +396,72 @@ def main():
     # 메인 타이틀
     st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
     
-    # 세련된 사이드바
+    # ChatGPT 스타일 사이드바
     with st.sidebar:
-        # 헤더 섹션
+        # 간단한 헤더
         st.markdown("""
-        <div style="text-align: center; margin-bottom: 2rem; padding: 1.5rem 0;">
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);">
-                <span style="font-size: 24px; color: white;">🔍</span>
-            </div>
-            <h2 style="font-size: 1.4rem; font-weight: 600; color: #1e293b; margin: 0; line-height: 1.3;">키워드 분석</h2>
-            <p style="font-size: 0.9rem; color: #64748b; margin: 0.5rem 0 0 0;">AI 기반 특허 분석 시작</p>
+        <div style="padding: 1rem 0 1.5rem 0; border-bottom: 1px solid #e5e5e5; margin-bottom: 1.5rem;">
+            <h1 style="font-size: 18px; font-weight: 600; color: #202123; margin: 0; line-height: 1.4;">특허 분석</h1>
+            <p style="font-size: 14px; color: #8e8ea0; margin: 4px 0 0 0; font-weight: 400;">키워드를 입력하여 AI 분석을 시작하세요</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # 입력 섹션
+        # 키워드 입력 라벨
         st.markdown("""
-        <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
-            <h3 style="font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 1rem;">📝 분석 키워드</h3>
+        <div style="margin-bottom: 8px;">
+            <label style="font-size: 14px; font-weight: 500; color: #374151; display: block;">분석 키워드</label>
         </div>
         """, unsafe_allow_html=True)
         
-        # 키워드 입력
+        # 키워드 입력 필드
         keyword = st.text_input(
             "",
             value=st.session_state.keyword_input,
-            placeholder="예: 자율주행, 인공지능, 블록체인",
+            placeholder="예: 자율주행, 인공지능, 블록체인, 양자컴퓨팅",
             label_visibility="collapsed"
         )
         
-        # 세련된 분석 시작 버튼
+        # ChatGPT 스타일 버튼
         st.markdown("""
         <style>
         .stButton > button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            background: #10a37f !important;
             color: white !important;
             border: none !important;
-            border-radius: 25px !important;
-            padding: 0.75rem 1.5rem !important;
-            font-weight: 600 !important;
-            font-size: 1rem !important;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
-            transition: all 0.3s ease !important;
+            border-radius: 6px !important;
+            padding: 12px 16px !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
             width: 100% !important;
-            margin: 1rem 0 !important;
+            margin: 16px 0 !important;
+            transition: background-color 0.2s ease !important;
         }
         .stButton > button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4) !important;
+            background: #0d8f6c !important;
         }
         .stButton > button:disabled {
-            background: linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%) !important;
-            transform: none !important;
-            box-shadow: 0 4px 15px rgba(148, 163, 184, 0.2) !important;
+            background: #d1d5db !important;
+            color: #9ca3af !important;
         }
         </style>
         """, unsafe_allow_html=True)
         
         # 분석 시작 버튼
-        if st.button("🚀 분석 시작하기", disabled=not keyword):
+        if st.button("분석 시작", disabled=not keyword):
             st.session_state.keyword_input = keyword
             st.session_state.analysis_complete = False
             st.session_state.topic_results = None
             st.session_state.step_progress = 0
             
             # 분석 실행
-            with st.spinner("분석을 진행 중입니다..."):
+            with st.spinner("분석 중..."):
                 run_analysis_pipeline(keyword)
         
-        # 진행 상황 표시 - 세련된 디자인
+        # 진행 상황 - 미니먀 디자인
         if st.session_state.step_progress > 0:
             st.markdown("""
-            <div style="background: rgba(23, 162, 184, 0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(23, 162, 184, 0.2); margin: 1.5rem 0;">
-                <h3 style="font-size: 1rem; font-weight: 600; color: #0ea5e9; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <span>📊</span> 분석 진행률
-                </h3>
+            <div style="background: #f7f7f8; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                <div style="font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 12px;">진행 상황</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -463,22 +469,48 @@ def main():
             st.progress(progress_value)
             
             st.markdown(f"""
-            <div style="text-align: center; margin: 0.5rem 0;">
-                <span style="font-size: 0.9rem; color: #64748b; font-weight: 500;">Step {st.session_state.step_progress}/5 완료</span>
+            <div style="text-align: center; margin: 8px 0;">
+                <span style="font-size: 13px; color: #6b7280;">Step {st.session_state.step_progress}/5</span>
             </div>
             """, unsafe_allow_html=True)
         
-        # 분석 완료 후 옵션 - 세련된 디자인
+        # 분석 완료 - 미니먀 디자인
         if st.session_state.analysis_complete:
             st.markdown("""
-            <div style="background: rgba(34, 197, 94, 0.1); backdrop-filter: blur(10px); padding: 1.5rem; border-radius: 15px; border: 1px solid rgba(34, 197, 94, 0.2); margin: 1.5rem 0; text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
-                <h3 style="font-size: 1.1rem; font-weight: 600; color: #059669; margin-bottom: 0.5rem;">분석 완료!</h3>
-                <p style="font-size: 0.9rem; color: #64748b; margin: 0;">결과를 확인해보세요</p>
+            <div style="background: #f0f9f4; border: 1px solid #d1fae5; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <span style="color: #10b981;">✓</span>
+                    <span style="font-size: 14px; font-weight: 500; color: #065f46;">분석 완료</span>
+                </div>
+                <p style="font-size: 13px; color: #047857; margin: 0;">결과를 확인해보세요</p>
             </div>
             """, unsafe_allow_html=True)
             
-            if st.button("🔄 새로운 분석", key="new_analysis"):
+            # 새로운 분석 버튼
+            st.markdown("""
+            <style>
+            .secondary-button > button {
+                background: white !important;
+                color: #374151 !important;
+                border: 1px solid #d1d5db !important;
+                border-radius: 6px !important;
+                padding: 8px 12px !important;
+                font-weight: 500 !important;
+                font-size: 13px !important;
+                width: 100% !important;
+                margin: 8px 0 !important;
+                transition: all 0.2s ease !important;
+            }
+            .secondary-button > button:hover {
+                background: #f9fafb !important;
+                border-color: #9ca3af !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            if st.button("새로운 분석", key="new_analysis"):
+                # CSS 클래스를 사용할 수 없으므로 HTML로 직접 버튼 생성
+                pass
                 st.session_state.analysis_complete = False
                 st.session_state.topic_results = None
                 st.session_state.step_progress = 0
