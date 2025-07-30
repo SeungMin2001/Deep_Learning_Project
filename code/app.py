@@ -304,7 +304,7 @@ def main():
         position: relative;
         width: 100%;
         height: 300px;
-        margin: 1rem 0 2rem 0;
+        margin: 0rem 0 2rem 0;
         border-radius: 15px;
         overflow: hidden;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -382,7 +382,6 @@ def main():
             <div class="banner-container">
                 <img src="data:image/png;base64,{img_str}" alt="Banner" class="banner-image">
                 <div class="banner-overlay"></div>
-                <div class="banner-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</div>
             </div>
             """, unsafe_allow_html=True)
             break
