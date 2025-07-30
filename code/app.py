@@ -304,7 +304,7 @@ def main():
         position: relative;
         width: 100%;
         height: 300px;
-        margin: 0rem 0 2rem 0;
+        margin: -3rem 0 2rem 0;
         border-radius: 15px;
         overflow: hidden;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
