@@ -336,16 +336,17 @@ def main():
     
     .banner-title {
         position: absolute;
-        top: -60px;
+        top: -80px;
         left: 0;
         right: 0;
         text-align: center;
         color: #1f77b4;
-        font-size: 2.2rem;
+        font-size: 2.5rem;
         font-weight: bold;
         line-height: 1.2;
         z-index: 10;
         margin: 0 auto;
+        padding: 10px;
     }
     
     /* 호버 효과 */
@@ -361,7 +362,7 @@ def main():
     """, unsafe_allow_html=True)
     
     # 상단 배경 이미지
-    possible_paths = ["./top2.png", "top2.png", "../top2.png", "code/top2.png"]
+    possible_paths = ["./top3.png", "top3.png", "../top3.png", "code/top3.png"]
     
     for path in possible_paths:
         if os.path.exists(path):
