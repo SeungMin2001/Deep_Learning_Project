@@ -275,35 +275,41 @@ def main():
     st.markdown("""
     <style>
     .main > div {
-        padding-top: 0rem;
-        padding-left: 0rem;
-        padding-right: 0rem;
-        max-width: 100%;
+        padding-top: 0rem !important;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+        max-width: 100% !important;
     }
     .stApp > header {
         background-color: transparent;
+        height: 0px;
+    }
+    .stApp {
+        padding-top: 0rem !important;
     }
     .top-banner {
         width: 100vw;
-        height: 300px;
+        height: 350px;
         margin: 0;
         padding: 0;
         display: block;
-        margin-top: -1rem;
+        margin-top: -2rem;
         margin-left: calc(-50vw + 50%);
         margin-right: calc(-50vw + 50%);
+        position: relative;
+        z-index: 999;
     }
     .top-banner img {
         width: 100%;
-        height: 300px;
-        object-fit: contain;
+        height: 350px;
+        object-fit: cover;
         display: block;
     }
     </style>
     """, unsafe_allow_html=True)
     
     # 상단 배경 이미지
-    possible_paths = ["./top.png", "top.png", "../top.png", "code/top.png"]
+    possible_paths = ["./top2.png", "top2.png", "../top2.png", "code/top2.png"]
     
     for path in possible_paths:
         if os.path.exists(path):
