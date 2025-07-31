@@ -30,7 +30,7 @@ except ImportError as e:
 
 # 페이지 설정
 st.set_page_config(
-    page_title="AI 특허 분석 및 기술 보고서 생성 시스템",
+    page_title="AI 특허 분석 및 기술 보고서 생성 시스템_test",
     page_icon="🔬",
     layout="wide",
     initial_sidebar_state="expanded"
