@@ -118,13 +118,17 @@ def update_progress(step, message):
     progress_data = {
         "stage": f"Step {step}",
         "current": step,
-        "total": 5,
+        "total": 6,
         "message": message
     }
     with open("progress.json", "w", encoding="utf-8") as f:
         json.dump(progress_data, f, ensure_ascii=False)
     
-    st.session_state.step_progress = step
+    # step_progress는 숫자만 저장 (3_5는 3으로 처리)
+    if step == "3_5":
+        st.session_state.step_progress = 3
+    else:
+        st.session_state.step_progress = step
 
 def filter_data_by_date(start_year, end_year):
     """날짜 범위로 특허 데이터 필터링"""
@@ -840,24 +844,24 @@ def main():
         with col1:
             st.markdown("""
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center;">
-                <h3>⚡ 신속한 분석</h3>
-                <p>AI 기반 자동화로 5분 안에 완료</p>
+                <h3>📅 맞춤형 날짜 선택</h3>
+                <p>그래프 확인 후 원하는 기간만<br>선택하여 정밀 분석</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col2:
             st.markdown("""
             <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center;">
-                <h3>🎯 정확한 인사이트</h3>
-                <p>최신 NLP 기술로 핵심 토픽 추출</p>
+                <h3>📊 실시간 트렌드 분석</h3>
+                <p>연도별 특허 동향을 시각화하고<br>핵심 패턴 파악</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col3:
             st.markdown("""
             <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center;">
-                <h3>📈 전문 보고서</h3>
-                <p>GPT-4 기반 고품질 기술 보고서 생성</p>
+                <h3>🎯 정밀한 인사이트</h3>
+                <p>선택된 기간의 데이터만으로<br>더 정확한 토픽 추출</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -877,8 +881,8 @@ def main():
         st.markdown("""
         <div style="margin: 6rem 0 4rem 0; padding-top: 4rem; border-top: 1px solid #e2e8f0;">
             <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem;">✨ 상세 기능 소개</h2>
-            <p style="text-align: center; font-size: 1.1rem; color: #64748b; margin-bottom: 4rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-                5단계 AI 분석 프로세스를 통해 전문적인 특허 분석 보고서를 자동으로 생성합니다
+            <p style="text-align: center; font-size: 1.1rem; color: #64748b; margin-bottom: 4rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+                6단계 인터랙티브 AI 분석 프로세스로 사용자가 직접 날짜를 선택하여<br>맞춤형 특허 분석 보고서를 생성합니다
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -904,17 +908,17 @@ def main():
             """, unsafe_allow_html=True)
             
             st.markdown("""
-            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
-                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">자동 보고서 생성</h3>
-                <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">GPT-4를 활용하여 분석 결과를 바탕으로 전문적인 기술 보고서를 자동 작성합니다.</p>
+            <div style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(255, 154, 158, 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">인터랙티브 트렌드 분석</h3>
+                <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">연도별 특허 동향 그래프를 보고 사용자가 직접 분석 기간을 선택할 수 있습니다.</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col2:
             st.markdown("""
             <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(250, 112, 154, 0.3);">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
                 <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">대용량 특허 크롤링</h3>
                 <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">KIPRIS API를 통해 관련 특허 데이터를 체계적으로 수집하고 구조화합니다.</p>
             </div>
@@ -923,8 +927,16 @@ def main():
             st.markdown("""
             <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 2rem; border-radius: 20px; color: #333; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(168, 237, 234, 0.3);">
                 <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
-                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: #333;">BERTopic 토픽 모델링</h3>
-                <p style="font-size: 1rem; opacity: 0.8; line-height: 1.5; color: #333;">최신 NLP 기술로 특허 문서에서 핵심 토픽을 추출하고 직관적으로 시각화합니다.</p>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: #333;">맞춤형 토픽 모델링</h3>
+                <p style="font-size: 1rem; opacity: 0.8; line-height: 1.5; color: #333;">선택된 기간의 특허만으로 BERTopic 분석을 수행하여 더 정밀한 토픽을 추출합니다.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">전문 보고서 생성</h3>
+                <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">GPT-4를 활용하여 선별된 데이터를 바탕으로 전문적인 기술 보고서를 자동 작성합니다.</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -942,24 +954,23 @@ def main():
         # 분석 프로세스 플로우
         st.markdown("""
         <div style="margin: 4rem 0;">
-            <h2 style="text-align: center; font-size: 2.2rem; font-weight: 600; color: #1e293b; margin-bottom: 3rem;">⚡ 분석 프로세스</h2>
+            <h2 style="text-align: center; font-size: 2.2rem; font-weight: 600; color: #1e293b; margin-bottom: 3rem;">⚡ 인터랙티브 분석 프로세스</h2>
+            <p style="text-align: center; font-size: 1rem; color: #64748b; margin-bottom: 3rem;">사용자가 직접 참여하는 맞춤형 6단계 분석</p>
         </div>
         """, unsafe_allow_html=True)
         
-        # 5단계 프로세스를 가로로 배치
-        col1, col2, col3, col4, col5 = st.columns(5, gap="medium")
-        
-        processes = [
+        # 6단계 프로세스를 2행으로 배치
+        # 첫 번째 행: Step 1-3
+        col1, col2, col3 = st.columns(3, gap="medium")
+        processes_row1 = [
             {"step": "01", "title": "특허식 생성", "desc": "AI 키워드 분석", "icon": "🔍", "color": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"},
-            {"step": "02", "title": "데이터 크롤링", "desc": "KIPRIS API 연동", "icon": "📊", "color": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"},
-            {"step": "03", "title": "스마트 필터링", "desc": "AI 임베딩 분석", "icon": "🔧", "color": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"},
-            {"step": "04", "title": "토픽 모델링", "desc": "BERTopic 분석", "icon": "🤖", "color": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"},
-            {"step": "05", "title": "보고서 생성", "desc": "GPT-4 작성", "icon": "📝", "color": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"}
+            {"step": "02", "title": "데이터 크롤링", "desc": "KIPRIS API 연동", "icon": "📈", "color": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"},
+            {"step": "03", "title": "스마트 필터링", "desc": "AI 임베딩 분석", "icon": "🔧", "color": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"}
         ]
         
-        columns = [col1, col2, col3, col4, col5]
+        columns = [col1, col2, col3]
         
-        for i, (col, process) in enumerate(zip(columns, processes)):
+        for i, (col, process) in enumerate(zip(columns, processes_row1)):
             with col:
                 st.markdown(f"""
                 <div style="text-align: center; position: relative;">
@@ -973,12 +984,61 @@ def main():
                 """, unsafe_allow_html=True)
                 
                 # 화살표 추가 (마지막 단계 제외)
-                if i < len(processes) - 1:
+                if i < len(processes_row1) - 1:
                     st.markdown("""
                     <div style="text-align: center; margin: 1rem 0;">
                         <span style="font-size: 1.5rem; color: #cbd5e1;">→</span>
                     </div>
                     """, unsafe_allow_html=True)
+        
+        # 두 번째 행: Step 3.5-5 + 사용자 참여 단계
+        st.markdown("""
+        <div style="text-align: center; margin: 2rem 0;">
+            <span style="font-size: 2rem; color: #cbd5e1;">↓</span>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col4, col5, col6 = st.columns(3, gap="medium")
+        processes_row2 = [
+            {"step": "3.5", "title": "트렌드 분석", "desc": "📅 사용자 날짜 선택", "icon": "📊", "color": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)"},
+            {"step": "04", "title": "맞춤 토픽 모델링", "desc": "선택된 기간 분석", "icon": "🤖", "color": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"},
+            {"step": "05", "title": "전문 보고서", "desc": "GPT-4 자동 작성", "icon": "📝", "color": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"}
+        ]
+        
+        columns2 = [col4, col5, col6]
+        
+        for i, (col, process) in enumerate(zip(columns2, processes_row2)):
+            with col:
+                special_style = "border: 3px solid #ff6b6b; animation: pulse 2s infinite;" if process['step'] == "3.5" else ""
+                st.markdown(f"""
+                <div style="text-align: center; position: relative;">
+                    <div style="background: {process['color']}; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(0,0,0,0.15); position: relative; {special_style}">
+                        <span style="font-size: 2rem;">{process['icon']}</span>
+                        <div style="position: absolute; top: -10px; right: -10px; background: #1e293b; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600;">{process['step']}</div>
+                    </div>
+                    <h4 style="font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem;">{process['title']}</h4>
+                    <p style="font-size: 0.85rem; color: #64748b; margin: 0;">{process['desc']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # 화살표 추가 (마지막 단계 제외)
+                if i < len(processes_row2) - 1:
+                    st.markdown("""
+                    <div style="text-align: center; margin: 1rem 0;">
+                        <span style="font-size: 1.5rem; color: #cbd5e1;">→</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+        
+        # CSS 애니메이션 추가
+        st.markdown("""
+        <style>
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+        </style>
+        """, unsafe_allow_html=True)
     
     elif st.session_state.waiting_for_date_input:
         # Step 3.5 완료 후 날짜 입력 대기 화면
