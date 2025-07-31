@@ -305,6 +305,13 @@ def run_analysis_pipeline(keyword):
         status_container.info("⏸️ 날짜 범위 입력을 기다리는 중...")
         detail_container.write("📅 아래에서 분석할 날짜 범위를 선택하고 '계속 진행' 버튼을 클릭하세요.")
         return None  # 여기서 파이프라인 일시정지
+        
+    except Exception as e:
+        main_progress.progress(0.0)
+        status_container.error(f"❌ 분석 중 오류 발생")
+        detail_container.error(f"오류 내용: {str(e)}")
+        st.error(f"❌ 분석 중 오류 발생: {str(e)}")
+        return None
 
 def continue_analysis_from_step4():
     """Step4부터 분석 재개"""
@@ -411,13 +418,6 @@ def continue_analysis_from_step4():
         
     except Exception as e:
         main_progress.progress(0.6)
-        status_container.error(f"❌ 분석 중 오류 발생")
-        detail_container.error(f"오류 내용: {str(e)}")
-        st.error(f"❌ 분석 중 오류 발생: {str(e)}")
-        return None
-        
-    except Exception as e:
-        main_progress.progress(0.0)
         status_container.error(f"❌ 분석 중 오류 발생")
         detail_container.error(f"오류 내용: {str(e)}")
         st.error(f"❌ 분석 중 오류 발생: {str(e)}")
