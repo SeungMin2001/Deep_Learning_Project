@@ -567,9 +567,6 @@ def main():
             <h1 style="font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;">
                 AI 특허 분석 플랫폼
             </h1>
-            <h2 style="font-size: 1.8rem; font-weight: 400; color: #64748b; margin-bottom: 1.5rem;">
-                지능형 기술 보고서 자동 생성
-            </h2>
             <p style="font-size: 1.1rem; color: #64748b; line-height: 1.6; max-width: 600px; margin: 0 auto;">
                 최첨단 AI 기술로 특허 데이터를 분석하고<br>전문적인 인사이트가 담긴 기술 보고서를 자동 생성합니다
             </p>
