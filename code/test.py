@@ -30,7 +30,7 @@ except ImportError as e:
 
 # 페이지 설정
 st.set_page_config(
-    page_title="AI 특허 분석 및 기술 보고서 생성 시스템_test",
+    page_title="AI 특허 분석 및 기술 보고서 생성 시스템",
     page_icon="🔬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -601,7 +601,7 @@ def main():
             break
     
     # 메인 타이틀
-    st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템-test</h1>', unsafe_allow_html=True)
     
     # 사이드바
     with st.sidebar:
