@@ -1177,6 +1177,12 @@ def main():
             period_text = f"{date_info['start_year']}-{date_info['end_year']}"
             st.info(f"🎯 **{period_text}** 기간으로 맞춤 분석이 완료되었습니다! 선택하신 **{date_info['filtered_count']}건**의 특허 데이터를 바탕으로 정밀한 인사이트를 제공합니다.")
         
+        # 디버그 정보 (임시)
+        st.write("DEBUG: analysis_complete =", st.session_state.analysis_complete)
+        st.write("DEBUG: topic_results exists =", hasattr(st.session_state, 'topic_results'))
+        if hasattr(st.session_state, 'topic_results'):
+            st.write("DEBUG: topic_results =", st.session_state.topic_results)
+        
         # 탭으로 결과 구분 - 특허 그래프 탭 추가
         tab1, tab2, tab3, tab4 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
         
