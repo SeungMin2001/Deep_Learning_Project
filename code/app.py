@@ -16,12 +16,14 @@ try:
     step1_module = importlib.import_module('step1_특허식')
     step2_module = importlib.import_module('step2_크롤링')
     step3_module = importlib.import_module('step3_필터링')
+    step3_5_module = importlib.import_module('step3_5_특허그래프')
     step4_module = importlib.import_module('step4_벌토픽')
     step5_module = importlib.import_module('step5_보고서작성')
     
     Step1 = step1_module.Step1
     Step2 = step2_module.Step2
     Step3 = step3_module.Step3
+    Step3_5 = step3_5_module.Step3_5
     Step4 = step4_module.Step4
     Step5 = step5_module.Step5
 except ImportError as e:
@@ -132,9 +134,12 @@ def run_analysis_pipeline(keyword):
         status_container = st.empty()
         detail_container = st.empty()
         
-        # 전체 진행률 (각 단계별 가중치)
-        step_weights = {1: 0.1, 2: 0.3, 3: 0.15, 4: 0.35, 5: 0.1}
+        # 전체 진행률 (각 단계별 가중치) - step3_5가 추가되어 6단계로 변경
+        step_weights = {1: 0.1, 2: 0.25, 3: 0.15, "3_5": 0.1, 4: 0.3, 5: 0.1}
         base_progress = 0.0
+        
+        # Step1에서 생성된 키워드를 저장할 변수
+        generated_keywords = None
     
     def monitor_progress_file(step_num, step_name, icon):
         """progress.json 파일을 모니터링하여 실시간 업데이트"""
@@ -186,6 +191,17 @@ def run_analysis_pipeline(keyword):
         s1 = Step1()
         sentence = s1.make(keyword)
         
+        # Step1에서 생성된 키워드 리스트 추출 (문자열에서 리스트로 변환)
+        import ast
+        try:
+            generated_keywords = ast.literal_eval(sentence)
+        except:
+            # 파싱에 실패하면 기본 키워드 사용
+            generated_keywords = ["자율주행", "로봇", "배터리", "전기차", "AI", "인공지능"]
+        
+        # 세션 상태에 키워드 저장
+        st.session_state.generated_keywords = generated_keywords
+        
         base_progress = step_weights[1]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 1 완료: 특허식 생성 완료")
@@ -229,6 +245,23 @@ def run_analysis_pipeline(keyword):
         base_progress += step_weights[3]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 3 완료: 데이터 필터링 완료")
+        time.sleep(0.5)
+        
+        # Step 3.5: 특허 그래프 표시
+        update_progress("3_5", "특허 그래프 생성 중...")
+        status_container.info("📊 Step 3.5: 특허 연도별 그래프 생성 중...")
+        
+        # Step3_5 클래스 사용
+        s3_5 = Step3_5()
+        graph_data = s3_5.generate_graph(generated_keywords)
+        
+        # 그래프 데이터를 세션 상태에 저장
+        st.session_state.graph_data = graph_data
+        
+        base_progress += step_weights["3_5"]
+        main_progress.progress(base_progress)
+        status_container.success("✅ Step 3.5 완료: 특허 그래프 생성 완료")
+        detail_container.write("✅ 연도별 특허 출원 동향 그래프가 생성되었습니다.")
         time.sleep(0.5)
         
         # Step 4: 토픽 모델링
@@ -303,6 +336,42 @@ def display_topic_visualization():
         st.image(image2, caption="토픽별 상위 12개 주요 키워드 분포", use_column_width=True)
     else:
         st.info("토픽 키워드 차트 이미지를 찾을 수 없습니다.")
+
+def display_patent_graph():
+    """특허 연도별 그래프 표시 (step3_5 내용)"""
+    st.subheader("📊 키워드별 연도별 특허 출원 동향")
+    st.write("`검색 키워드` 컬럼에서 필터링 후 연도별 출원 건수를 표시합니다.")
+    
+    # 세션 상태에서 그래프 데이터 가져오기
+    if hasattr(st.session_state, 'graph_data') and st.session_state.graph_data is not None:
+        final_df = st.session_state.graph_data
+        
+        # 키워드별 건수 표시
+        if hasattr(st.session_state, 'generated_keywords') and st.session_state.generated_keywords:
+            try:
+                df = pd.read_csv("./extract_end.csv")
+                for kw in st.session_state.generated_keywords:
+                    mask = df["검색 키워드"].astype(str).str.contains(kw, case=False, na=False)
+                    count = mask.sum()
+                    st.write(f"**{kw}** → {count}건")
+            except:
+                pass
+        
+        # 📊 라인 차트 출력
+        st.line_chart(final_df, use_container_width=True)
+    else:
+        # 그래프 데이터가 없으면 Step3_5 클래스로 새로 생성
+        try:
+            s3_5 = Step3_5()
+            keywords = st.session_state.generated_keywords if hasattr(st.session_state, 'generated_keywords') else None
+            final_df = s3_5.generate_graph(keywords)
+            
+            if final_df is not None:
+                st.line_chart(final_df, use_container_width=True)
+            else:
+                st.error("❌ 그래프 데이터를 생성할 수 없습니다.")
+        except Exception as e:
+            st.error(f"그래프 생성 중 오류 발생: {str(e)}")
 
 def display_generated_reports():
     """생성된 보고서 목록 및 내용 표시"""
@@ -867,16 +936,19 @@ def main():
         # 분석 완료 화면
         st.markdown("## 🎉 분석 완료!")
         
-        # 탭으로 결과 구분
-        tab1, tab2, tab3 = st.tabs(["📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
+        # 탭으로 결과 구분 - 특허 그래프 탭 추가
+        tab1, tab2, tab3, tab4 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
         
         with tab1:
-            display_topic_results()
+            display_patent_graph()
         
         with tab2:
-            display_topic_visualization()
+            display_topic_results()
         
         with tab3:
+            display_topic_visualization()
+        
+        with tab4:
             display_generated_reports()
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 from step1_특허식 import Step1
 from step2_크롤링 import Step2
 from step3_필터링 import Step3
+from step3_5_특허그래프 import Step3_5
 from step4_벌토픽 import Step4
 #from step4_1_벌토픽 import Step4_1_GTM
 #from step4_2_벌토픽 import Step4_2_GTM
@@ -23,6 +24,11 @@ def generate_report(keyword):
         s3 = Step3()
         s3.filter()  # 특허 필터링
         print("Step 3 완료")
+
+        print("Step 3.5: 특허 그래프 생성 중...")
+        s3_5 = Step3_5()
+        graph_data = s3_5.generate_graph(sentence)  # Step1에서 생성된 키워드 사용
+        print("Step 3.5 완료")
 
         print("Step 4: 토픽 추출 중...")
         s4 = Step4()
