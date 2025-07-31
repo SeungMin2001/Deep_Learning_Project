@@ -605,7 +605,7 @@ def main():
     
     # 사이드바
     with st.sidebar:
-        st.header("🔍 키워드 분석 시작_test")
+        st.header("🔍 키워드 분석 시작")
         
         # 키워드 입력
         keyword = st.text_input(
