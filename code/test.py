@@ -270,40 +270,179 @@ def main():
     .stApp {
         padding-top: 0rem !important;
     }
-    /* ChatGPT 스타일 사이드바 */
+    /* 사이드바 스타일링 */
     .css-1d391kg {
-        width: 280px !important;
+        width: 320px !important;
     }
     section[data-testid="stSidebar"] {
-        width: 280px !important;
-        background: #f7f7f8 !important;
-        border-right: 1px solid #e5e5e5 !important;
+        width: 320px !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        position: relative;
+    }
+    
+    /* 사이드바에 오버레이 패턴 추가 */
+    section[data-testid="stSidebar"]:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
     }
     .css-1cypcdb {
-        width: 280px !important;
+        width: 320px !important;
     }
     
-    /* 사이드바 컨테이너 패딩 */
-    .css-1d391kg .block-container {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+    /* 사이드바 컨텐츠 스타일링 */
+    section[data-testid="stSidebar"] > div {
+        background: transparent !important;
+        position: relative;
+        z-index: 1;
+        padding: 1rem !important;
     }
     
-    /* 입력 필드 스타일 */
-    .stTextInput input {
-        background: white !important;
-        border: 1px solid #d1d5db !important;
-        border-radius: 8px !important;
-        padding: 12px 16px !important;
-        font-size: 14px !important;
-        transition: all 0.2s ease !important;
+    /* 사이드바 헤더 스타일 */
+    section[data-testid="stSidebar"] h1,
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3 {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
     }
-    .stTextInput input:focus {
-        border-color: #10b981 !important;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+    
+    /* 사이드바 텍스트 스타일 */
+    section[data-testid="stSidebar"] .stMarkdown,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] label {
+        color: white !important;
+    }
+    
+    /* 입력 필드 컨테이너 스타일 */
+    .sidebar-input-container {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin: 1.5rem 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2) !important;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* 텍스트 입력 필드 스타일 */
+    section[data-testid="stSidebar"] .stTextInput > div > div > input {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        border-radius: 15px !important;
+        color: #1e293b !important;
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        padding: 1rem 1.25rem !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.1),
+            0 4px 15px rgba(102, 126, 234, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stTextInput > div > div > input:focus {
+        background: rgba(255, 255, 255, 1) !important;
+        border: 2px solid #f093fb !important;
+        box-shadow: 
+            0 0 0 4px rgba(240, 147, 251, 0.15),
+            0 8px 25px rgba(240, 147, 251, 0.2),
+            inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
         outline: none !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stTextInput > div > div > input::placeholder {
+        color: #a0aec0 !important;
+        opacity: 0.8 !important;
+    }
+    
+    /* 버튼 스타일 */
+    section[data-testid="stSidebar"] .stButton > button {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+        border: none !important;
+        border-radius: 15px !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 1.1rem !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3) !important;
+        width: 100% !important;
+        text-transform: none !important;
+        letter-spacing: 0.5px !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4) !important;
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:active {
+        transform: translateY(0) !important;
+    }
+    
+    /* 비활성화된 버튼 스타일 */
+    section[data-testid="stSidebar"] .stButton > button:disabled {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    
+    /* 진행률 표시 카드 */
+    .sidebar-progress-card {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin: 1.5rem 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2) !important;
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease !important;
+    }
+    
+    .sidebar-progress-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3) !important;
+    }
+    
+    /* 성공 메시지 스타일 */
+    section[data-testid="stSidebar"] .stSuccess {
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%) !important;
+        border: 1px solid rgba(79, 172, 254, 0.4) !important;
+        border-radius: 15px !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stSuccess > div {
+        color: white !important;
+        font-weight: 600 !important;
+    }
+    
+    /* 진행률 바 스타일 */
+    section[data-testid="stSidebar"] .stProgress > div > div {
+        background: rgba(255, 255, 255, 0.25) !important;
+        border-radius: 15px !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stProgress > div > div > div {
+        background: linear-gradient(90deg, #fa709a 0%, #fee140 100%) !important;
+        border-radius: 15px !important;
+        box-shadow: 0 2px 8px rgba(250, 112, 154, 0.3) !important;
     }
     
     /* 멋진 배너 컨테이너 */
@@ -396,181 +535,72 @@ def main():
     # 메인 타이틀
     st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
     
-    # 고급 ChatGPT 스타일 사이드바
+    # 사이드바
     with st.sidebar:
-        # ChatGPT 스타일 헤더
-        st.markdown("""
-        <div style="padding: 2rem 0 2rem 0; border-bottom: 1px solid #444654; margin-bottom: 2rem;">
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #19c37d 0%, #0fa968 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: white; font-size: 18px; font-weight: bold;">🤖</span>
-                </div>
-                <h1 style="font-size: 20px; font-weight: 600; color: #14212a; margin: 0; line-height: 1.2;">특허 분석 AI</h1>
-            </div>
-            <p style="font-size: 14px; color: #14212a; margin: 0; font-weight: 400; line-height: 1.4;">고급 AI 기술로 특허 데이터를 분석하고 인사이트를 제공합니다</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.header("🔍 키워드 분석 시작")
         
-        # 개선된 키워드 입력 섹션
-        st.markdown("""
-        <div style="margin-bottom: 2rem;">
-            <div style="background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%); border-radius: 20px; padding: 2rem; border: 1px solid rgba(0, 123, 255, 0.1); box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1), 0 1px 8px rgba(0, 123, 255, 0.05); position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #007bff, #0056b3, #007bff); background-size: 200% 100%; animation: shimmer 3s ease-in-out infinite;"></div>
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                    <div style="width: 32px; height: 32px; background: linear-gradient(145deg, #007bff, #0056b3); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);">
-                        <span style="color: white; font-size: 16px; font-weight: bold;">🔍</span>
-                    </div>
-                    <label style="font-size: 16px; font-weight: 600; color: #2c3e50; margin: 0; letter-spacing: -0.02em;">분석 키워드</label>
-                </div>
-                <p style="font-size: 14px; color: #6c757d; margin: 0 0 16px 0; line-height: 1.5;">분석하고 싶은 기술 키워드를 입력하세요</p>
-            </div>
-        </div>
+        # 키워드 입력 카드
+        st.markdown('<div class="sidebar-input-container">', unsafe_allow_html=True)
         
-        <style>
-        @keyframes shimmer {
-            0%, 100% { background-position: 200% 0; }
-            50% { background-position: -200% 0; }
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
-        # 개선된 키워드 입력 필드
-        st.markdown("""
-        <style>
-        .stTextInput > div > div > input {
-            background: #ffffff !important;
-            border: 2px solid #e3f2fd !important;
-            border-radius: 12px !important;
-            padding: 15px 20px !important;
-            font-size: 16px !important;
-            font-weight: 500 !important;
-            transition: all 0.3s ease !important;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
-            color: #2c3e50 !important;
-        }
-        .stTextInput > div > div > input:focus {
-            border-color: #007bff !important;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1), inset 0 2px 4px rgba(0,0,0,0.05) !important;
-            outline: none !important;
-            transform: translateY(-1px) !important;
-        }
-        .stTextInput > div > div > input::placeholder {
-            color: #9ca3af !important;
-            font-weight: 400 !important;
-        }
-        .stTextInput > label {
-            display: none !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
+        # 키워드 입력
         keyword = st.text_input(
-            "분석할 기술 키워드를 입력하세요",
+            "🔍 분석할 기술 키워드를 입력하세요:",
             value=st.session_state.keyword_input,
             placeholder="예: 자율주행 로봇, 인공지능, 블록체인",
-            key="keyword_input_field",
-            label_visibility="collapsed"
+            help="키워드를 명확하게 입력하면 더 정확한 분석 결과를 얻을 수 있습니다."
         )
         
-        # 개선된 분석 시작 버튼 스타일
-        st.markdown("""
-        <style>
-        .stButton > button {
-            background: linear-gradient(145deg, #007bff, #0056b3) !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 12px !important;
-            padding: 15px 30px !important;
-            font-weight: 600 !important;
-            font-size: 16px !important;
-            width: 100% !important;
-            margin: 20px 0 !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3) !important;
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-            position: relative !important;
-            overflow: hidden !important;
-        }
-        .stButton > button:hover {
-            background: linear-gradient(145deg, #0056b3, #004085) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4) !important;
-        }
-        .stButton > button:active {
-            transform: translateY(0) !important;
-        }
-        .stButton > button:disabled {
-            background: linear-gradient(145deg, #6c757d, #5a6268) !important;
-            color: #adb5bd !important;
-            transform: none !important;
-            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2) !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        
         # 분석 시작 버튼
-        if st.button("🚀 분석 시작하기", disabled=not keyword):
+        if st.button("🚀 분석 시작", type="primary", disabled=not keyword):
             st.session_state.keyword_input = keyword
             st.session_state.analysis_complete = False
             st.session_state.topic_results = None
             st.session_state.step_progress = 0
             
             # 분석 실행
-            with st.spinner("특허 데이터를 분석 중입니다..."):
+            with st.spinner("분석을 진행 중입니다..."):
                 run_analysis_pipeline(keyword)
         
-        # 진행 상황 - 세련된 디자인
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # 진행 상황 표시
         if st.session_state.step_progress > 0:
-            st.markdown("""
-            <div style="background: #2d2e3f; border: 1px solid #444654; border-radius: 12px; padding: 20px; margin: 20px 0; position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #19c37d 0%, #0fa968 100%);"></div>
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <div style="width: 24px; height: 24px; background: #19c37d; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite;">
-                        <span style="color: white; font-size: 12px;">⏳</span>
-                    </div>
-                    <span style="font-size: 15px; font-weight: 600; color: #ececf1;">분석 진행 중</span>
-                </div>
-            </div>
-            
-            <style>
-            @keyframes pulse {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.5; }
-            }
-            </style>
-            """, unsafe_allow_html=True)
+            st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
+            st.markdown("### 📈 진행 상황")
             
             progress_value = st.session_state.step_progress / 5
             st.progress(progress_value)
-            
-            st.markdown(f"""
-            <div style="text-align: center; margin: 12px 0;">
-                <span style="font-size: 13px; color: #b4b4b4; font-weight: 500;">Step {st.session_state.step_progress}/5 진행 완료</span>
-            </div>
-            """, unsafe_allow_html=True)
+            st.write(f"Step {st.session_state.step_progress}/5 완료")
+            st.markdown('</div>', unsafe_allow_html=True)
         
-        # 분석 완료 - 세련된 디자인
+        # 분석 완료 후 옵션
         if st.session_state.analysis_complete:
-            st.markdown("""
-            <div style="background: linear-gradient(135deg, #065f46 0%, #047857 100%); border-radius: 12px; padding: 20px; margin: 20px 0; position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #10b981;"></div>
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    <div style="width: 28px; height: 28px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: white; font-size: 16px;">✓</span>
-                    </div>
-                    <span style="font-size: 16px; font-weight: 600; color: #ecfdf5;">분석 완료!</span>
-                </div>
-                <p style="font-size: 14px; color: #d1fae5; margin: 0; line-height: 1.4;">결과를 확인하고 인사이트를 얻어보세요</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # 새로운 분석 버튼
-            if st.button("🔄 새로운 분석 시작", key="new_analysis"):
+            st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
+            st.success("✅ 분석 완료!")
+            if st.button("🔄 새로운 분석"):
                 st.session_state.analysis_complete = False
                 st.session_state.topic_results = None
                 st.session_state.step_progress = 0
                 st.session_state.keyword_input = ""
                 st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # 도움말 카드 (항상 표시)
+        st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
+        st.markdown("### 💡 분석 도움말")
+        st.markdown("""
+        **효과적인 키워드 입력 팁:**
+        - 구체적인 기술명 사용
+        - 2-3개 단어 조합 권장
+        - 한글 또는 영문 모두 가능
+        
+        **예시 키워드:**
+        - 자율주행 차량
+        - 인공지능 딥러닝
+        - 블록체인 보안
+        - 양자컴퓨팅
+        """)
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # 메인 컨텐츠 영역
     if not st.session_state.analysis_complete and st.session_state.step_progress == 0:
