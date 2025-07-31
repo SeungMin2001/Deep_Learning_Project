@@ -295,6 +295,22 @@ def main():
     section[data-testid="stSidebar"] {
         width: 320px !important;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        position: relative;
+    }
+    
+    /* 사이드바에 오버레이 패턴 추가 */
+    section[data-testid="stSidebar"]:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: 0;
     }
     .css-1cypcdb {
         width: 320px !important;
@@ -303,6 +319,9 @@ def main():
     /* 사이드바 컨텐츠 스타일링 */
     section[data-testid="stSidebar"] > div {
         background: transparent !important;
+        position: relative;
+        z-index: 1;
+        padding: 1rem !important;
     }
     
     /* 사이드바 헤더 스타일 */
@@ -324,30 +343,39 @@ def main():
     .sidebar-input-container {
         background: rgba(255, 255, 255, 0.15) !important;
         backdrop-filter: blur(10px) !important;
-        border-radius: 15px !important;
-        padding: 1.5rem !important;
-        margin: 1rem 0 !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin: 1.5rem 0 !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2) !important;
+        position: relative;
+        z-index: 1;
     }
     
     /* 텍스트 입력 필드 스타일 */
     section[data-testid="stSidebar"] .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.9) !important;
-        border: 2px solid rgba(255, 255, 255, 0.3) !important;
-        border-radius: 12px !important;
-        color: #2d3748 !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        border-radius: 15px !important;
+        color: #1e293b !important;
         font-size: 1rem !important;
-        padding: 0.75rem 1rem !important;
+        font-weight: 500 !important;
+        padding: 1rem 1.25rem !important;
         transition: all 0.3s ease !important;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.1),
+            0 4px 15px rgba(102, 126, 234, 0.1) !important;
     }
     
     section[data-testid="stSidebar"] .stTextInput > div > div > input:focus {
         background: rgba(255, 255, 255, 1) !important;
-        border: 2px solid #667eea !important;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        border: 2px solid #f093fb !important;
+        box-shadow: 
+            0 0 0 4px rgba(240, 147, 251, 0.15),
+            0 8px 25px rgba(240, 147, 251, 0.2),
+            inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
         outline: none !important;
+        transform: translateY(-1px) !important;
     }
     
     section[data-testid="stSidebar"] .stTextInput > div > div > input::placeholder {
@@ -357,21 +385,24 @@ def main():
     
     /* 버튼 스타일 */
     section[data-testid="stSidebar"] .stButton > button {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
         border: none !important;
-        border-radius: 12px !important;
+        border-radius: 15px !important;
         color: white !important;
         font-weight: 600 !important;
-        padding: 0.75rem 1.5rem !important;
-        font-size: 1rem !important;
+        padding: 1rem 1.5rem !important;
+        font-size: 1.1rem !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3) !important;
+        box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3) !important;
         width: 100% !important;
+        text-transform: none !important;
+        letter-spacing: 0.5px !important;
     }
     
     section[data-testid="stSidebar"] .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4) !important;
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
     }
     
     section[data-testid="stSidebar"] .stButton > button:active {
@@ -390,30 +421,46 @@ def main():
     .sidebar-progress-card {
         background: rgba(255, 255, 255, 0.15) !important;
         backdrop-filter: blur(10px) !important;
-        border-radius: 15px !important;
-        padding: 1.5rem !important;
-        margin: 1rem 0 !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin: 1.5rem 0 !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2) !important;
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease !important;
+    }
+    
+    .sidebar-progress-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3) !important;
     }
     
     /* 성공 메시지 스타일 */
     section[data-testid="stSidebar"] .stSuccess {
-        background: rgba(72, 187, 120, 0.2) !important;
-        border: 1px solid rgba(72, 187, 120, 0.3) !important;
-        border-radius: 12px !important;
+        background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%) !important;
+        border: 1px solid rgba(79, 172, 254, 0.4) !important;
+        border-radius: 15px !important;
         backdrop-filter: blur(10px) !important;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stSuccess > div {
+        color: white !important;
+        font-weight: 600 !important;
     }
     
     /* 진행률 바 스타일 */
     section[data-testid="stSidebar"] .stProgress > div > div {
-        background: rgba(255, 255, 255, 0.2) !important;
-        border-radius: 10px !important;
+        background: rgba(255, 255, 255, 0.25) !important;
+        border-radius: 15px !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
     }
     
     section[data-testid="stSidebar"] .stProgress > div > div > div {
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%) !important;
-        border-radius: 10px !important;
+        background: linear-gradient(90deg, #fa709a 0%, #fee140 100%) !important;
+        border-radius: 15px !important;
+        box-shadow: 0 2px 8px rgba(250, 112, 154, 0.3) !important;
     }
     
     /* 멋진 배너 컨테이너 */
