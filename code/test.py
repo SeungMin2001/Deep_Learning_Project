@@ -335,7 +335,7 @@ def display_generated_reports():
 def display_topic_results():
     """토픽 분석 결과 표시"""
     if st.session_state.topic_results:
-        st.subheader("🔍 토픽 분석 결과.")
+        st.subheader("🔍 토픽 분석 결과")
         
         for topic_id, words in st.session_state.topic_results.items():
             with st.expander(f"Topic {topic_id-1}"):
@@ -837,7 +837,7 @@ def main():
         st.markdown("## 🎉 분석 완료!")
         
         # 탭으로 결과 구분
-        tab1, tab2, tab3 = st.tabs(["📊 토픽 분석 결과_test", "🖼️ 시각화", "📋 기술 보고서"])
+        tab1, tab2, tab3 = st.tabs(["📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
         
         with tab1:
             display_topic_results()
