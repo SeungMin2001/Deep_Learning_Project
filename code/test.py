@@ -601,11 +601,11 @@ def main():
             break
     
     # 메인 타이틀
-    st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템-test</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-title">🔬 AI 특허 분석 및 기술 보고서 생성 시스템</h1>', unsafe_allow_html=True)
     
     # 사이드바
     with st.sidebar:
-        st.header("🔍 키워드 분석 시작")
+        st.header("🔍 키워드 분석 시작_test")
         
         # 키워드 입력
         keyword = st.text_input(
