@@ -821,7 +821,11 @@ def main():
         
         # 분석 완료 후 옵션
         if st.session_state.analysis_complete:
-            st.success("✅ 분석 완료!")
+            if hasattr(st.session_state, 'selected_date_range') and st.session_state.selected_date_range:
+                date_info = st.session_state.selected_date_range
+                st.success(f"✅ 맞춤 분석 완료!\n📅 {date_info['start_year']}-{date_info['end_year']} • {date_info['filtered_count']}건")
+            else:
+                st.success("✅ 분석 완료!")
         
     
     # 메인 컨텐츠 영역
@@ -1079,6 +1083,13 @@ def main():
                         filtered_count = filter_data_by_date(start_year, end_year)
                         st.success(f"✅ {start_year}-{end_year} 범위로 필터링 완료! ({filtered_count}건)")
                         
+                        # 선택된 날짜 범위를 세션에 저장
+                        st.session_state.selected_date_range = {
+                            "start_year": start_year,
+                            "end_year": end_year,
+                            "filtered_count": filtered_count
+                        }
+                        
                         # Step4부터 재개
                         st.session_state.date_filtered = True
                         continue_analysis_from_step4()
@@ -1143,7 +1154,28 @@ def main():
     
     elif st.session_state.analysis_complete:
         # 분석 완료 화면
-        st.markdown("## 🎉 분석 완료!")
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            st.markdown("## 🎉 분석 완료!")
+        
+        with col2:
+            # 선택된 날짜 범위 표시 (세련된 뱃지 스타일)
+            if hasattr(st.session_state, 'selected_date_range') and st.session_state.selected_date_range:
+                date_info = st.session_state.selected_date_range
+                st.markdown(f"""
+                <div style="text-align: right; margin-top: 0.5rem;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);">
+                        📅 {date_info['start_year']}-{date_info['end_year']} 기간 • {date_info['filtered_count']}건 분석
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        # 완료 메시지
+        if hasattr(st.session_state, 'selected_date_range') and st.session_state.selected_date_range:
+            date_info = st.session_state.selected_date_range
+            period_text = f"{date_info['start_year']}-{date_info['end_year']}"
+            st.info(f"🎯 **{period_text}** 기간으로 맞춤 분석이 완료되었습니다! 선택하신 **{date_info['filtered_count']}건**의 특허 데이터를 바탕으로 정밀한 인사이트를 제공합니다.")
         
         # 탭으로 결과 구분 - 특허 그래프 탭 추가
         tab1, tab2, tab3, tab4 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
