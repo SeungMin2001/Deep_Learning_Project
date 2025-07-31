@@ -1077,7 +1077,9 @@ def main():
         
         with col3:
             st.markdown("<br>", unsafe_allow_html=True)  # 공간 맞추기
-            if st.button("🚀 날짜 범위 적용 후 계속 진행", type="primary"):
+            
+            # 두 개 버튼을 세로로 배치
+            if st.button("🚀 날짜 범위 적용 후 계속 진행", type="primary", use_container_width=True):
                 if start_year <= end_year:
                     with st.spinner("날짜 범위 적용 중..."):
                         filtered_count = filter_data_by_date(start_year, end_year)
@@ -1093,6 +1095,44 @@ def main():
                         # Step4부터 재개
                         st.session_state.date_filtered = True
                         continue_analysis_from_step4()
+                else:
+                    st.error("❌ 시작 연도가 종료 연도보다 클 수 없습니다.")
+            
+            st.markdown("<br>", unsafe_allow_html=True)  # 버튼 간격
+            
+            if st.button("📊 결과 화면으로 바로 이동", use_container_width=True):
+                if start_year <= end_year:
+                    # 날짜 범위 필터링 (데이터 저장 없이 카운트만)
+                    try:
+                        df = pd.read_csv("./extract_end.csv")
+                        df["출원일"] = df["출원일"].astype(str).str.strip()
+                        df["출원연도"] = pd.to_datetime(
+                            df["출원일"], errors="coerce", infer_datetime_format=True
+                        ).dt.year
+                        
+                        filtered_count = len(df[(df["출원연도"] >= start_year) & (df["출원연도"] <= end_year)])
+                        
+                        # 선택된 날짜 범위를 세션에 저장
+                        st.session_state.selected_date_range = {
+                            "start_year": start_year,
+                            "end_year": end_year,
+                            "filtered_count": filtered_count
+                        }
+                        
+                        # 결과 화면으로 바로 이동 (토픽 분석 건너뛰기)
+                        st.session_state.analysis_complete = True
+                        st.session_state.waiting_for_date_input = False
+                        
+                        # 더미 토픽 결과 생성 (실제 분석 없이 UI만 표시)
+                        st.session_state.topic_results = {
+                            1: ["선택한", "날짜범위의", "특허데이터"],
+                            2: ["분석결과가", "여기에", "표시됩니다"],
+                            3: ["토픽분석을", "실행하려면", "위버튼을"]
+                        }
+                        
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ 데이터 처리 중 오류: {str(e)}")
                 else:
                     st.error("❌ 시작 연도가 종료 연도보다 클 수 없습니다.")
         
@@ -1176,12 +1216,6 @@ def main():
             date_info = st.session_state.selected_date_range
             period_text = f"{date_info['start_year']}-{date_info['end_year']}"
             st.info(f"🎯 **{period_text}** 기간으로 맞춤 분석이 완료되었습니다! 선택하신 **{date_info['filtered_count']}건**의 특허 데이터를 바탕으로 정밀한 인사이트를 제공합니다.")
-        
-        # 디버그 정보 (임시)
-        st.write("DEBUG: analysis_complete =", st.session_state.analysis_complete)
-        st.write("DEBUG: topic_results exists =", hasattr(st.session_state, 'topic_results'))
-        if hasattr(st.session_state, 'topic_results'):
-            st.write("DEBUG: topic_results =", st.session_state.topic_results)
         
         # 탭으로 결과 구분 - 특허 그래프 탭 추가
         tab1, tab2, tab3, tab4 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
