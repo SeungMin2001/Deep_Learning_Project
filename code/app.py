@@ -288,15 +288,132 @@ def main():
     .stApp {
         padding-top: 0rem !important;
     }
-    /* 사이드바 폭 조정 */
+    /* 사이드바 스타일링 */
     .css-1d391kg {
         width: 320px !important;
     }
     section[data-testid="stSidebar"] {
         width: 320px !important;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     }
     .css-1cypcdb {
         width: 320px !important;
+    }
+    
+    /* 사이드바 컨텐츠 스타일링 */
+    section[data-testid="stSidebar"] > div {
+        background: transparent !important;
+    }
+    
+    /* 사이드바 헤더 스타일 */
+    section[data-testid="stSidebar"] h1,
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3 {
+        color: white !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+    }
+    
+    /* 사이드바 텍스트 스타일 */
+    section[data-testid="stSidebar"] .stMarkdown,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] label {
+        color: white !important;
+    }
+    
+    /* 입력 필드 컨테이너 스타일 */
+    .sidebar-input-container {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 15px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* 텍스트 입력 필드 스타일 */
+    section[data-testid="stSidebar"] .stTextInput > div > div > input {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 12px !important;
+        color: #2d3748 !important;
+        font-size: 1rem !important;
+        padding: 0.75rem 1rem !important;
+        transition: all 0.3s ease !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stTextInput > div > div > input:focus {
+        background: rgba(255, 255, 255, 1) !important;
+        border: 2px solid #667eea !important;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        outline: none !important;
+    }
+    
+    section[data-testid="stSidebar"] .stTextInput > div > div > input::placeholder {
+        color: #a0aec0 !important;
+        opacity: 0.8 !important;
+    }
+    
+    /* 버튼 스타일 */
+    section[data-testid="stSidebar"] .stButton > button {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+        border: none !important;
+        border-radius: 12px !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 0.75rem 1.5rem !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3) !important;
+        width: 100% !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4) !important;
+    }
+    
+    section[data-testid="stSidebar"] .stButton > button:active {
+        transform: translateY(0) !important;
+    }
+    
+    /* 비활성화된 버튼 스타일 */
+    section[data-testid="stSidebar"] .stButton > button:disabled {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    
+    /* 진행률 표시 카드 */
+    .sidebar-progress-card {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 15px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* 성공 메시지 스타일 */
+    section[data-testid="stSidebar"] .stSuccess {
+        background: rgba(72, 187, 120, 0.2) !important;
+        border: 1px solid rgba(72, 187, 120, 0.3) !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    /* 진행률 바 스타일 */
+    section[data-testid="stSidebar"] .stProgress > div > div {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 10px !important;
+    }
+    
+    section[data-testid="stSidebar"] .stProgress > div > div > div {
+        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%) !important;
+        border-radius: 10px !important;
     }
     
     /* 멋진 배너 컨테이너 */
@@ -393,11 +510,15 @@ def main():
     with st.sidebar:
         st.header("🔍 키워드 분석 시작")
         
+        # 키워드 입력 카드
+        st.markdown('<div class="sidebar-input-container">', unsafe_allow_html=True)
+        
         # 키워드 입력
         keyword = st.text_input(
             "🔍 분석할 기술 키워드를 입력하세요:",
             value=st.session_state.keyword_input,
-            placeholder="예: 자율주행 로봇, 인공지능, 블록체인"
+            placeholder="예: 자율주행 로봇, 인공지능, 블록체인",
+            help="키워드를 명확하게 입력하면 더 정확한 분석 결과를 얻을 수 있습니다."
         )
         
         # 분석 시작 버튼
@@ -411,15 +532,20 @@ def main():
             with st.spinner("분석을 진행 중입니다..."):
                 run_analysis_pipeline(keyword)
         
+        st.markdown('</div>', unsafe_allow_html=True)
+        
         # 진행 상황 표시
         if st.session_state.step_progress > 0:
+            st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
             st.markdown("### 📈 진행 상황")
             progress_value = st.session_state.step_progress / 5
             st.progress(progress_value)
             st.write(f"Step {st.session_state.step_progress}/5 완료")
+            st.markdown('</div>', unsafe_allow_html=True)
         
         # 분석 완료 후 옵션
         if st.session_state.analysis_complete:
+            st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
             st.success("✅ 분석 완료!")
             if st.button("🔄 새로운 분석"):
                 st.session_state.analysis_complete = False
@@ -427,6 +553,24 @@ def main():
                 st.session_state.step_progress = 0
                 st.session_state.keyword_input = ""
                 st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+        
+        # 도움말 카드 (항상 표시)
+        st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
+        st.markdown("### 💡 분석 도움말")
+        st.markdown("""
+        **효과적인 키워드 입력 팁:**
+        - 구체적인 기술명 사용
+        - 2-3개 단어 조합 권장
+        - 한글 또는 영문 모두 가능
+        
+        **예시 키워드:**
+        - 자율주행 차량
+        - 인공지능 딥러닝
+        - 블록체인 보안
+        - 양자컴퓨팅
+        """)
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # 메인 컨텐츠 영역
     if not st.session_state.analysis_complete and st.session_state.step_progress == 0:
