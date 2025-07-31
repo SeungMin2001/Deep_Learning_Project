@@ -517,9 +517,6 @@ def main():
     with st.sidebar:
         st.header("🔍 키워드 분석 시작")
         
-        # 키워드 입력 카드
-        st.markdown('<div class="sidebar-input-container">', unsafe_allow_html=True)
-        
         # 키워드 입력
         keyword = st.text_input(
             "🔍 분석할 기술 키워드를 입력하세요:",
@@ -538,8 +535,6 @@ def main():
             # 분석 실행
             with st.spinner("분석을 진행 중입니다..."):
                 run_analysis_pipeline(keyword)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
         
         # 진행 상황 표시
         if st.session_state.step_progress > 0:
@@ -563,22 +558,6 @@ def main():
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
         
-        # 도움말 카드 (항상 표시)
-        st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
-        st.markdown("### 💡 분석 도움말")
-        st.markdown("""
-        **효과적인 키워드 입력 팁:**
-        - 구체적인 기술명 사용
-        - 2-3개 단어 조합 권장
-        - 한글 또는 영문 모두 가능
-        
-        **예시 키워드:**
-        - 자율주행 차량
-        - 인공지능 딥러닝
-        - 블록체인 보안
-        - 양자컴퓨팅
-        """)
-        st.markdown('</div>', unsafe_allow_html=True)
     
     # 메인 컨텐츠 영역
     if not st.session_state.analysis_complete and st.session_state.step_progress == 0:
