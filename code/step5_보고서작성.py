@@ -104,7 +104,7 @@ class Step5:
 
             # 2. Markdown 파일로 저장
             filename = f"{topic_id.replace(' ', '_')}_{topic_name[:30]}.md"
-            filepath = os.path.join("generated_reports", filename)
+            filepath = os.path.join("./generated_reports", filename)
 
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(f"# {topic_name}\n")

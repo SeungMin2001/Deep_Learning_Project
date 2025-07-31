@@ -38,7 +38,7 @@ class Step2:
         }
 
 
-        MAX_RESULTS = 50000 # 전체 긁어오는 특허수 조절변수
+        MAX_RESULTS = 50 # 전체 긁어오는 특허수 조절변수
         MAX_PAGES=1
         url = 'http://plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice/getWordSearch'
         

@@ -229,7 +229,7 @@ def run_analysis_pipeline(keyword):
             generated_keywords = ast.literal_eval(sentence)
         except:
             # 파싱에 실패하면 기본 키워드 사용
-            generated_keywords = ["자율주행", "로봇", "배터리", "전기차", "AI", "인공지능"]
+            generated_keywords =[] #["자율주행", "로봇", "배터리", "전기차", "AI", "인공지능"]
         
         # 세션 상태에 키워드 저장
         st.session_state.generated_keywords = generated_keywords
@@ -406,7 +406,7 @@ def continue_analysis_from_step4():
         progress_thread.start()
         
         s5 = Step5()
-        report = s5.last(topic_list)
+        s5.last(topic_list)
         
         progress_thread.join(timeout=1)
         main_progress.progress(1.0)
@@ -490,14 +490,31 @@ def display_generated_reports():
     st.subheader("📋 생성된 기술 보고서")
     
     reports_dir = "generated_reports"
-    if not os.path.exists(reports_dir):
-        st.warning("생성된 보고서가 없습니다.")
+    
+    # 상대 경로와 절대 경로 모두 확인
+    possible_paths = [
+        reports_dir,
+        f"./code/{reports_dir}",
+        f"/Users/shinseungmin/Documents/벌토픽_전체코드/code/{reports_dir}",
+        f"code/{reports_dir}"
+    ]
+    
+    found_reports_dir = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            found_reports_dir = path
+            break
+    
+    if not found_reports_dir:
+        st.warning("📋 기술 보고서가 아직 생성되지 않았습니다.")
+        st.info("💡 토픽 분석을 완료하면 자동으로 AI 기술 보고서가 생성됩니다.")
         return
     
-    report_files = glob.glob(os.path.join(reports_dir, "*.md"))
+    report_files = glob.glob(os.path.join(found_reports_dir, "*.md"))
     
     if not report_files:
-        st.warning("생성된 보고서가 없습니다.")
+        st.warning("📋 기술 보고서가 아직 생성되지 않았습니다.")
+        st.info("💡 토픽 분석을 완료하면 자동으로 AI 기술 보고서가 생성됩니다.")
         return
     
     # 보고서 선택
@@ -505,7 +522,7 @@ def display_generated_reports():
     selected_report = st.selectbox("보고서 선택:", report_names)
     
     if selected_report:
-        report_path = os.path.join(reports_dir, selected_report)
+        report_path = os.path.join(found_reports_dir, selected_report)
         try:
             with open(report_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -518,10 +535,27 @@ def display_topic_results():
     if st.session_state.topic_results:
         st.subheader("🔍 토픽 분석 결과")
         
+        # 더미 데이터인지 확인 (실제 토픽 분석이 완료되지 않은 경우)
+        if len(st.session_state.topic_results) <= 3 and "선택한" in str(st.session_state.topic_results):
+            st.info("💡 완전한 토픽 분석 결과를 보려면 '날짜 범위 적용 후 계속 진행' 버튼을 클릭하세요.")
+        
         for topic_id, words in st.session_state.topic_results.items():
-            with st.expander(f"Topic {topic_id-1}"):
+            # topic_id가 문자열일 수 있으므로 int로 변환 후 처리
+            try:
+                topic_num = int(topic_id)
+                display_topic_id = topic_num if topic_num >= 0 else "Noise"
+            except (ValueError, TypeError):
+                display_topic_id = str(topic_id)
+                
+            with st.expander(f"Topic {display_topic_id}"):
                 st.write("**주요 키워드:**")
-                st.write(", ".join(words[:10]))  # 상위 10개 키워드만 표시
+                if isinstance(words, list):
+                    st.write(", ".join(words[:10]))  # 상위 10개 키워드만 표시
+                else:
+                    st.write(str(words))
+    else:
+        st.warning("🔍 토픽 분석 결과가 없습니다.")
+        st.info("💡 왼쪽 사이드바에서 키워드를 입력하고 분석을 시작하세요.")
 
 def main():
     # 멋진 배너 디자인을 위한 CSS
@@ -1125,9 +1159,9 @@ def main():
                         
                         # 더미 토픽 결과 생성 (실제 분석 없이 UI만 표시)
                         st.session_state.topic_results = {
-                            1: ["선택한", "날짜범위의", "특허데이터"],
-                            2: ["분석결과가", "여기에", "표시됩니다"],
-                            3: ["토픽분석을", "실행하려면", "위버튼을"]
+                            "0": ["선택한", "날짜범위의", "특허데이터", "분석이", "필요합니다"],
+                            "1": ["토픽분석을", "실행하려면", "위의", "날짜범위적용", "버튼을"],
+                            "2": ["클릭하여", "전체", "분석을", "완료하세요"]
                         }
                         
                         st.rerun()
