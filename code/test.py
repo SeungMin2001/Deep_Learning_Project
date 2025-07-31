@@ -843,25 +843,25 @@ def main():
         
         with col1:
             st.markdown("""
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center;">
-                <h3>📅 맞춤형 날짜 선택</h3>
-                <p>그래프 확인 후 원하는 기간만<br>선택하여 정밀 분석</p>
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center; height: 160px; display: flex; flex-direction: column; justify-content: center;">
+                <h3 style="margin: 0 0 1rem 0; font-size: 1.2rem;">📅 맞춤형 날짜 선택</h3>
+                <p style="margin: 0; font-size: 0.9rem; line-height: 1.4;">그래프 확인 후 원하는 기간만<br>선택하여 정밀 분석</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col2:
             st.markdown("""
-            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center;">
-                <h3>📊 실시간 트렌드 분석</h3>
-                <p>연도별 특허 동향을 시각화하고<br>핵심 패턴 파악</p>
+            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center; height: 160px; display: flex; flex-direction: column; justify-content: center;">
+                <h3 style="margin: 0 0 1rem 0; font-size: 1.2rem;">📊 실시간 트렌드 분석</h3>
+                <p style="margin: 0; font-size: 0.9rem; line-height: 1.4;">연도별 특허 동향을 시각화하고<br>핵심 패턴 파악</p>
             </div>
             """, unsafe_allow_html=True)
         
         with col3:
             st.markdown("""
-            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center;">
-                <h3>🎯 정밀한 인사이트</h3>
-                <p>선택된 기간의 데이터만으로<br>더 정확한 토픽 추출</p>
+            <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 15px; color: white; text-align: center; height: 160px; display: flex; flex-direction: column; justify-content: center;">
+                <h3 style="margin: 0 0 1rem 0; font-size: 1.2rem;">🎯 정밀한 인사이트</h3>
+                <p style="margin: 0; font-size: 0.9rem; line-height: 1.4;">선택된 기간의 데이터만으로<br>더 정확한 토픽 추출</p>
             </div>
             """, unsafe_allow_html=True)
         
