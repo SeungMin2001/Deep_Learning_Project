@@ -388,6 +388,13 @@ def continue_analysis_from_step4():
         s4 = Step4()
         topic_list = s4.ber()
         
+        # 토픽 결과 검증
+        if not topic_list or not isinstance(topic_list, dict):
+            main_progress.progress(0.9)
+            status_container.error("❌ Step 4 실패: 토픽 추출 중 오류 발생")
+            detail_container.error("토픽 모델링에 실패했습니다. 데이터를 확인해주세요.")
+            return None
+            
         progress_thread.join(timeout=1)
         base_progress += step_weights[4]
         main_progress.progress(base_progress)
@@ -535,10 +542,6 @@ def display_topic_results():
     if st.session_state.topic_results:
         st.subheader("🔍 토픽 분석 결과")
         
-        # 더미 데이터인지 확인 (실제 토픽 분석이 완료되지 않은 경우)
-        if len(st.session_state.topic_results) <= 3 and "선택한" in str(st.session_state.topic_results):
-            st.info("💡 완전한 토픽 분석 결과를 보려면 '날짜 범위 적용 후 계속 진행' 버튼을 클릭하세요.")
-        
         for topic_id, words in st.session_state.topic_results.items():
             # topic_id가 문자열일 수 있으므로 int로 변환 후 처리
             try:
@@ -554,8 +557,15 @@ def display_topic_results():
                 else:
                     st.write(str(words))
     else:
-        st.warning("🔍 토픽 분석 결과가 없습니다.")
-        st.info("💡 왼쪽 사이드바에서 키워드를 입력하고 분석을 시작하세요.")
+        st.warning("🔍 토픽 분석이 아직 완료되지 않았습니다.")
+        st.info("💡 **완전한 토픽 분석을 위해서는** 위의 특허 동향 그래프를 확인한 후, 원하는 날짜 범위를 선택하고 **'🚀 날짜 범위 적용 후 계속 진행'** 버튼을 클릭하세요.")
+        st.markdown("""
+        ### 📋 토픽 분석에서 확인할 수 있는 내용:
+        - 🎯 특허 데이터에서 추출된 주요 기술 주제들
+        - 🔍 각 토픽별 핵심 키워드 및 기술 용어
+        - 📊 토픽별 문서 분포 및 중요도
+        - 🧠 AI 기반 의미론적 클러스터링 결과
+        """)
 
 def main():
     # 멋진 배너 디자인을 위한 CSS
@@ -1089,6 +1099,12 @@ def main():
         st.markdown("## 📅 분석 날짜 범위 선택")
         st.write("위 그래프를 참고하여 더 자세히 분석하고 싶은 날짜 범위를 선택하세요.")
         
+        st.info("""
+        💡 **두 가지 옵션을 제공합니다:**
+        - 🚀 **완전한 토픽 분석 실행**: 선택한 날짜 범위의 데이터로 BERTopic 분석 + AI 보고서 생성
+        - 📊 **그래프만 먼저 확인**: 토픽 분석 없이 결과 화면으로 이동 (나중에 분석 가능)
+        """)
+        
         col1, col2, col3 = st.columns([1, 1, 1])
         
         with col1:
@@ -1113,7 +1129,7 @@ def main():
             st.markdown("<br>", unsafe_allow_html=True)  # 공간 맞추기
             
             # 두 개 버튼을 세로로 배치
-            if st.button("🚀 날짜 범위 적용 후 계속 진행", type="primary", use_container_width=True):
+            if st.button("🚀 완전한 토픽 분석 실행 (권장)", type="primary", use_container_width=True):
                 if start_year <= end_year:
                     with st.spinner("날짜 범위 적용 중..."):
                         filtered_count = filter_data_by_date(start_year, end_year)
@@ -1134,7 +1150,7 @@ def main():
             
             st.markdown("<br>", unsafe_allow_html=True)  # 버튼 간격
             
-            if st.button("📊 결과 화면으로 바로 이동", use_container_width=True):
+            if st.button("📊 그래프만 먼저 확인하기", use_container_width=True):
                 if start_year <= end_year:
                     # 날짜 범위 필터링 (데이터 저장 없이 카운트만)
                     try:
@@ -1153,16 +1169,12 @@ def main():
                             "filtered_count": filtered_count
                         }
                         
-                        # 결과 화면으로 바로 이동 (토픽 분석 건너뛰기)
+                        # 결과 화면으로 바로 이동 (토픽 분석 결과 없음)
                         st.session_state.analysis_complete = True
                         st.session_state.waiting_for_date_input = False
                         
-                        # 더미 토픽 결과 생성 (실제 분석 없이 UI만 표시)
-                        st.session_state.topic_results = {
-                            "0": ["선택한", "날짜범위의", "특허데이터", "분석이", "필요합니다"],
-                            "1": ["토픽분석을", "실행하려면", "위의", "날짜범위적용", "버튼을"],
-                            "2": ["클릭하여", "전체", "분석을", "완료하세요"]
-                        }
+                        # 토픽 결과를 None으로 설정 (분석 미완료 상태)
+                        st.session_state.topic_results = None
                         
                         st.rerun()
                     except Exception as e:

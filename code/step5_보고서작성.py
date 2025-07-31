@@ -53,6 +53,12 @@ class Step5:
         # 토픽명 생성 함수
         def generate_topic_names_llm(topic_words_dict):
             result_rows = []
+            
+            # 입력 검증
+            if not topic_words_dict or not isinstance(topic_words_dict, dict):
+                print("❌ 토픽 데이터가 비어있거나 올바르지 않습니다.")
+                return []
+                
             for topic_id, keywords in topic_words_dict.items():
                 all_keywords_str = ", ".join(keywords)
 

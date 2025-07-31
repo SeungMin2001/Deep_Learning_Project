@@ -38,7 +38,7 @@ class Step2:
         }
 
 
-        MAX_RESULTS = 50 # 전체 긁어오는 특허수 조절변수
+        MAX_RESULTS = 100 # 전체 긁어오는 특허수 조절변수
         MAX_PAGES=1
         url = 'http://plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice/getWordSearch'
         
@@ -57,7 +57,7 @@ class Step2:
                     'word': keyword,
                     'year': '0',
                     'ServiceKey': API_KEY,
-                    'numOfRows': 5000,  # 키워드 하나당 긁어오는 특허수 조절하는곳
+                    'numOfRows': 50,  # 키워드 하나당 긁어오는 특허수 조절하는곳
                     'page':page
                 }
 

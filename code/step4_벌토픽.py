@@ -786,7 +786,7 @@ class Step4:
                 topics, probs = topic_model.fit_transform(lemmatized_patents)
             except Exception as e:
                 print("❌ fit_transform 중 에러 발생:", e)
-                return [], []  # 혹은 raise e 로 다시 던져도 됨
+                return {}  # 빈 dict 반환
             #print('-------------test1-------------')
 
             topic_words = {
