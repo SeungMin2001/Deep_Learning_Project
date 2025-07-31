@@ -699,19 +699,19 @@ class Step4:
         dictionary = Dictionary(texts)
 
         #하이퍼파라미터 그리드 정의
-        # param_grid = {
-        #     "n_neighbors": [10, 15, 20, 30, 40, 50],
-        #     "n_components": [5, 8, 10],
-        #     "min_dist": [0, 0.01],
-        #     "min_cluster_size": [15, 20, 25, 30, 40, 50]
-        #}
-
         param_grid = {
-            "n_neighbors": [30],
-            "n_components": [8],
-            "min_dist": [0.01],
-            "min_cluster_size": [30]
+            "n_neighbors": [10, 15, 20, 30, 40, 50],
+            "n_components": [5, 8, 10],
+            "min_dist": [0, 0.01],
+            "min_cluster_size": [15, 20, 25, 30, 40, 50]
         }
+
+        # param_grid = {
+        #     "n_neighbors": [30],
+        #     "n_components": [8],
+        #     "min_dist": [0.01],
+        #     "min_cluster_size": [30]
+        # }
 
 
         # 총 조합 수 계산
