@@ -656,12 +656,6 @@ def main():
         # 분석 완료 후 옵션
         if st.session_state.analysis_complete:
             st.success("✅ 분석 완료!")
-            if st.button("🔄 새로운 분석"):
-                st.session_state.analysis_complete = False
-                st.session_state.topic_results = None
-                st.session_state.step_progress = 0
-                st.session_state.keyword_input = ""
-                st.rerun()
         
     
     # 메인 컨텐츠 영역
