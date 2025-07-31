@@ -338,7 +338,7 @@ def display_topic_results():
         st.subheader("🔍 토픽 분석 결과")
         
         for topic_id, words in st.session_state.topic_results.items():
-            with st.expander(f"Topic {topic_id + 1}"):
+            with st.expander(f"Topic {topic_id}"):
                 st.write("**주요 키워드:**")
                 st.write(", ".join(words[:10]))  # 상위 10개 키워드만 표시
 
