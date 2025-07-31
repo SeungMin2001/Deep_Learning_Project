@@ -121,66 +121,157 @@ def update_progress(step, message):
     st.session_state.step_progress = step
 
 def run_analysis_pipeline(keyword):
-    """main.py의 generate_report 함수와 동일한 분석 파이프라인"""
+    """실시간 progress bar가 적용된 분석 파이프라인"""
     
-    progress_placeholder = st.empty()
-    status_placeholder = st.empty()
+    # 메인 진행률 표시 컨테이너
+    with st.container():
+        st.markdown("## 🔄 분석 진행 중...")
+        
+        # Progress bar와 상태 표시
+        main_progress = st.progress(0.0)
+        detailed_progress = st.progress(0.0)
+        status_container = st.empty()
+        detail_container = st.empty()
+        
+        # 전체 진행률 (각 단계별 가중치)
+        step_weights = {1: 0.1, 2: 0.3, 3: 0.15, 4: 0.35, 5: 0.1}
+        base_progress = 0.0
+    
+    def monitor_progress_file(step_num, step_name, icon):
+        """progress.json 파일을 모니터링하여 실시간 업데이트"""
+        nonlocal base_progress
+        
+        status_container.info(f"{icon} Step {step_num}: {step_name} 중...")
+        
+        # progress.json 파일 모니터링
+        import time
+        
+        while True:
+            try:
+                if os.path.exists("progress.json"):
+                    with open("progress.json", "r", encoding="utf-8") as f:
+                        progress_data = json.load(f)
+                    
+                    current = progress_data.get("current", 0)
+                    total = progress_data.get("total", 1)
+                    message = progress_data.get("message", "")
+                    
+                    # 세부 진행률 계산
+                    if total > 0:
+                        step_progress = min(current / total, 1.0)
+                        detailed_progress.progress(step_progress)
+                        
+                        # 전체 진행률 업데이트
+                        overall_progress = base_progress + (step_weights[step_num] * step_progress)
+                        main_progress.progress(overall_progress)
+                        
+                        # 상세 정보 표시
+                        detail_container.write(f"📋 {message}")
+                        
+                        # 단계 완료 확인
+                        if step_progress >= 1.0:
+                            break
+                            
+                    time.sleep(0.1)  # 0.1초마다 체크
+                else:
+                    time.sleep(0.5)
+            except:
+                time.sleep(0.5)
     
     try:
+        import threading
+        
         # Step 1: 특허식 생성
-        with status_placeholder.container():
-            st.info("🔍 Step 1: 키워드 분석 및 특허식 생성 중...")
+        status_container.info("🔍 Step 1: 키워드 분석 및 특허식 생성 중...")
         update_progress(1, f"키워드 '{keyword}'로 특허식 생성 중...")
         
         s1 = Step1()
         sentence = s1.make(keyword)
         
-        with status_placeholder.container():
-            st.success("✅ Step 1 완료: 특허식 생성 완료")
+        base_progress = step_weights[1]
+        main_progress.progress(base_progress)
+        detailed_progress.progress(1.0)
+        status_container.success("✅ Step 1 완료: 특허식 생성 완료")
+        detail_container.write(f"✅ 생성된 특허식: {sentence}")
+        time.sleep(0.5)
         
         # Step 2: 특허 크롤링
-        with status_placeholder.container():
-            st.info("📊 Step 2: KIPRIS 특허 데이터 크롤링 중...")
         update_progress(2, "특허 크롤링 중...")
+        
+        # 별도 스레드에서 progress 모니터링
+        progress_thread = threading.Thread(
+            target=monitor_progress_file, 
+            args=(2, "KIPRIS 특허 데이터 크롤링", "📊")
+        )
+        progress_thread.daemon = True
+        progress_thread.start()
         
         s2 = Step2()
         s2.cra(sentence)
         
-        with status_placeholder.container():
-            st.success("✅ Step 2 완료: 특허 데이터 수집 완료")
+        progress_thread.join(timeout=1)
+        base_progress += step_weights[2]
+        main_progress.progress(base_progress)
+        status_container.success("✅ Step 2 완료: 특허 데이터 수집 완료")
+        time.sleep(0.5)
         
         # Step 3: 데이터 필터링
-        with status_placeholder.container():
-            st.info("🔧 Step 3: 유사도 기반 특허 필터링 중...")
         update_progress(3, "특허 필터링 중...")
+        
+        progress_thread = threading.Thread(
+            target=monitor_progress_file, 
+            args=(3, "유사도 기반 특허 필터링", "🔧")
+        )
+        progress_thread.daemon = True
+        progress_thread.start()
         
         s3 = Step3()
         s3.filter()
         
-        with status_placeholder.container():
-            st.success("✅ Step 3 완료: 데이터 필터링 완료")
+        progress_thread.join(timeout=1)
+        base_progress += step_weights[3]
+        main_progress.progress(base_progress)
+        status_container.success("✅ Step 3 완료: 데이터 필터링 완료")
+        time.sleep(0.5)
         
         # Step 4: 토픽 모델링
-        with status_placeholder.container():
-            st.info("🤖 Step 4: BERTopic 토픽 모델링 및 시각화 중...")
         update_progress(4, "토픽 추출 및 시각화 중...")
+        
+        progress_thread = threading.Thread(
+            target=monitor_progress_file, 
+            args=(4, "BERTopic 토픽 모델링 및 시각화", "🤖")
+        )
+        progress_thread.daemon = True
+        progress_thread.start()
         
         s4 = Step4()
         topic_list = s4.ber()
         
-        with status_placeholder.container():
-            st.success("✅ Step 4 완료: 토픽 추출 및 시각화 완료")
+        progress_thread.join(timeout=1)
+        base_progress += step_weights[4]
+        main_progress.progress(base_progress)
+        status_container.success("✅ Step 4 완료: 토픽 추출 및 시각화 완료")
+        detail_container.write(f"✅ {len(topic_list)}개의 주요 토픽을 발견했습니다.")
+        time.sleep(0.5)
         
         # Step 5: 보고서 생성
-        with status_placeholder.container():
-            st.info("📝 Step 5: AI 기반 기술 보고서 작성 중...")
         update_progress(5, "보고서 작성 중...")
+        
+        progress_thread = threading.Thread(
+            target=monitor_progress_file, 
+            args=(5, "AI 기반 기술 보고서 작성", "📝")
+        )
+        progress_thread.daemon = True
+        progress_thread.start()
         
         s5 = Step5()
         report = s5.last(topic_list)
         
-        with status_placeholder.container():
-            st.success("🎉 Step 5 완료: 기술 보고서 생성 완료!")
+        progress_thread.join(timeout=1)
+        main_progress.progress(1.0)
+        detailed_progress.progress(1.0)
+        status_container.success("🎉 모든 분석이 완료되었습니다!")
+        detail_container.write("🎊 AI 기술 보고서 생성이 성공적으로 완료되었습니다!")
         
         # 결과 저장
         st.session_state.topic_results = topic_list
@@ -189,6 +280,9 @@ def run_analysis_pipeline(keyword):
         return topic_list
         
     except Exception as e:
+        main_progress.progress(0.0)
+        status_container.error(f"❌ 분석 중 오류 발생")
+        detail_container.error(f"오류 내용: {str(e)}")
         st.error(f"❌ 분석 중 오류 발생: {str(e)}")
         return None
 
