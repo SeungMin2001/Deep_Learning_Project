@@ -252,11 +252,20 @@ def run_analysis_pipeline(keyword):
         status_container.info("📊 Step 3.5: 특허 연도별 그래프 생성 중...")
         
         # Step3_5 클래스 사용
-        s3_5 = Step3_5()
-        graph_data = s3_5.generate_graph(generated_keywords)
-        
-        # 그래프 데이터를 세션 상태에 저장
-        st.session_state.graph_data = graph_data
+        try:
+            s3_5 = Step3_5()
+            print(f"Step3_5 클래스 생성 완료, 키워드: {generated_keywords}")
+            graph_data = s3_5.generate_graph(generated_keywords)
+            print(f"Step3_5 그래프 데이터 생성 완료: {graph_data is not None}")
+            
+            # 그래프 데이터를 세션 상태에 저장
+            st.session_state.graph_data = graph_data
+        except Exception as e:
+            print(f"Step3_5 실행 중 오류: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            # 오류가 발생해도 계속 진행
+            st.session_state.graph_data = None
         
         base_progress += step_weights["3_5"]
         main_progress.progress(base_progress)

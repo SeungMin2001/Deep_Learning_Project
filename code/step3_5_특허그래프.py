@@ -1,5 +1,6 @@
 import pandas as pd
 import ast
+import os
 
 class Step3_5:
     def __init__(self):
@@ -16,9 +17,18 @@ class Step3_5:
         Returns:
             final_df: 연도별 특허 출원 동향 데이터
         """
+        print(f"🔍 Step3_5 시작 - 입력 키워드: {keywords}")
+        
         try:
+            # CSV 파일 존재 확인
+            if not os.path.exists("./extract_end.csv"):
+                print("❌ extract_end.csv 파일이 존재하지 않습니다.")
+                return None
+                
+            print("📁 extract_end.csv 파일 읽는 중...")
             # CSV 읽기
             df = pd.read_csv("./extract_end.csv")
+            print(f"📊 CSV 데이터 로드 완료 - 행 수: {len(df)}")
             
             # 키워드 설정
             if keywords is None:
