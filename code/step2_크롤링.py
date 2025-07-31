@@ -57,8 +57,8 @@ class Step2:
                     'word': keyword,
                     'year': '0',
                     'ServiceKey': API_KEY,
-                    'numOfRows': 5  # 키워드 하나당 긁어오는 특허수 조절하는곳
-                    #'page':page
+                    'numOfRows': 5,  # 키워드 하나당 긁어오는 특허수 조절하는곳
+                    'page':page
                 }
 
                 response = requests.get(url, params=params)
