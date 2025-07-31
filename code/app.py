@@ -353,7 +353,7 @@ def display_generated_reports():
 def display_topic_results():
     """토픽 분석 결과 표시"""
     if st.session_state.topic_results:
-        st.subheader("🔍 토픽 분석 결과")
+        st.subheader("🔍 토픽 분석 결과.")
         
         for topic_id, words in st.session_state.topic_results.items():
             with st.expander(f"Topic {topic_id + 1}"):
