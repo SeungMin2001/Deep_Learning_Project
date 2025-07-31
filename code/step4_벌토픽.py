@@ -370,7 +370,13 @@ class Step4:
         mpl.rcParams['font.family'] = pret_name
         mpl.rcParams['axes.unicode_minus'] = False   # 한글 사용 시 마이너스 깨짐 방지
         from sentence_transformers import SentenceTransformer
-        embedding_model = SentenceTransformer("snunlp/KR-SBERT-V40K-klueNLI-augSTS")
+        # Hugging Face 429 에러 임시 해결책 - 다른 모델 사용
+        try:
+            embedding_model = SentenceTransformer("snunlp/KR-SBERT-V40K-klueNLI-augSTS")
+        except Exception as e:
+            print(f"KR-SBERT 모델 로드 실패, 대체 모델 사용: {e}")
+            # 대체 모델 사용
+            embedding_model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 
         # lemmatized_patents: 이미 전처리가 끝난 특허 텍스트 리스트 (예: ["문서1", "문서2", ...])
         embeddings = embedding_model.encode(
@@ -676,7 +682,13 @@ class Step4:
 
         from sentence_transformers import SentenceTransformer, util
         # 2) 한국어 특화 SBERT 로드
-        embedding_model = SentenceTransformer("snunlp/KR-SBERT-V40K-klueNLI-augSTS")
+        # Hugging Face 429 에러 임시 해결책 - 다른 모델 사용
+        try:
+            embedding_model = SentenceTransformer("snunlp/KR-SBERT-V40K-klueNLI-augSTS")
+        except Exception as e:
+            print(f"KR-SBERT 모델 로드 실패, 대체 모델 사용: {e}")
+            # 대체 모델 사용
+            embedding_model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
         #def grid():
         # 환경 변수 및 시드 설정
         os.environ["TOKENIZERS_PARALLELISM"] = "false"

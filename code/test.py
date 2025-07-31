@@ -108,6 +108,10 @@ if "topic_results" not in st.session_state:
     st.session_state.topic_results = None
 if "keyword_input" not in st.session_state:
     st.session_state.keyword_input = ""
+if "waiting_for_date_input" not in st.session_state:
+    st.session_state.waiting_for_date_input = False
+if "date_filtered" not in st.session_state:
+    st.session_state.date_filtered = False
 
 def update_progress(step, message):
     """진행 상황 업데이트"""
@@ -121,6 +125,30 @@ def update_progress(step, message):
         json.dump(progress_data, f, ensure_ascii=False)
     
     st.session_state.step_progress = step
+
+def filter_data_by_date(start_year, end_year):
+    """날짜 범위로 특허 데이터 필터링"""
+    try:
+        df = pd.read_csv("./extract_end.csv")
+        
+        # 출원일 처리
+        df["출원일"] = df["출원일"].astype(str).str.strip()
+        df["출원연도"] = pd.to_datetime(
+            df["출원일"], errors="coerce", infer_datetime_format=True
+        ).dt.year
+        
+        # 날짜 범위 필터링
+        filtered_df = df[(df["출원연도"] >= start_year) & (df["출원연도"] <= end_year)]
+        
+        # 필터링된 데이터 저장
+        filtered_df.to_csv("./extract_end.csv", index=False)
+        
+        print(f"📅 날짜 필터링 완료: {start_year}-{end_year}, {len(filtered_df)}건 남음")
+        return len(filtered_df)
+        
+    except Exception as e:
+        print(f"날짜 필터링 중 오류: {str(e)}")
+        return 0
 
 def run_analysis_pipeline(keyword):
     """실시간 progress bar가 적용된 분석 파이프라인"""
@@ -271,7 +299,70 @@ def run_analysis_pipeline(keyword):
         main_progress.progress(base_progress)
         status_container.success("✅ Step 3.5 완료: 특허 그래프 생성 완료")
         detail_container.write("✅ 연도별 특허 출원 동향 그래프가 생성되었습니다.")
-        time.sleep(0.5)
+        
+        # Step 3.5 완료 후 사용자 날짜 입력 대기 상태로 전환
+        st.session_state.waiting_for_date_input = True
+        status_container.info("⏸️ 날짜 범위 입력을 기다리는 중...")
+        detail_container.write("📅 아래에서 분석할 날짜 범위를 선택하고 '계속 진행' 버튼을 클릭하세요.")
+        return None  # 여기서 파이프라인 일시정지
+
+def continue_analysis_from_step4():
+    """Step4부터 분석 재개"""
+    
+    # 메인 진행률 표시 컨테이너
+    with st.container():
+        st.markdown("## 🔄 분석 재개 중...")
+        
+        # Progress bar와 상태 표시
+        main_progress = st.progress(0.6)  # Step3_5까지 완료된 상태에서 시작
+        status_container = st.empty()
+        detail_container = st.empty()
+        
+        step_weights = {1: 0.1, 2: 0.25, 3: 0.15, "3_5": 0.1, 4: 0.3, 5: 0.1}
+        base_progress = step_weights[1] + step_weights[2] + step_weights[3] + step_weights["3_5"]
+        
+    def monitor_progress_file(step_num, step_name, icon):
+        """progress.json 파일을 모니터링하여 실시간 업데이트"""
+        nonlocal base_progress
+        
+        status_container.info(f"{icon} Step {step_num}: {step_name} 중...")
+        
+        # progress.json 파일 모니터링
+        import time
+        
+        while True:
+            try:
+                if os.path.exists("progress.json"):
+                    with open("progress.json", "r", encoding="utf-8") as f:
+                        progress_data = json.load(f)
+                    
+                    current = progress_data.get("current", 0)
+                    total = progress_data.get("total", 1)
+                    message = progress_data.get("message", "")
+                    
+                    # 진행률 계산 및 업데이트
+                    if total > 0:
+                        step_progress = min(current / total, 1.0)
+                        
+                        # 전체 진행률 업데이트
+                        overall_progress = base_progress + (step_weights[step_num] * step_progress)
+                        main_progress.progress(overall_progress)
+                        
+                        # 상세 정보 표시
+                        detail_container.write(f"📋 {message}")
+                        
+                        # 단계 완료 확인
+                        if step_progress >= 1.0:
+                            break
+                            
+                    time.sleep(0.1)  # 0.1초마다 체크
+                else:
+                    time.sleep(0.5)
+            except:
+                time.sleep(0.5)
+    
+    try:
+        import threading
         
         # Step 4: 토픽 모델링
         update_progress(4, "토픽 추출 및 시각화 중...")
@@ -314,8 +405,16 @@ def run_analysis_pipeline(keyword):
         # 결과 저장
         st.session_state.topic_results = topic_list
         st.session_state.analysis_complete = True
+        st.session_state.waiting_for_date_input = False
         
         return topic_list
+        
+    except Exception as e:
+        main_progress.progress(0.6)
+        status_container.error(f"❌ 분석 중 오류 발생")
+        detail_container.error(f"오류 내용: {str(e)}")
+        st.error(f"❌ 분석 중 오류 발생: {str(e)}")
+        return None
         
     except Exception as e:
         main_progress.progress(0.0)
@@ -699,6 +798,8 @@ def main():
             st.session_state.analysis_complete = False
             st.session_state.topic_results = None
             st.session_state.step_progress = 0
+            st.session_state.waiting_for_date_input = False
+            st.session_state.date_filtered = False
             
             # 분석 실행
             with st.spinner("분석을 진행 중입니다..."):
@@ -879,7 +980,68 @@ def main():
                     </div>
                     """, unsafe_allow_html=True)
     
-    elif st.session_state.step_progress > 0 and not st.session_state.analysis_complete:
+    elif st.session_state.waiting_for_date_input:
+        # Step 3.5 완료 후 날짜 입력 대기 화면
+        st.markdown("## 📊 특허 동향 그래프 생성 완료!")
+        
+        # 그래프 표시
+        display_patent_graph()
+        
+        st.markdown("---")
+        st.markdown("## 📅 분석 날짜 범위 선택")
+        st.write("위 그래프를 참고하여 더 자세히 분석하고 싶은 날짜 범위를 선택하세요.")
+        
+        col1, col2, col3 = st.columns([1, 1, 1])
+        
+        with col1:
+            start_year = st.number_input(
+                "시작 연도", 
+                min_value=1990, 
+                max_value=2025, 
+                value=2000,
+                step=1
+            )
+        
+        with col2:
+            end_year = st.number_input(
+                "종료 연도", 
+                min_value=1990, 
+                max_value=2025, 
+                value=2023,
+                step=1
+            )
+        
+        with col3:
+            st.markdown("<br>", unsafe_allow_html=True)  # 공간 맞추기
+            if st.button("🚀 날짜 범위 적용 후 계속 진행", type="primary"):
+                if start_year <= end_year:
+                    with st.spinner("날짜 범위 적용 중..."):
+                        filtered_count = filter_data_by_date(start_year, end_year)
+                        st.success(f"✅ {start_year}-{end_year} 범위로 필터링 완료! ({filtered_count}건)")
+                        
+                        # Step4부터 재개
+                        st.session_state.date_filtered = True
+                        continue_analysis_from_step4()
+                else:
+                    st.error("❌ 시작 연도가 종료 연도보다 클 수 없습니다.")
+        
+        # 날짜 범위 미리보기
+        if start_year and end_year and start_year <= end_year:
+            try:
+                df = pd.read_csv("./extract_end.csv")
+                df["출원일"] = df["출원일"].astype(str).str.strip()
+                df["출원연도"] = pd.to_datetime(
+                    df["출원일"], errors="coerce", infer_datetime_format=True
+                ).dt.year
+                
+                total_count = len(df)
+                filtered_count = len(df[(df["출원연도"] >= start_year) & (df["출원연도"] <= end_year)])
+                
+                st.info(f"📊 선택한 날짜 범위의 특허 수: {filtered_count}/{total_count}건 ({filtered_count/total_count*100:.1f}%)")
+            except:
+                pass
+
+    elif st.session_state.step_progress > 0 and not st.session_state.analysis_complete and not st.session_state.waiting_for_date_input:
         # 분석 진행 중 화면
         st.markdown(f"## 🔄 분석 진행 중... (Step {st.session_state.step_progress}/5)")
         
@@ -896,17 +1058,26 @@ def main():
                 1: "🔍 키워드 분석 및 특허식 생성",
                 2: "📊 KIPRIS 특허 데이터 크롤링",
                 3: "🔧 유사도 기반 데이터 필터링",
+                "3_5": "📈 특허 연도별 그래프 생성",
                 4: "🤖 BERTopic 토픽 모델링 및 시각화",
                 5: "📝 AI 기반 기술 보고서 생성"
             }
             
-            for step in range(1, 6):
-                if step < st.session_state.step_progress:
-                    st.success(f"✅ Step {step}: {step_info[step]} - 완료")
-                elif step == st.session_state.step_progress:
-                    st.info(f"🔄 Step {step}: {step_info[step]} - 진행 중...")
-                else:
-                    st.write(f"⏳ Step {step}: {step_info[step]} - 대기 중")
+            for step in [1, 2, 3, "3_5", 4, 5]:
+                if step == "3_5":
+                    if st.session_state.step_progress > 3:
+                        st.success(f"✅ Step 3.5: {step_info[step]} - 완료")
+                    elif st.session_state.step_progress == 3:
+                        st.info(f"🔄 Step 3.5: {step_info[step]} - 진행 중...")
+                    else:
+                        st.write(f"⏳ Step 3.5: {step_info[step]} - 대기 중")
+                elif isinstance(step, int):
+                    if step < st.session_state.step_progress:
+                        st.success(f"✅ Step {step}: {step_info[step]} - 완료")
+                    elif step == st.session_state.step_progress:
+                        st.info(f"🔄 Step {step}: {step_info[step]} - 진행 중...")
+                    else:
+                        st.write(f"⏳ Step {step}: {step_info[step]} - 대기 중")
             
             st.markdown('</div>', unsafe_allow_html=True)
     
