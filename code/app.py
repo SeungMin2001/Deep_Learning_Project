@@ -288,29 +288,14 @@ def main():
     .stApp {
         padding-top: 0rem !important;
     }
-    /* 사이드바 스타일링 */
+    /* ChatGPT 스타일 사이드바 */
     .css-1d391kg {
         width: 320px !important;
     }
     section[data-testid="stSidebar"] {
         width: 320px !important;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        position: relative;
-    }
-    
-    /* 사이드바에 오버레이 패턴 추가 */
-    section[data-testid="stSidebar"]:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: 
-            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-        pointer-events: none;
-        z-index: 0;
+        background: #1f2937 !important;
+        border-right: 1px solid #374151 !important;
     }
     .css-1cypcdb {
         width: 320px !important;
@@ -319,8 +304,6 @@ def main():
     /* 사이드바 컨텐츠 스타일링 */
     section[data-testid="stSidebar"] > div {
         background: transparent !important;
-        position: relative;
-        z-index: 1;
         padding: 1rem !important;
     }
     
@@ -328,139 +311,134 @@ def main():
     section[data-testid="stSidebar"] h1,
     section[data-testid="stSidebar"] h2,
     section[data-testid="stSidebar"] h3 {
-        color: white !important;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+        color: #f9fafb !important;
+        font-weight: 600 !important;
     }
     
     /* 사이드바 텍스트 스타일 */
     section[data-testid="stSidebar"] .stMarkdown,
     section[data-testid="stSidebar"] p,
     section[data-testid="stSidebar"] label {
-        color: white !important;
+        color: #d1d5db !important;
     }
     
     /* 입력 필드 컨테이너 스타일 */
     .sidebar-input-container {
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(10px) !important;
-        border-radius: 20px !important;
-        padding: 2rem !important;
-        margin: 1.5rem 0 !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2) !important;
-        position: relative;
-        z-index: 1;
+        background: #374151 !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        border: 1px solid #4b5563 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    /* 호버 효과 */
+    .sidebar-input-container:hover {
+        background: #4b5563 !important;
+        border-color: #6b7280 !important;
     }
     
     /* 텍스트 입력 필드 스타일 */
     section[data-testid="stSidebar"] .stTextInput > div > div > input {
-        background: rgba(255, 255, 255, 0.95) !important;
-        border: 2px solid rgba(255, 255, 255, 0.4) !important;
-        border-radius: 15px !important;
-        color: #1e293b !important;
-        font-size: 1rem !important;
-        font-weight: 500 !important;
-        padding: 1rem 1.25rem !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 
-            inset 0 2px 4px rgba(0, 0, 0, 0.1),
-            0 4px 15px rgba(102, 126, 234, 0.1) !important;
+        background: #2d3748 !important;
+        border: 1px solid #4a5568 !important;
+        border-radius: 8px !important;
+        color: #f7fafc !important;
+        font-size: 0.95rem !important;
+        font-weight: 400 !important;
+        padding: 0.75rem 1rem !important;
+        transition: all 0.2s ease !important;
+        box-shadow: none !important;
     }
     
     section[data-testid="stSidebar"] .stTextInput > div > div > input:focus {
-        background: rgba(255, 255, 255, 1) !important;
-        border: 2px solid #f093fb !important;
-        box-shadow: 
-            0 0 0 4px rgba(240, 147, 251, 0.15),
-            0 8px 25px rgba(240, 147, 251, 0.2),
-            inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        background: #2d3748 !important;
+        border: 1px solid #10b981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
         outline: none !important;
-        transform: translateY(-1px) !important;
+        transform: none !important;
     }
     
     section[data-testid="stSidebar"] .stTextInput > div > div > input::placeholder {
-        color: #a0aec0 !important;
-        opacity: 0.8 !important;
+        color: #9ca3af !important;
+        opacity: 1 !important;
     }
     
     /* 버튼 스타일 */
     section[data-testid="stSidebar"] .stButton > button {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+        background: #10b981 !important;
         border: none !important;
-        border-radius: 15px !important;
+        border-radius: 8px !important;
         color: white !important;
-        font-weight: 600 !important;
-        padding: 1rem 1.5rem !important;
-        font-size: 1.1rem !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3) !important;
+        font-weight: 500 !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.95rem !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
         width: 100% !important;
         text-transform: none !important;
-        letter-spacing: 0.5px !important;
     }
     
     section[data-testid="stSidebar"] .stButton > button:hover {
-        transform: translateY(-3px) !important;
-        box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4) !important;
-        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%) !important;
+        background: #059669 !important;
+        transform: none !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
     }
     
     section[data-testid="stSidebar"] .stButton > button:active {
-        transform: translateY(0) !important;
+        transform: translateY(1px) !important;
     }
     
     /* 비활성화된 버튼 스타일 */
     section[data-testid="stSidebar"] .stButton > button:disabled {
-        background: rgba(255, 255, 255, 0.2) !important;
-        color: rgba(255, 255, 255, 0.5) !important;
+        background: #6b7280 !important;
+        color: #9ca3af !important;
         box-shadow: none !important;
         transform: none !important;
     }
     
     /* 진행률 표시 카드 */
     .sidebar-progress-card {
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(10px) !important;
-        border-radius: 20px !important;
-        padding: 2rem !important;
-        margin: 1.5rem 0 !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2) !important;
-        position: relative;
-        z-index: 1;
-        transition: all 0.3s ease !important;
+        background: #374151 !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        margin: 1rem 0 !important;
+        border: 1px solid #4b5563 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.2s ease !important;
     }
     
     .sidebar-progress-card:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3) !important;
+        background: #4b5563 !important;
+        border-color: #6b7280 !important;
+        transform: none !important;
     }
     
     /* 성공 메시지 스타일 */
     section[data-testid="stSidebar"] .stSuccess {
-        background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%) !important;
-        border: 1px solid rgba(79, 172, 254, 0.4) !important;
-        border-radius: 15px !important;
-        backdrop-filter: blur(10px) !important;
-        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.1) !important;
+        background: rgba(16, 185, 129, 0.1) !important;
+        border: 1px solid rgba(16, 185, 129, 0.3) !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
     }
     
     section[data-testid="stSidebar"] .stSuccess > div {
-        color: white !important;
-        font-weight: 600 !important;
+        color: #10b981 !important;
+        font-weight: 500 !important;
     }
     
     /* 진행률 바 스타일 */
     section[data-testid="stSidebar"] .stProgress > div > div {
-        background: rgba(255, 255, 255, 0.25) !important;
-        border-radius: 15px !important;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        background: #4b5563 !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
     }
     
     section[data-testid="stSidebar"] .stProgress > div > div > div {
-        background: linear-gradient(90deg, #fa709a 0%, #fee140 100%) !important;
-        border-radius: 15px !important;
-        box-shadow: 0 2px 8px rgba(250, 112, 154, 0.3) !important;
+        background: #10b981 !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
     }
     
     /* 멋진 배너 컨테이너 */
