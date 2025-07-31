@@ -809,8 +809,8 @@ def main():
             with st.spinner("분석을 진행 중입니다..."):
                 run_analysis_pipeline(keyword)
         
-        # 진행 상황 표시 (분석 완료되지 않았을 때만)
-        if st.session_state.step_progress > 0 and not st.session_state.analysis_complete:
+        # 진행 상황 표시 (분석 완료되지 않았을 때만, 단 날짜 입력 대기 중일 때는 숨김)
+        if st.session_state.step_progress > 0 and not st.session_state.analysis_complete and not st.session_state.waiting_for_date_input:
             st.markdown('<div class="sidebar-progress-card">', unsafe_allow_html=True)
             st.markdown("### 📈 진행 상황")
             
