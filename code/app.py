@@ -129,7 +129,6 @@ def run_analysis_pipeline(keyword):
         
         # Progress bar와 상태 표시
         main_progress = st.progress(0.0)
-        detailed_progress = st.progress(0.0)
         status_container = st.empty()
         detail_container = st.empty()
         
@@ -156,10 +155,9 @@ def run_analysis_pipeline(keyword):
                     total = progress_data.get("total", 1)
                     message = progress_data.get("message", "")
                     
-                    # 세부 진행률 계산
+                    # 진행률 계산 및 업데이트
                     if total > 0:
                         step_progress = min(current / total, 1.0)
-                        detailed_progress.progress(step_progress)
                         
                         # 전체 진행률 업데이트
                         overall_progress = base_progress + (step_weights[step_num] * step_progress)
@@ -190,7 +188,6 @@ def run_analysis_pipeline(keyword):
         
         base_progress = step_weights[1]
         main_progress.progress(base_progress)
-        detailed_progress.progress(1.0)
         status_container.success("✅ Step 1 완료: 특허식 생성 완료")
         detail_container.write(f"✅ 생성된 특허식: {sentence}")
         time.sleep(0.5)
@@ -269,7 +266,6 @@ def run_analysis_pipeline(keyword):
         
         progress_thread.join(timeout=1)
         main_progress.progress(1.0)
-        detailed_progress.progress(1.0)
         status_container.success("🎉 모든 분석이 완료되었습니다!")
         detail_container.write("🎊 AI 기술 보고서 생성이 성공적으로 완료되었습니다!")
         
