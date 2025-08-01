@@ -1,18 +1,74 @@
 from dotenv import load_dotenv
 import os
-from langchain.chat_models import ChatOpenAI
-from langchain_openai import ChatOpenAI
+import re
+from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from tabulate import tabulate  # pip install tabulate
-import os
-import openai
-from dotenv import load_dotenv
+from docx import Document
+from docx.shared import Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 class Step5:
     def last(self,x):
+        import os  # 함수 내부에서 명시적으로 import
+        import glob  # 파일 검색을 위한 import
+        
+        # 보고서 폴더 존재 확인 및 스킵 로직
+        docx_folder = "reports_docx.v8"
+        md_folder = "generated_reports"
+        
+        # DOCX 폴더 확인
+        docx_files_exist = False
+        if os.path.exists(docx_folder):
+            docx_files = glob.glob(os.path.join(docx_folder, "*.docx"))
+            if docx_files:
+                docx_files_exist = True
+                print(f"✅ {docx_folder} 폴더에 {len(docx_files)}개의 DOCX 보고서가 이미 존재합니다.")
+                for file in docx_files[:3]:  # 최대 3개 파일명만 표시
+                    print(f"   - {os.path.basename(file)}")
+                if len(docx_files) > 3:
+                    print(f"   ... 및 {len(docx_files) - 3}개 더")
+        
+        # MD 폴더 확인  
+        md_files_exist = False
+        if os.path.exists(md_folder):
+            md_files = glob.glob(os.path.join(md_folder, "*.md"))
+            if md_files:
+                md_files_exist = True
+                print(f"✅ {md_folder} 폴더에 {len(md_files)}개의 MD 보고서가 이미 존재합니다.")
+                for file in md_files[:3]:  # 최대 3개 파일명만 표시
+                    print(f"   - {os.path.basename(file)}")
+                if len(md_files) > 3:
+                    print(f"   ... 및 {len(md_files) - 3}개 더")
+        
+        # 둘 다 존재하면 보고서 생성 과정을 건너뛰기
+        if docx_files_exist and md_files_exist:
+            print("🚀 기존 보고서가 발견되었습니다. 보고서 생성 과정을 건너뜁니다.")
+            return
+        
+        print("📝 보고서를 새로 생성합니다...")
         load_dotenv()
         # 🌐 LLM 선언
         llm = ChatOpenAI(model="gpt-4o", temperature=0.5)
+
+        # 🏷️ 토픽 제목 생성 프롬프트
+        title_prompt_template = ChatPromptTemplate.from_messages([
+            ("system",
+            "너는 기술 분야 전문가야. 주어진 키워드들을 분석해서 해당 기술 분야를 나타내는 "
+            "명확하고 전문적인 제목을 한 문장으로 만들어줘.\n\n"
+            "📌 제목 생성 규칙:\n"
+            "- 키워드들 간의 기술적 연관성을 파악해서 의미있는 문장으로 구성\n"
+            "- 단순 키워드 나열이 아닌, 기술의 목적이나 응용 분야가 드러나는 제목\n"
+            "- 10-15자 내외의 간결하면서도 전문적인 표현\n"
+            "- '시스템', '기술', '솔루션' 등의 기술 용어 활용 가능\n\n"
+            "예시:\n"
+            "키워드: 센서, 전력, 온도 → 스마트 센서 기반 전력 효율 제어\n"
+            "키워드: 로봇, 주행, 자율 → 자율주행 로봇 네비게이션 시스템\n"
+            "키워드: 지능, 인공, 학습 → AI 기반 지능형 학습 플랫폼"
+            ),
+            ("human",
+            "다음 키워드들로 기술 제목을 만들어줘: {keywords}")
+        ])
 
         # 🧾 기술 보고서 작성 프롬프트
         report_prompt_template = ChatPromptTemplate.from_messages([
@@ -150,12 +206,25 @@ class Step5:
             doc.save(filepath)
             print(f"✅ 저장 완료: {filepath}")
 
-        # 🔁 실행 함수
-        def generate_reports_from_results(topic_result_list):
-            for i, (topic_number, title, keywords) in enumerate(topic_result_list):
+        # 🔁 실행 함수 (step4에서 반환되는 딕셔너리 형태 데이터 처리)
+        def generate_reports_from_results(topics_dict):
+            if not isinstance(topics_dict, dict):
+                print("❌ 토픽 데이터가 딕셔너리 형태가 아닙니다.")
+                return
+                
+            for topic_num, keywords in topics_dict.items():
+                # 토픽 제목 생성 (LLM이 키워드로 의미있는 문장 생성)
+                keywords_for_title = ', '.join(keywords[:5])  # 상위 5개 키워드로 제목 생성
+                title_chain = title_prompt_template | llm
+                title_response = title_chain.invoke({"keywords": keywords_for_title})
+                generated_title = title_response.content.strip() if hasattr(title_response, 'content') else str(title_response).strip()
+                
+                title = f"Topic {topic_num}: {generated_title}"
+                keywords_str = ', '.join(keywords[:10])  # 상위 10개 키워드
+                
                 print(f"\n🚀 생성 중: {title}")
                 report_chain = report_prompt_template | llm
-                response = report_chain.invoke({"title": title, "keywords": keywords})
+                response = report_chain.invoke({"title": title, "keywords": keywords_str})
 
                 report_text = (
                     response.strip()
@@ -163,42 +232,58 @@ class Step5:
                     else response.content.strip()
                 )
 
-                filename = f"{i}_{title[:30].replace(' ', '_')}.docx"
-                save_report_as_docx(title, keywords, report_text, filename)
+                filename = f"{topic_num}_{title[:30].replace(' ', '_').replace(':', '')}.docx"
+                save_report_as_docx(title, keywords_str, report_text, filename)
 
-        # ✅ 사용 예시
-        generate_reports_from_results(results)
-        # 표 형태 출력
-        headers = ["토픽 번호", "토픽", "내용"]
-        print(tabulate(results, headers=headers, tablefmt="github"))
+        # ✅ DOCX 보고서 생성 (조건부)
+        if not docx_files_exist:
+            print("📄 DOCX 보고서를 새로 생성합니다...")
+            generate_reports_from_results(x)
+        else:
+            print("📄 DOCX 보고서가 이미 존재하므로 생성을 건너뜁니다.")
+        
+        # 표 형태 출력 (딕셔너리를 리스트로 변환)
+        table_data = []
+        for topic_num, keywords in x.items():
+            table_data.append([f"Topic {topic_num}", f"Topic {topic_num}", ', '.join(keywords[:5])])
+        
+        headers = ["토픽 번호", "토픽", "주요 키워드"]
+        print(tabulate(table_data, headers=headers, tablefmt="github"))
 
-        # 보고서 생성 프롬프트 설정
-        from langchain.prompts import ChatPromptTemplate
-
-        report_prompt_template = ChatPromptTemplate.from_messages([
-            ("system", "너는 첨단 기술 보고서를 작성하는 전문가야. 주제 제목과 핵심 키워드를 기반으로 기술 보고서 형식의 설명을 작성해."),
-            ("human", "다음 정보를 바탕으로 기술 보고서 형식의 내용을 작성해줘.\n"
-                      "형식: 개요, 기술 구성, 적용 분야, 개발 단계 (1~3차년도), 최종 목표, 활용 가능성 등으로 구성된 보고서\n\n"
-                      "제목: {title}\n핵심 키워드: {keywords}")
-        ])
 
         # 보고서 생성 및 저장
-        import os
         os.makedirs("generated_reports", exist_ok=True)
+        
+        # MD 보고서가 이미 존재하는지 확인
+        if md_files_exist:
+            print("📝 MD 보고서가 이미 존재하므로 MD 생성을 건너뜁니다.")
+        else:
+            print("📝 MD 보고서를 새로 생성합니다...")
+            
+            # step4에서 반환되는 딕셔너리 형태 데이터 처리
+            for topic_id, keywords_list in x.items():
+                # 토픽 제목 생성 (LLM이 키워드로 의미있는 문장 생성)
+                keywords_for_title = ', '.join(keywords_list[:5])  # 상위 5개 키워드로 제목 생성
+                title_chain = title_prompt_template | llm
+                title_response = title_chain.invoke({"keywords": keywords_for_title})
+                generated_title = title_response.content.strip() if hasattr(title_response, 'content') else str(title_response).strip()
+                
+                topic_name = f"Topic {topic_id}: {generated_title}"
+                keywords_str = ', '.join(keywords_list[:10])  # 상위 10개 키워드를 문자열로 변환
+                
+                # 1. 보고서 생성
+                chain = report_prompt_template | llm
+                response = chain.invoke({"title": topic_name, "keywords": keywords_str})
+                report_text = response.content.strip()
 
-        for topic_id, topic_name, keywords in results:
-            # 1. 보고서 생성
-            chain = report_prompt_template | llm
-            response = chain.invoke({"title": topic_name, "keywords": keywords})
-            report_text = response.content.strip()
+                # 2. Markdown 파일로 저장
+                filename = f"Topic_{topic_id}_{keywords_list[0] if keywords_list else 'empty'}_{keywords_list[1] if len(keywords_list) > 1 else ''}.md"
+                filename = filename.replace(' ', '_').replace('/', '_').replace('\\', '_')[:50] + '.md'  # 파일명 정리
+                filepath = os.path.join("./generated_reports", filename)
 
-            # 2. Markdown 파일로 저장
-            filename = f"{topic_id.replace(' ', '_')}_{topic_name[:30]}.md"
-            filepath = os.path.join("./generated_reports", filename)
+                with open(filepath, "w", encoding="utf-8") as f:
+                    f.write(f"# {topic_name}\n")
+                    f.write(f"**핵심 키워드:** {keywords_str}\n\n")
+                    f.write(report_text)
 
-            with open(filepath, "w", encoding="utf-8") as f:
-                f.write(f"# {topic_name}\n")
-                f.write(f"**핵심 키워드:** {keywords}\n\n")
-                f.write(report_text)
-
-            print(f"✅ 저장 완료: {filepath}")
+                print(f"✅ 저장 완료: {filepath}")

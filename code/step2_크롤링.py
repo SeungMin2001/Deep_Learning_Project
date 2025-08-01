@@ -10,6 +10,7 @@ from openai import OpenAI
 
 class Step2:
     def cra(self,x):
+        import os  # 함수 내부에서 명시적으로 import
         
         # extract.csv 파일이 이미 존재하는지 확인
         if os.path.exists('./extract.csv'):
@@ -43,7 +44,7 @@ class Step2:
         }
 
 
-        MAX_RESULTS = 1000 # 전체 긁어오는 특허수 조절변수
+        MAX_RESULTS = 3000 # 전체 긁어오는 특허수 조절변수
         MAX_PAGES=1
         url = 'http://plus.kipris.or.kr/kipo-api/kipi/patUtiModInfoSearchSevice/getWordSearch'
         
@@ -62,7 +63,7 @@ class Step2:
                     'word': keyword,
                     'year': '0',
                     'ServiceKey': API_KEY,
-                    'numOfRows': 100,  # 키워드 하나당 긁어오는 특허수 조절하는곳
+                    'numOfRows': 300,  # 키워드 하나당 긁어오는 특허수 조절하는곳
                     'page':page
                 }
 

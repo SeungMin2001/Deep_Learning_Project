@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 class Step3:
     def filter(self):
+        import os  # 함수 내부에서 명시적으로 import
+        
         # extract_end.csv 파일이 이미 존재하는지 확인
         if os.path.exists('./extract_end.csv'):
             print("extract_end.csv 파일이 이미 존재합니다. 필터링 과정을 건너뜁니다.")

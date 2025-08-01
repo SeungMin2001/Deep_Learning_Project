@@ -41,6 +41,50 @@ st.set_page_config(
 # CSS 스타일
 st.markdown("""
 <style>
+    .logo-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        cursor: pointer;
+    }
+    .logo-container:hover {
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+    }
+    .logo-img {
+        height: 60px;
+        margin-right: 1rem;
+    }
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding: 0.5rem 0;
+        border-bottom: 2px solid #e1e5e9;
+    }
+    .nav-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+    .nav-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    .nav-button.secondary {
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    }
     .main-title {
         font-size: 2.5rem;
         font-weight: bold;
@@ -108,6 +152,22 @@ if "topic_results" not in st.session_state:
     st.session_state.topic_results = None
 if "keyword_input" not in st.session_state:
     st.session_state.keyword_input = ""
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "home"
+
+def show_navigation():
+    """네비게이션 바 표시"""
+    if st.session_state.current_page == "results" and st.session_state.analysis_complete:
+        # 결과 페이지에서만 네비게이션 버튼들 표시
+        col1, col2, spacer = st.columns([2, 2, 4])
+        with col1:
+            if st.button("🏠 홈으로 가기", key="nav_home", help="새로운 분석을 시작합니다"):
+                st.session_state.current_page = "home"
+                st.rerun()
+        with col2:
+            if st.button("📊 분석 결과", key="nav_results", type="primary", help="현재 분석 결과를 봅니다"):
+                st.session_state.current_page = "results"
+                st.rerun()
 
 def update_progress(step, message):
     """진행 상황 업데이트"""
@@ -328,21 +388,44 @@ def display_topic_visualization():
     """토픽 시각화 결과 표시"""
     st.subheader("📊 토픽 분석 시각화 결과")
     
-    # UMAP 이미지 표시
+    # 새로고침 버튼 추가
+    col1, col2, col3 = st.columns([1, 1, 2])
+    with col1:
+        if st.button("🔄 시각화 새로고침", key="viz_refresh"):
+            if 'refresh_counter' not in st.session_state:
+                st.session_state.refresh_counter = 0
+            st.session_state.refresh_counter += 1
+            st.rerun()
+    
+    with col2:
+        st.caption("이미지가 업데이트되지 않으면 새로고침을 클릭하세요")
+    
+    # UMAP 이미지 표시 (캐시 방지)
     st.markdown("### 🗺️ UMAP 2D 토픽 분포")
     umap_image_path = "umap2d_topics_custom_color_pret.png"
     if os.path.exists(umap_image_path):
+        import time
+        file_mtime = os.path.getmtime(umap_image_path)
+        
+        with open(umap_image_path, 'rb') as f:
+            image_bytes = f.read()
         image = Image.open(umap_image_path)
-        st.image(image, caption="UMAP 2D 문서 임베딩과 BERTopic 토픽 분포", use_column_width=True)
+        st.image(image, caption=f"UMAP 2D 문서 임베딩과 BERTopic 토픽 분포 (업데이트: {time.ctime(file_mtime)})", use_column_width=True)
+        st.caption(f"📅 파일 생성 시간: {time.ctime(file_mtime)}")
     else:
         st.warning("UMAP 시각화 이미지를 찾을 수 없습니다.")
     
-    # Topic Words Chart 이미지 표시
+    # Topic Words Chart 이미지 표시 (캐시 방지)
     st.markdown("### 📈 토픽별 주요 키워드")
     topic_words_image_path = "topic_words_chart.png"
     if os.path.exists(topic_words_image_path):
+        file_mtime2 = os.path.getmtime(topic_words_image_path)
+        
+        with open(topic_words_image_path, 'rb') as f:
+            image_bytes2 = f.read()
         image2 = Image.open(topic_words_image_path)
-        st.image(image2, caption="토픽별 상위 12개 주요 키워드 분포", use_column_width=True)
+        st.image(image2, caption=f"토픽별 상위 12개 주요 키워드 분포 (업데이트: {time.ctime(file_mtime2)})", use_column_width=True)
+        st.caption(f"📅 파일 생성 시간: {time.ctime(file_mtime2)}")
     else:
         st.info("토픽 키워드 차트 이미지를 찾을 수 없습니다.")
 
@@ -672,6 +755,40 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
+    # 네비게이션 표시
+    show_navigation()
+    
+    # 로고 표시 (메인 컨텐츠 상단) - 클릭 가능
+    try:
+        logo_image = Image.open("icon.png")
+        logo_col, title_col = st.columns([1, 4])
+        with logo_col:
+            # 로고를 클릭 가능한 버튼으로 감싸기
+            if st.button("", key="logo_click", help="홈으로 가기"):
+                st.session_state.current_page = "home"
+                st.rerun()
+            # 이미지를 버튼 위에 오버레이
+            st.image(logo_image, width=120, use_column_width=False)
+        with title_col:
+            st.markdown("""
+            <div style="padding-top: 20px;">
+                <h1 style="color: #1f77b4; margin: 0; font-size: 2rem; cursor: pointer;" onclick="document.querySelector('[data-testid=logo_click]').click()">특허 인사이트</h1>
+                <p style="color: #666; margin: 0; font-size: 1rem;">Patent Insight with AI</p>
+            </div>
+            """, unsafe_allow_html=True)
+    except:
+        if st.button("🔬 AI 특허 분석 시스템", key="logo_text_click"):
+            st.session_state.current_page = "home"
+            st.rerun()
+    
+    # 페이지 라우팅
+    if st.session_state.current_page == "home":
+        show_home_page()
+    elif st.session_state.current_page == "results":
+        show_results_page()
+
+def show_home_page():
+    """홈 페이지 표시"""
     # 상단 배경 이미지
     possible_paths = ["./top4.png", "top4.png", "../top4.png", "code/top4.png"]
     
@@ -721,6 +838,10 @@ def main():
             # 분석 실행
             with st.spinner("분석을 진행 중입니다..."):
                 run_analysis_pipeline(keyword)
+                # 분석 완료 후 결과 페이지로 이동
+                if st.session_state.analysis_complete:
+                    st.session_state.current_page = "results"
+                    st.rerun()
         
         # 진행 상황 표시 (분석 완료되지 않았을 때만)
         if st.session_state.step_progress > 0 and not st.session_state.analysis_complete:
@@ -941,24 +1062,37 @@ def main():
             
             st.markdown('</div>', unsafe_allow_html=True)
     
-    elif st.session_state.analysis_complete:
-        # 분석 완료 화면
-        st.markdown("## 🎉 분석 완료!")
+def show_results_page():
+    """분석 결과 페이지 표시"""
+    # 분석 완료 화면
+    st.markdown("## 🎉 분석 완료!")
+    
+    # 사이드바에 분석 정보 표시
+    with st.sidebar:
+        st.success("✅ 분석 완료!")
+        st.write(f"**키워드:** {st.session_state.keyword_input}")
         
-        # 탭으로 결과 구분 - 특허 그래프 탭 추가
-        tab1, tab2, tab3, tab4 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
-        
-        with tab1:
-            display_patent_graph()
-        
-        with tab2:
-            display_topic_results()
-        
-        with tab3:
-            display_topic_visualization()
-        
-        with tab4:
-            display_generated_reports()
+        if st.button("🔄 새 분석 시작", type="secondary"):
+            st.session_state.current_page = "home"
+            st.session_state.analysis_complete = False
+            st.session_state.step_progress = 0
+            st.session_state.topic_results = None
+            st.rerun()
+    
+    # 탭으로 결과 구분 - 특허 그래프 탭 추가
+    tab1, tab2, tab3, tab4 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
+    
+    with tab1:
+        display_patent_graph()
+    
+    with tab2:
+        display_topic_results()
+    
+    with tab3:
+        display_topic_visualization()
+    
+    with tab4:
+        display_generated_reports()
 
 if __name__ == "__main__":
     main()

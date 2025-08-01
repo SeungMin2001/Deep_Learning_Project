@@ -502,8 +502,25 @@ class Step4:
         # Jupyter Notebook(.ipynb) 환경에서는 plt.show() 한 줄만으로 인라인 렌더링됩니다.
         # plt.show()
 
-        # ─── 10. 벡터 형식 저장 (선택 사항) ─────────────────────────────────────────
-        plt.savefig("umap2d_topics_custom_color_pret.png", dpi=300)
+        # ─── 10. 벡터 형식 저장 (기존 파일 덮어쓰기) ─────────────────────────────────────────
+        import time
+        umap_file = "umap2d_topics_custom_color_pret.png"
+        
+        # 파일이 이미 존재하면 건너뛰기
+        if os.path.exists(umap_file):
+            print(f"⏭️ UMAP 시각화 파일이 이미 존재합니다. 건너뜁니다: {umap_file}")
+        else:
+            print(f"📊 UMAP 시각화 파일을 새로 생성합니다: {umap_file}")
+            plt.savefig(umap_file, dpi=300)
+            
+            # 파일이 제대로 생성되었는지 확인
+            if os.path.exists(umap_file):
+                file_size = os.path.getsize(umap_file)
+                print(f"✅ UMAP 시각화 저장 완료: {umap_file} ({file_size} bytes)")
+            else:
+                print(f"❌ UMAP 시각화 파일 저장 실패: {umap_file}")
+            
+        plt.close()  # 메모리 정리
         # plt.savefig("umap2d_topics_custom_color_pret.svg", dpi=300)
 
 
@@ -538,21 +555,7 @@ class Step4:
         # topic_model = BERTopic.load("path/to/your_saved_model")
 
         # ─── 3. 토픽별 상위 12개 키워드(단어) 및 점수 추출 ──────────────────────────────────
-        top_n = 12
-        topic_terms = {}
-        topic_scores = {}
-
-        for t in range(6):  # 토픽 0~5
-            terms_scores = topic_model.get_topic(t)  # [(term, score), ...]
-            if not terms_scores:
-                topic_terms[t] = []
-                topic_scores[t] = []
-                continue
-            top_terms_scores = terms_scores[:top_n]
-            terms = [term for term, score in top_terms_scores]
-            scores = [score for term, score in top_terms_scores]
-            topic_terms[t] = terms
-            topic_scores[t] = scores
+        # 이 부분은 나중에 실제 토픽 모델이 생성된 후에 실행되도록 이동
 
         # ─── 4. 서브플롯(2행×3열) 생성 ────────────────────────────────────────────────────
         fig = make_subplots(
@@ -580,91 +583,7 @@ class Step4:
             5: "#b30000"
         }
 
-        # ─── 6. 각 토픽 서브플롯에 Bar 차트 추가 ──────────────────────────────────────────
-        for t in range(6):
-            idx = t
-            row = idx // 3 + 1  # 0→1, 1→1, 2→1, 3→2, 4→2, 5→2
-            col = idx % 3 + 1  # 0→1, 1→2, 2→3, 3→1, 4→2, 5→3
-
-            terms = topic_terms[t]
-            scores = topic_scores[t]
-            if not terms:
-                continue
-
-            fig.add_trace(
-                go.Bar(
-                    x=scores,  # c-TFIDF 점수(내림차순: 높은 점수가 위쪽에)
-                    y=terms,  # 키워드(내림차순)
-                    orientation='h',
-                    marker_color=colors.get(t),
-                    hovertemplate="%{y}<br>Score: %{x:.3f}<extra></extra>"
-                ),
-                row=row, col=col
-            )
-
-            # x축 레이블(한글)과 폰트 지정
-            fig.update_xaxes(
-                row=row, col=col,
-                title_text="c-TF-IDF ",
-                title_font_family=default_font,
-                title_font_size=12,
-                tickfont_family=default_font,
-                tickfont_size=10
-            )
-            # y축 레이블은 키워드 자체가 표시되므로 y축 제목은 생략
-            fig.update_yaxes(
-                row=row, col=col,
-                tickfont_family=default_font,
-                tickfont_size=10
-            )
-
-        # ─── 7. 전체 레이아웃 수정 ─────────────────────────────────────────────────────
-        fig.update_layout(
-            height=900,  # 두 행이므로 적절히 높이 지정
-            width=1200,  # 세 열이므로 너비 확보
-            title_text="Topic 0~5: Top 10 words 분포",
-            title_font_family=default_font,
-            title_font_size=24,
-            showlegend=False,
-            margin=dict(l=80, r=40, t=120, b=80)
-        )
-
-        # ─── 8. 서브플롯 제목(Annotation) 폰트 지정 ─────────────────────────────────────
-        for i in range(6):
-            fig.layout.annotations[i].update(
-                font=dict(family=default_font, size=14)
-            )
-        
-        # Chrome 의존성 문제 해결을 위해 matplotlib으로 동일한 차트 생성
-        fig_mpl, axes = plt.subplots(2, 3, figsize=(15, 10))
-        fig_mpl.suptitle('Topic 0~5: Top 10 words 분포', fontsize=20, y=0.98)
-        
-        colors_mpl = {
-            0: "#8dd3c7", 1: "#4eb3d3", 2: "#08589e", 
-            3: "#fdb462", 4: "#fb8072", 5: "#b30000"
-        }
-        
-        for t in range(6):
-            row = t // 3
-            col = t % 3
-            ax = axes[row, col]
-            
-            terms = topic_terms[t]
-            scores = topic_scores[t]
-            
-            if terms:
-                # 내림차순으로 정렬 (높은 점수가 위쪽에)
-                y_pos = range(len(terms))
-                ax.barh(y_pos, scores[::-1], color=colors_mpl[t], alpha=0.8)
-                ax.set_yticks(y_pos)
-                ax.set_yticklabels(terms[::-1], fontsize=10)
-                ax.set_xlabel('c-TF-IDF', fontsize=12)
-                ax.set_title(f'Topic {t}: Top 10 words', fontsize=14, pad=10)
-                ax.grid(axis='x', alpha=0.3)
-                
-        plt.tight_layout()
-        plt.savefig("topic_words_chart.png", dpi=300, bbox_inches='tight')
-        plt.close(fig_mpl)
+        # 이 부분은 실제 토픽 모델 생성 후에 실행되도록 이동됨
         
         
         
@@ -690,87 +609,71 @@ class Step4:
             print(f"KR-SBERT 모델 로드 실패, 대체 모델 사용: {e}")
             # 대체 모델 사용
             embedding_model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-        #def grid():
-        # 환경 변수 및 시드 설정
-        os.environ["TOKENIZERS_PARALLELISM"] = "false"
-        seed = 42
-        #print(f'len:{len(lemmatized_patents)}')
-        # 문서 토큰화 준비
-        texts = [doc.split() for doc in lemmatized_patents]
-        dictionary = Dictionary(texts)
-
-        #하이퍼파라미터 그리드 정의
-        # param_grid = {
-        #     "n_neighbors": [10, 15, 20, 30, 40, 50],
-        #     "n_components": [5, 8, 10],
-        #     "min_dist": [0, 0.01],
-        #     "min_cluster_size": [15, 20, 25, 30, 40, 50]
-        # }
-
-        param_grid = {
-            "n_neighbors": [10,25,40],
-            "n_components": [7],
-            "min_dist": [0],
-            "min_cluster_size": [25,40]
+        # ===============================================
+        # 그리드서치 실행 여부 설정
+        # ===============================================
+        USE_GRID_SEARCH = False  # True: 그리드서치 실행, False: 미리 설정된 파라미터 사용
+        
+        # 미리 설정된 최적 파라미터 (그리드서치 없이 바로 사용)
+        PRESET_PARAMS = {
+            "n_neighbors": 10,
+            "n_components": 7, 
+            "min_dist": 0.01,
+            "min_cluster_size": 40
         }
+        
+        if USE_GRID_SEARCH:
+            print("🔍 그리드서치를 실행합니다...")
+            #def grid():
+            # 환경 변수 및 시드 설정
+            os.environ["TOKENIZERS_PARALLELISM"] = "false"
+            seed = 42
+            #print(f'len:{len(lemmatized_patents)}')
+            # 문서 토큰화 준비
+            texts = [doc.split() for doc in lemmatized_patents]
+            dictionary = Dictionary(texts)
 
+            #하이퍼파라미터 그리드 정의
+            # param_grid = {
+            #     "n_neighbors": [10, 15, 20, 30, 40, 50],
+            #     "n_components": [5, 8, 10],
+            #     "min_dist": [0, 0.01],
+            #     "min_cluster_size": [15, 20, 25, 30, 40, 50]
+            # }
 
-        # 총 조합 수 계산
-        total_combinations = (
-            len(param_grid["n_neighbors"]) *
-            len(param_grid["n_components"]) *
-            len(param_grid["min_dist"]) *
-            len(param_grid["min_cluster_size"])
-        )
-
-        results = []
-
-        # 결과를 저장할 파일 경로
-        output_path = "../0601_grid_search_results1154.json"
-
-        # (1) 빈 JSON 파일을 미리 생성해 두면, 이후 덮어쓰기가 편해집니다.
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump({"results": [], "best": None}, f, ensure_ascii=False, indent=4)
-
-        # Grid search with progress bar
-        for grid_idx, (n_neighbors, n_components, min_dist, min_cs) in enumerate(tqdm(
-                itertools.product(
-                    param_grid["n_neighbors"],
-                    param_grid["n_components"],
-                    param_grid["min_dist"],
-                    param_grid["min_cluster_size"]
-                ),
-                total=total_combinations,
-                desc="Grid Search"
-        )):
-            # grid 진행상황 저장
-            progress = {
-                "stage": "grid",
-                "current": grid_idx + 1,
-                "total": total_combinations,
-                "message": f"Grid {grid_idx + 1}/{total_combinations} 조합 평가 중"
+            param_grid = {
+                "n_neighbors": [10],
+                "n_components": [7],
+                "min_dist": [0.01],
+                "min_cluster_size": [40]
             }
-            with open("progress.json", "w", encoding="utf-8") as f:
-                json.dump(progress, f, ensure_ascii=False)
-
-            # 2.1) UMAP 모델 정의
-            umap_model = UMAP(
-                n_neighbors=n_neighbors,
-                n_components=n_components,
-                min_dist=min_dist,
-                metric='cosine',
+        else:
+            print("⚡ 미리 설정된 파라미터로 바로 진행합니다...")
+            print(f"   - n_neighbors: {PRESET_PARAMS['n_neighbors']}")
+            print(f"   - n_components: {PRESET_PARAMS['n_components']}")
+            print(f"   - min_dist: {PRESET_PARAMS['min_dist']}")
+            print(f"   - min_cluster_size: {PRESET_PARAMS['min_cluster_size']}")
+            
+            # 그리드서치 없이 바로 BERTopic 모델 훈련으로 건너뛰기
+            # UMAP 모델 설정 (미리 설정된 파라미터 사용)
+            umap_model = umap.UMAP(
+                n_neighbors=PRESET_PARAMS["n_neighbors"], 
+                n_components=PRESET_PARAMS["n_components"], 
+                min_dist=PRESET_PARAMS["min_dist"], 
+                metric='cosine', 
                 random_state=seed
             )
-            # 2.2) HDBSCAN 모델 정의
-            hdbscan_model = HDBSCAN(
-                min_cluster_size=min_cs,
-                min_samples=2,
-                metric='euclidean',
-                cluster_selection_method='eom',
+            
+            # HDBSCAN 모델 설정 (미리 설정된 파라미터 사용)
+            hdbscan_model = hdbscan.HDBSCAN(
+                min_cluster_size=PRESET_PARAMS["min_cluster_size"], 
+                min_samples=2, 
+                metric='euclidean', 
+                cluster_selection_method='eom', 
                 prediction_data=True
             )
-
-            # 2.3) BERTopic 학습
+            
+            # BERTopic 모델 초기화 및 훈련 (미리 설정된 파라미터 사용)
             topic_model = BERTopic(
                 language="korean",
                 calculate_probabilities=True,
@@ -781,122 +684,278 @@ class Step4:
                 umap_model=umap_model,
                 hdbscan_model=hdbscan_model,
                 ctfidf_model=ctfidf_model,
-                verbose=False
+                verbose=True
             )
-            try:
-                topics, probs = topic_model.fit_transform(lemmatized_patents)
-            except Exception as e:
-                print("❌ fit_transform 중 에러 발생:", e)
-                return {}  # 빈 dict 반환
-            #print('-------------test1-------------')
-
-            topic_words = {
-                str(topic_id): [word for word, _ in topic_model.get_topic(topic_id)]
-                for topic_id in topic_model.get_topic_freq().Topic
-                if topic_id != -1
+            
+            # 주제 모델 훈련
+            topics, probabilities = topic_model.fit_transform(lemmatized_patents)
+            
+            # 실제 토픽 모델 결과로 차트 데이터 생성
+            top_n = 12
+            topic_terms = {}
+            topic_scores = {}
+            
+            all_topics = list(topic_model.get_topics().keys())
+            print(f"🔍 전체 토픽 번호들: {all_topics}")
+            
+            # 실제 생성된 토픽들을 기반으로 차트 데이터 생성
+            for topic_num in all_topics:
+                if topic_num != -1:  # 노이즈 토픽 제외
+                    terms_scores = topic_model.get_topic(topic_num)  # [(term, score), ...]
+                    if terms_scores:
+                        top_terms_scores = terms_scores[:top_n]
+                        terms = [term for term, score in top_terms_scores]
+                        scores = [score for term, score in top_terms_scores]
+                        topic_terms[topic_num] = terms
+                        topic_scores[topic_num] = scores
+                        print(f"✅ Topic {topic_num}: {len(terms)}개 키워드 - {terms[:5]}...")
+                    else:
+                        topic_terms[topic_num] = []
+                        topic_scores[topic_num] = []
+            
+            # Chrome 의존성 문제 해결을 위해 matplotlib으로 차트 생성
+            fig_mpl, axes = plt.subplots(2, 3, figsize=(15, 10))
+            fig_mpl.suptitle('Topic 0~5: Top 10 words 분포', fontsize=20, y=0.98)
+            
+            colors_mpl = {
+                0: "#8dd3c7", 1: "#4eb3d3", 2: "#08589e", 
+                3: "#fdb462", 4: "#fb8072", 5: "#b30000"
             }
-            if len(topic_words) < 3:
-                continue
+            
+            # 실제 토픽 수에 맞춰 차트 생성
+            for i, topic_num in enumerate(sorted([t for t in all_topics if t != -1])[:6]):
+                row = i // 3
+                col = i % 3
+                ax = axes[row, col]
+                
+                terms = topic_terms.get(topic_num, [])
+                scores = topic_scores.get(topic_num, [])
+                
+                if terms:
+                    # 내림차순으로 정렬 (높은 점수가 위쪽에)
+                    y_pos = range(len(terms))
+                    ax.barh(y_pos, scores[::-1], color=colors_mpl.get(i, "#cccccc"), alpha=0.8)
+                    ax.set_yticks(y_pos)
+                    ax.set_yticklabels(terms[::-1], fontsize=10)
+                    ax.set_xlabel('c-TF-IDF', fontsize=12)
+                    ax.set_title(f'Topic {topic_num}: Top 10 words', fontsize=14, pad=10)
+                    ax.grid(axis='x', alpha=0.3)
+                else:
+                    ax.set_title(f'Topic {topic_num}: No data', fontsize=14, pad=10)
+                    
+            plt.tight_layout()
+            
+            # Topic words chart 파일 저장 (파일이 없을 때만 생성)
+            chart_file = "topic_words_chart.png"
+            
+            # 파일이 이미 존재하면 건너뛰기
+            if os.path.exists(chart_file):
+                print(f"⏭️ 토픽 차트 파일이 이미 존재합니다. 건너뜁니다: {chart_file}")
+            else:
+                print(f"📈 토픽 차트 파일을 새로 생성합니다: {chart_file}")
+                plt.savefig(chart_file, dpi=300, bbox_inches='tight')
+                
+                # 파일이 제대로 생성되었는지 확인
+                if os.path.exists(chart_file):
+                    file_size = os.path.getsize(chart_file)
+                    print(f"✅ 토픽 차트 저장 완료: {chart_file} ({file_size} bytes)")
+                else:
+                    print(f"❌ 토픽 차트 파일 저장 실패: {chart_file}")
+                
+            plt.close(fig_mpl)
+            
+            # 토픽 결과 처리 후 반환
+            topics_dict = {}
+            for topic_num in all_topics:
+                if topic_num != -1:  # 노이즈 토픽 제외
+                    words = [word for word, _ in topic_model.get_topic(topic_num)]
+                    topics_dict[topic_num] = words
 
-            # -------------------------------------------------------------
-            # 4) Coherence 계산
-            # -------------------------------------------------------------
-            coherence_per_topic = {}
-            for topic_id, words in topic_words.items():
-                cm = CoherenceModel(
-                    topics=[words],
-                    texts=texts,
-                    dictionary=dictionary,
-                    coherence='c_v'
-                )
-                coherence_per_topic[topic_id] = cm.get_coherence()
-            mean_coh = sum(coherence_per_topic.values()) / len(coherence_per_topic)
-            if mean_coh < 0.4:
-                continue
-            #print('-------------test2-------------')
-            # -------------------------------------------------------------
-            # 5) 토픽 빈도(Count) 저장 (노이즈 포함)
-            # -------------------------------------------------------------
-            topic_freq_df = topic_model.get_topic_freq()
-            topic_counts = {
-                str(int(row["Topic"])): int(row["Count"])
-                for _, row in topic_freq_df.iterrows()
-            }
+            print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개")
+            return topics_dict
 
-            # -------------------------------------------------------------
-            # 6) 해당 조합 결과 생성
-            # -------------------------------------------------------------
-            current_result = {
-                "n_neighbors": n_neighbors,
-                "n_components": n_components,
-                "min_dist": min_dist,
-                "min_cluster_size": min_cs,
-                "coherence_per_topic": coherence_per_topic,
-                "mean_coherence": mean_coh,
-                "topic_counts": topic_counts,
-                "topic_words": topic_words
-            }
-            results.append(current_result)
-            #print('-------------test3-------------')
+            # ========== 그리드서치 코드 (주석처리됨) ==========
+            # 총 조합 수 계산
+            total_combinations = (
+                len(param_grid["n_neighbors"]) *
+                len(param_grid["n_components"]) *
+                len(param_grid["min_dist"]) *
+                len(param_grid["min_cluster_size"])
+            )
 
-            # -------------------------------------------------------------
-            # 7) 현재까지의 results와 best를 JSON 파일에 실시간 덮어쓰기
-            # -------------------------------------------------------------
-            # 최적 조합을 계산하려면 지금까지의 results 중 가장 높은 mean_coherence를 찾습니다.
-            best_so_far = max(results, key=lambda x: x["mean_coherence"])
-            output_dict = {"results": results, "best": best_so_far}
+            results = []
 
+            # 결과를 저장할 파일 경로
+            output_path = "../0601_grid_search_results1154.json"
+
+            # (1) 빈 JSON 파일을 미리 생성해 두면, 이후 덮어쓰기가 편해집니다.
             with open(output_path, "w", encoding="utf-8") as f:
-                json.dump(output_dict, f, ensure_ascii=False, indent=4)
+                json.dump({"results": [], "best": None}, f, ensure_ascii=False, indent=4)
 
-        best = max(results, key=lambda x: x["mean_coherence"]) if results else None
-        if best:
-            print(
-                f"Grid search 완료. 최적 조합: "
-                f"{best['n_neighbors']}, {best['n_components']}, "
-                f"{best['min_dist']}, {best['min_cluster_size']} "
-                f"(평균 Coherence: {best['mean_coherence']:.4f})"
+            # Grid search with progress bar
+            for grid_idx, (n_neighbors, n_components, min_dist, min_cs) in enumerate(tqdm(
+                    itertools.product(
+                        param_grid["n_neighbors"],
+                        param_grid["n_components"],
+                        param_grid["min_dist"],
+                        param_grid["min_cluster_size"]
+                    ),
+                    total=total_combinations,
+                    desc="Grid Search"
+            )):
+                # grid 진행상황 저장
+                progress = {
+                    "stage": "grid",
+                    "current": grid_idx + 1,
+                    "total": total_combinations,
+                    "message": f"Grid {grid_idx + 1}/{total_combinations} 조합 평가 중"
+                }
+                with open("progress.json", "w", encoding="utf-8") as f:
+                    json.dump(progress, f, ensure_ascii=False)
+
+                # 2.1) UMAP 모델 정의
+                umap_model = UMAP(
+                    n_neighbors=n_neighbors,
+                    n_components=n_components,
+                    min_dist=min_dist,
+                    metric='cosine',
+                    random_state=seed
+                )
+                # 2.2) HDBSCAN 모델 정의
+                hdbscan_model = HDBSCAN(
+                    min_cluster_size=min_cs,
+                    min_samples=2,
+                    metric='euclidean',
+                    cluster_selection_method='eom',
+                    prediction_data=True
+                )
+
+                # 2.3) BERTopic 학습
+                topic_model = BERTopic(
+                    language="korean",
+                    calculate_probabilities=True,
+                    nr_topics='auto',
+                    top_n_words=15,
+                    vectorizer_model=vectorizer_model,
+                    embedding_model=embedding_model,
+                    umap_model=umap_model,
+                    hdbscan_model=hdbscan_model,
+                    ctfidf_model=ctfidf_model,
+                    verbose=False
+                )
+                try:
+                    topics, probs = topic_model.fit_transform(lemmatized_patents)
+                except Exception as e:
+                    print("❌ fit_transform 중 에러 발생:", e)
+                    return {}  # 빈 dict 반환
+                #print('-------------test1-------------')
+
+                topic_words = {
+                    str(topic_id): [word for word, _ in topic_model.get_topic(topic_id)]
+                    for topic_id in topic_model.get_topic_freq().Topic
+                    if topic_id != -1
+                }
+                if len(topic_words) < 3:
+                    continue
+
+                # -------------------------------------------------------------
+                # 4) Coherence 계산
+                # -------------------------------------------------------------
+                coherence_per_topic = {}
+                for topic_id, words in topic_words.items():
+                    cm = CoherenceModel(
+                        topics=[words],
+                        texts=texts,
+                        dictionary=dictionary,
+                        coherence='c_v'
+                    )
+                    coherence_per_topic[topic_id] = cm.get_coherence()
+                mean_coh = sum(coherence_per_topic.values()) / len(coherence_per_topic)
+                if mean_coh < 0.4:
+                    continue
+                #print('-------------test2-------------')
+                # -------------------------------------------------------------
+                # 5) 토픽 빈도(Count) 저장 (노이즈 포함)
+                # -------------------------------------------------------------
+                topic_freq_df = topic_model.get_topic_freq()
+                topic_counts = {
+                    str(int(row["Topic"])): int(row["Count"])
+                    for _, row in topic_freq_df.iterrows()
+                }
+
+                # -------------------------------------------------------------
+                # 6) 해당 조합 결과 생성
+                # -------------------------------------------------------------
+                current_result = {
+                    "n_neighbors": n_neighbors,
+                    "n_components": n_components,
+                    "min_dist": min_dist,
+                    "min_cluster_size": min_cs,
+                    "coherence_per_topic": coherence_per_topic,
+                    "mean_coherence": mean_coh,
+                    "topic_counts": topic_counts,
+                    "topic_words": topic_words
+                }
+                results.append(current_result)
+                #print('-------------test3-------------')
+
+                # -------------------------------------------------------------
+                # 7) 현재까지의 results와 best를 JSON 파일에 실시간 덮어쓰기
+                # -------------------------------------------------------------
+                # 최적 조합을 계산하려면 지금까지의 results 중 가장 높은 mean_coherence를 찾습니다.
+                best_so_far = max(results, key=lambda x: x["mean_coherence"])
+                output_dict = {"results": results, "best": best_so_far}
+
+                with open(output_path, "w", encoding="utf-8") as f:
+                    json.dump(output_dict, f, ensure_ascii=False, indent=4)
+
+            best = max(results, key=lambda x: x["mean_coherence"]) if results else None
+            if best:
+                print(
+                    f"Grid search 완료. 최적 조합: "
+                    f"{best['n_neighbors']}, {best['n_components']}, "
+                    f"{best['min_dist']}, {best['min_cluster_size']} "
+                    f"(평균 Coherence: {best['mean_coherence']:.4f})"
+                )
+            else:
+                print("조건을 만족하는 결과가 없습니다.")
+
+            # BERTopic 모델 초기화 및 훈련 (그리드서치 후)
+            topic_model = BERTopic(
+                language="korean",  # 언어 설정
+                calculate_probabilities=True,  # 확률 계산 여부
+                nr_topics='auto',  # 주제의 수 제한, auto로 해야 HDBSCAN 작동
+                top_n_words=15,  # 각 주제의 상위 단어 수
+                # 주제의 최소 크기
+                vectorizer_model=vectorizer_model,  # 벡터화 모델
+                embedding_model=embedding_model,  # 임베딩 모델
+                umap_model=umap_model,  # UMAP 모델
+                hdbscan_model=hdbscan_model,  # HDBSCAN 모델
+                ctfidf_model=ctfidf_model,  # c-TFIDF 모델
+                #representation_model=representation_model,
+                verbose=True  # 진행 상황 출력 여부
             )
-        else:
-            print("조건을 만족하는 결과가 없습니다.")
 
+            # 주제 모델 훈련
+            #print(f'check:{lemmatized_patents}')
+            topics, probabilities = topic_model.fit_transform(lemmatized_patents)
+            
+            #-----------------GTM1-----------------
+            #------------------------------------------------------------------
+            
+            # 토픽 번호를 가져오고 첫 번째 토픽(-1)을 제외
+            topics_dict = {}
+            all_topics = list(topic_model.get_topics().keys())
+            print(f"🔍 전체 토픽 번호들: {all_topics}")
+            
+            # -1 토픽(노이즈) 제외하고 나머지 모든 토픽 포함
+            for topic_num in all_topics:
+                if topic_num != -1:  # 노이즈 토픽 제외
+                    words = [word for word, _ in topic_model.get_topic(topic_num)]
+                    topics_dict[topic_num] = words
+                    print(f"✅ Topic {topic_num}: {len(words)}개 키워드 - {words[:5]}...")
 
-        # BERTopic 모델 초기화 및 훈련
-        topic_model = BERTopic(
-            language="korean",  # 언어 설정
-            calculate_probabilities=True,  # 확률 계산 여부
-            nr_topics='auto',  # 주제의 수 제한, auto로 해야 HDBSCAN 작동
-            top_n_words=15,  # 각 주제의 상위 단어 수
-            # 주제의 최소 크기
-            vectorizer_model=vectorizer_model,  # 벡터화 모델
-            embedding_model=embedding_model,  # 임베딩 모델
-            umap_model=umap_model,  # UMAP 모델
-            hdbscan_model=hdbscan_model,  # HDBSCAN 모델
-            ctfidf_model=ctfidf_model,  # c-TFIDF 모델
-            #representation_model=representation_model,
-            verbose=True  # 진행 상황 출력 여부
-        )
-
-        # 주제 모델 훈련
-        #print(f'check:{lemmatized_patents}')
-        topics, probabilities = topic_model.fit_transform(lemmatized_patents)
-        
-        #-----------------GTM1-----------------
-        #------------------------------------------------------------------
-        
-        # 토픽 번호를 가져오고 첫 번째 토픽(-1)을 제외
-        topics_dict = {}
-        all_topics = list(topic_model.get_topics().keys())
-        print(f"🔍 전체 토픽 번호들: {all_topics}")
-        
-        # -1 토픽(노이즈) 제외하고 나머지 모든 토픽 포함
-        for topic_num in all_topics:
-            if topic_num != -1:  # 노이즈 토픽 제외
-                words = [word for word, _ in topic_model.get_topic(topic_num)]
-                topics_dict[topic_num] = words
-                print(f"✅ Topic {topic_num}: {len(words)}개 키워드 - {words[:5]}...")
-
-        print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개")
-        return topics_dict
+            print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개")
+            return topics_dict
 #------------------------------------------------------------------------                       
     

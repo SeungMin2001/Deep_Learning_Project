@@ -20,6 +20,8 @@ class Step3_5:
         print(f"🔍 Step3_5 시작 - 입력 키워드: {keywords}")
         
         try:
+            import os  # 함수 내부에서 명시적으로 import
+            
             # CSV 파일 존재 확인
             if not os.path.exists("./extract_end.csv"):
                 print("❌ extract_end.csv 파일이 존재하지 않습니다.")
@@ -52,8 +54,9 @@ class Step3_5:
                 df["출원일"], errors="coerce", infer_datetime_format=True
             ).dt.year
 
-            # 최종 집계용 DataFrame
-            final_df = pd.DataFrame()
+            # 모든 키워드에 해당하는 특허 데이터 통합
+            all_matched_patents = pd.DataFrame()
+            total_count = 0
 
             for kw in KEYWORDS:
                 # 키워드 필터링
@@ -62,33 +65,31 @@ class Step3_5:
 
                 # 데이터 건수 확인
                 count = mask.sum()
+                total_count += count
                 print(f"**{kw}** → {count}건")
 
-                if filtered_df.empty:
-                    continue
+                if not filtered_df.empty:
+                    # 모든 매칭된 특허를 하나로 합침
+                    all_matched_patents = pd.concat([all_matched_patents, filtered_df], ignore_index=True)
 
-                # 연도별 건수 집계
-                year_counts = filtered_df.groupby("출원연도").size().reset_index(name=kw)
+            if not all_matched_patents.empty:
+                # 중복 제거 (같은 특허가 여러 키워드에 매칭될 수 있음)
+                all_matched_patents = all_matched_patents.drop_duplicates()
+                
+                # 통합된 데이터로 연도별 건수 집계 (단일 컬럼)
+                year_counts = all_matched_patents.groupby("출원연도").size().reset_index(name="전체 특허 출원 건수")
 
-                # 기존 DF와 병합
-                if final_df.empty:
-                    final_df = year_counts
-                else:
-                    final_df = pd.merge(final_df, year_counts, on="출원연도", how="outer")
-
-            # 연도순 정렬 + NaN → 0
-            if not final_df.empty:
                 # 1990~2025 연도 범위 생성
                 year_range = pd.DataFrame({"출원연도": range(1990, 2026)})
                 
                 # 기존 데이터와 병합하여 빈 연도도 포함
-                final_df = pd.merge(year_range, final_df, on="출원연도", how="left")
+                final_df = pd.merge(year_range, year_counts, on="출원연도", how="left")
                 final_df = final_df.sort_values("출원연도").fillna(0)
                 
                 # 출원연도를 인덱스로 설정
                 final_df = final_df.set_index("출원연도")
 
-                print("✅ 특허 그래프 데이터 생성 완료")
+                print(f"✅ 특허 그래프 데이터 생성 완료 - 총 {len(all_matched_patents)}건 (중복 제거 후)")
                 return final_df
             else:
                 print("❌ 모든 키워드에 대해 데이터가 없습니다.")
