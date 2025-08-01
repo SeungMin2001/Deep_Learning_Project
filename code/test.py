@@ -388,7 +388,13 @@ def continue_analysis_from_step4():
         s4 = Step4()
         topic_list = s4.ber()
         
-        # 토픽 결과 검증
+        # 토픽 결과 검증 및 로깅
+        print(f"🔍 Step4에서 받은 토픽 결과: {type(topic_list)}")
+        if isinstance(topic_list, dict):
+            print(f"📊 토픽 개수: {len(topic_list)}개")
+            for topic_id, words in topic_list.items():
+                print(f"  - Topic {topic_id}: {words[:3]}...")
+        
         if not topic_list or not isinstance(topic_list, dict):
             main_progress.progress(0.9)
             status_container.error("❌ Step 4 실패: 토픽 추출 중 오류 발생")
@@ -452,7 +458,7 @@ def display_topic_visualization():
     topic_words_image_path = "./topic_words_chart.png"
     if os.path.exists(topic_words_image_path):
         image2 = Image.open(topic_words_image_path)
-        st.image(image2, caption="토픽별 상위 12개 주요 키워드 분포", use_column_width=True)
+        st.image(image2, caption="토픽별 상위 10개 주요 키워드 분포", use_column_width=True)
     else:
         st.info("토픽 키워드 차트 이미지를 찾을 수 없습니다.")
 
@@ -542,7 +548,14 @@ def display_topic_results():
     if st.session_state.topic_results:
         st.subheader("🔍 토픽 분석 결과")
         
-        for topic_id, words in st.session_state.topic_results.items():
+        # 토픽 개수 정보 표시
+        topic_count = len(st.session_state.topic_results)
+        st.info(f"📊 총 **{topic_count}개**의 주요 토픽이 발견되었습니다.")
+        
+        # 토픽들을 번호 순으로 정렬하여 표시
+        sorted_topics = sorted(st.session_state.topic_results.items(), key=lambda x: int(x[0]) if str(x[0]).isdigit() else float('inf'))
+        
+        for topic_id, words in sorted_topics:
             # topic_id가 문자열일 수 있으므로 int로 변환 후 처리
             try:
                 topic_num = int(topic_id)
@@ -550,15 +563,18 @@ def display_topic_results():
             except (ValueError, TypeError):
                 display_topic_id = str(topic_id)
                 
-            with st.expander(f"Topic {display_topic_id}"):
+            with st.expander(f"Topic {display_topic_id}", expanded=False):
                 st.write("**주요 키워드:**")
-                if isinstance(words, list):
-                    st.write(", ".join(words[:10]))  # 상위 10개 키워드만 표시
+                if isinstance(words, list) and len(words) > 0:
+                    # 키워드를 더 보기 좋게 표시
+                    keywords_text = ", ".join(words[:10])  # 상위 10개 키워드 표시
+                    st.write(keywords_text)
+                    st.caption(f"총 {len(words)}개 키워드 중 상위 10개 표시")
                 else:
-                    st.write(str(words))
+                    st.write("키워드 정보가 없습니다.")
     else:
         st.warning("🔍 토픽 분석이 아직 완료되지 않았습니다.")
-        st.info("💡 **완전한 토픽 분석을 위해서는** 위의 특허 동향 그래프를 확인한 후, 원하는 날짜 범위를 선택하고 **'🚀 날짜 범위 적용 후 계속 진행'** 버튼을 클릭하세요.")
+        st.info("💡 **완전한 토픽 분석을 위해서는** 위의 특허 동향 그래프를 확인한 후, 원하는 날짜 범위를 선택하고 **'🚀 완전한 토픽 분석 실행 (권장)'** 버튼을 클릭하세요.")
         st.markdown("""
         ### 📋 토픽 분석에서 확인할 수 있는 내용:
         - 🎯 특허 데이터에서 추출된 주요 기술 주제들

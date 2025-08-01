@@ -558,12 +558,12 @@ class Step4:
         fig = make_subplots(
             rows=2, cols=3,
             subplot_titles=[
-                "Topic 0: Top 12 words",
-                "Topic 1: Top 12 words",
-                "Topic 2: Top 12 words",
-                "Topic 3: Top 12 words",
-                "Topic 4: Top 12 words",
-                "Topic 5: Top 12 words",
+                "Topic 0: Top 10 words",
+                "Topic 1: Top 10 words",
+                "Topic 2: Top 10 words",
+                "Topic 3: Top 10 words",
+                "Topic 4: Top 10 words",
+                "Topic 5: Top 10 words",
             ],
             # 1행과 2행 사이 간격을 충분히 두기 위해 vertical_spacing을 조정합니다.
             vertical_spacing=0.15,
@@ -593,8 +593,8 @@ class Step4:
 
             fig.add_trace(
                 go.Bar(
-                    x=scores[::-1],  # c-TFIDF 점수(역순: 높은 점수가 위쪽에)
-                    y=terms[::-1],  # 키워드(역순)
+                    x=scores,  # c-TFIDF 점수(내림차순: 높은 점수가 위쪽에)
+                    y=terms,  # 키워드(내림차순)
                     orientation='h',
                     marker_color=colors.get(t),
                     hovertemplate="%{y}<br>Score: %{x:.3f}<extra></extra>"
@@ -622,7 +622,7 @@ class Step4:
         fig.update_layout(
             height=900,  # 두 행이므로 적절히 높이 지정
             width=1200,  # 세 열이므로 너비 확보
-            title_text="Topic 0~5: Top 12 words 분포",
+            title_text="Topic 0~5: Top 10 words 분포",
             title_font_family=default_font,
             title_font_size=24,
             showlegend=False,
@@ -637,7 +637,7 @@ class Step4:
         
         # Chrome 의존성 문제 해결을 위해 matplotlib으로 동일한 차트 생성
         fig_mpl, axes = plt.subplots(2, 3, figsize=(15, 10))
-        fig_mpl.suptitle('Topic 0~5: Top 12 words 분포', fontsize=20, y=0.98)
+        fig_mpl.suptitle('Topic 0~5: Top 10 words 분포', fontsize=20, y=0.98)
         
         colors_mpl = {
             0: "#8dd3c7", 1: "#4eb3d3", 2: "#08589e", 
@@ -653,12 +653,13 @@ class Step4:
             scores = topic_scores[t]
             
             if terms:
+                # 내림차순으로 정렬 (높은 점수가 위쪽에)
                 y_pos = range(len(terms))
-                ax.barh(y_pos, scores, color=colors_mpl[t], alpha=0.8)
+                ax.barh(y_pos, scores[::-1], color=colors_mpl[t], alpha=0.8)
                 ax.set_yticks(y_pos)
-                ax.set_yticklabels(terms, fontsize=10)
+                ax.set_yticklabels(terms[::-1], fontsize=10)
                 ax.set_xlabel('c-TF-IDF', fontsize=12)
-                ax.set_title(f'Topic {t}: Top 12 words', fontsize=14, pad=10)
+                ax.set_title(f'Topic {t}: Top 10 words', fontsize=14, pad=10)
                 ax.grid(axis='x', alpha=0.3)
                 
         plt.tight_layout()
@@ -885,10 +886,17 @@ class Step4:
         
         # 토픽 번호를 가져오고 첫 번째 토픽(-1)을 제외
         topics_dict = {}
-        for topic_num in list(topic_model.get_topics())[1:]:  # -1 토픽(노이즈) 제외
-            words = [word for word, _ in topic_model.get_topic(topic_num)]
-            topics_dict[topic_num] = words
+        all_topics = list(topic_model.get_topics().keys())
+        print(f"🔍 전체 토픽 번호들: {all_topics}")
+        
+        # -1 토픽(노이즈) 제외하고 나머지 모든 토픽 포함
+        for topic_num in all_topics:
+            if topic_num != -1:  # 노이즈 토픽 제외
+                words = [word for word, _ in topic_model.get_topic(topic_num)]
+                topics_dict[topic_num] = words
+                print(f"✅ Topic {topic_num}: {len(words)}개 키워드 - {words[:5]}...")
 
+        print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개")
         return topics_dict
 #------------------------------------------------------------------------                       
     
