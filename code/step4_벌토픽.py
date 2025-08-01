@@ -708,10 +708,10 @@ class Step4:
         # }
 
         param_grid = {
-            "n_neighbors": [30,50],
+            "n_neighbors": [10,25,40],
             "n_components": [7],
-            "min_dist": [0.01],
-            "min_cluster_size": [15,30]
+            "min_dist": [0],
+            "min_cluster_size": [25,40]
         }
 
 

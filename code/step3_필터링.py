@@ -9,6 +9,11 @@ from dotenv import load_dotenv
 
 class Step3:
     def filter(self):
+        # extract_end.csv 파일이 이미 존재하는지 확인
+        if os.path.exists('./extract_end.csv'):
+            print("extract_end.csv 파일이 이미 존재합니다. 필터링 과정을 건너뜁니다.")
+            return
+            
         data = 'extract.csv'
         df=pd.read_csv(data)
         print(df.shape)  # 합쳐진 데이터 크기 확인
