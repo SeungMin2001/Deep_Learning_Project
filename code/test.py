@@ -669,8 +669,8 @@ def get_report_files():
     
     if not found_reports_dir:
         return None, []
-    
-    report_files = glob.glob(os.path.join(found_reports_dir, "*.md"))
+    report_files = sorted(glob.glob(os.path.join(found_reports_dir, "*.md")))
+    #report_files = sorted(os.listdir(found_reports_dir))
     return found_reports_dir, report_files
 
 def display_sidebar_reports():
