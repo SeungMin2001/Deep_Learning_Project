@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 class Step1:
     def __init__(self):
-        return
         # 환경변수에서 API 키 읽기, 없으면 기본값 사용
         load_dotenv()
         api_key = os.getenv('OPENAI_API_KEY')
@@ -15,7 +14,6 @@ class Step1:
         self.openai = OpenAI(api_key=api_key)
 
     def make(self, keyword):
-        return
         MODEL = 'gpt-3.5-turbo'
         # 1) 사용자 키워드 입력 (인자로 받음)
         # 2) LLM을 통해 검색식 생성

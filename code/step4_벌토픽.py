@@ -83,7 +83,7 @@ class Step4:
         file_path = './extract_end.csv'
         patent = pd.read_csv(file_path)
 
-        summ = patent['발명의명칭']+patent['청구항']+patent['요약']
+        summ = patent['발명명칭']+patent['astrtCont']
         #summ=patent['청구항']
         #print(summ)
         # 표제어 추출기 설정
@@ -391,8 +391,7 @@ class Step4:
             n_neighbors=15,
             n_components=2,  # 2차원으로 축소 (시각화용)
             metric='cosine',
-            min_dist=0.3,    # 값을 줄여서 클러스터 형성 도움
-            spread=2.0,      # 클러스터 확산 정도 증가
+            min_dist=0.1,    # 최소 거리를 0으로 설정하여 더 밀집된 클러스터 형성
             random_state=42
         )
         umap_embeddings_2d = umap_2d.fit_transform(embeddings)
@@ -618,10 +617,10 @@ class Step4:
         
         # 미리 설정된 최적 파라미터 (그리드서치 없이 바로 사용)
         PRESET_PARAMS = {
-            "n_neighbors": 10,
-            "n_components": 5, 
-            "min_dist": 0.1,
-            "min_cluster_size": 10
+            "n_neighbors": 15,  # 이웃 수 증가로 더 부드러운 임베딩
+            "n_components": 10, # 차원 증가로 더 많은 정보 보존
+            "min_dist": 0.1,    # 거리 최소화로 클러스터 형성 촉진
+            "min_cluster_size": 3  # 매우 작은 클러스터도 허용
         }
         
         if USE_GRID_SEARCH:
@@ -669,7 +668,7 @@ class Step4:
             # HDBSCAN 모델 설정 (미리 설정된 파라미터 사용)
             hdbscan_model = hdbscan.HDBSCAN(
                 min_cluster_size=PRESET_PARAMS["min_cluster_size"], 
-                min_samples=5, 
+                min_samples=2,  # 최소 샘플 수를 2로 설정
                 metric='euclidean', 
                 cluster_selection_method='eom', 
                 prediction_data=True
