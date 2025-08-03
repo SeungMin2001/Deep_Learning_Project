@@ -376,16 +376,49 @@ def update_progress(step, message):
 def filter_data_by_date(start_year, end_year):
     """날짜 범위로 특허 데이터 필터링"""
     try:
-        df = pd.read_csv("./extract_end.csv")
+        # CSV 파일 존재 확인 (여러 경로 시도)
+        csv_paths = ["./extract_end.csv", "../extract_end.csv", "/Users/shinseungmin/Documents/벌토픽_전체코드/extract_end.csv"]
+        csv_path = None
         
-        # openDate가 있는 데이터만 필터링
-        df = df.dropna(subset=['openDate'])
+        for path in csv_paths:
+            if os.path.exists(path):
+                csv_path = path
+                break
         
-        # openDate 처리 (step3_5_특허그래프.py와 동일한 방식)
-        df["openDate"] = df["openDate"].astype(str).str.replace('.0', '').str.strip()
-        df["출원연도"] = pd.to_datetime(
-            df["openDate"], format='%Y%m%d', errors="coerce"
-        ).dt.year
+        if csv_path is None:
+            print("❌ extract_end.csv 파일을 찾을 수 없습니다.")
+            return 0
+            
+        df = pd.read_csv(csv_path)
+        print(f"📁 필터링용 CSV 파일: {csv_path} ({len(df)}건)")
+        
+        # step3_5_특허그래프.py와 동일한 날짜 처리 방식
+        if 'openDate' in df.columns:
+            # openDate가 있는 경우
+            df = df.dropna(subset=['openDate'])
+            if len(df) > 0:
+                df["openDate"] = df["openDate"].astype(str).str.replace('.0', '').str.strip()
+                df["출원연도"] = pd.to_datetime(
+                    df["openDate"], format='%Y%m%d', errors="coerce"
+                ).dt.year
+                df = df.dropna(subset=['출원연도'])
+        else:
+            # openDate가 없는 경우 기존 컬럼들 사용
+            if '출원연도' in df.columns:
+                df = df.dropna(subset=['출원연도'])
+            elif '출원일자' in df.columns:
+                df = df.dropna(subset=['출원일자'])
+                df['출원연도'] = pd.to_datetime(df['출원일자'], errors='coerce').dt.year
+                df = df.dropna(subset=['출원연도'])
+            elif '출원일' in df.columns:
+                df = df.dropna(subset=['출원일'])
+                df['출원연도'] = pd.to_datetime(df['출원일'], errors='coerce').dt.year
+                df = df.dropna(subset=['출원연도'])
+            else:
+                print("❌ 날짜 관련 컬럼을 찾을 수 없습니다.")
+                return 0
+        
+        print(f"📅 날짜 처리 후 데이터 수: {len(df)}건")
         
         # 날짜 범위 필터링
         filtered_df = df[(df["출원연도"] >= start_year) & (df["출원연도"] <= end_year)]
@@ -486,9 +519,9 @@ def run_analysis_pipeline(keyword):
         # Step3_5 클래스 사용
         try:
             s3_5 = Step3_5()
-            print(f"Step3_5 클래스 생성 완료, 키워드: {generated_keywords}")
+            detail_container.write(f"📊 Step3_5 클래스 생성 완료, 키워드: {generated_keywords}")
             graph_data = s3_5.generate_graph(generated_keywords)
-            print(f"Step3_5 그래프 데이터 생성 완료: {graph_data is not None}")
+            detail_container.write(f"📈 Step3_5 그래프 데이터 생성 완료: {'성공' if graph_data is not None else '실패'}")
             
             # 그래프 데이터를 세션 상태에 저장
             st.session_state.graph_data = graph_data
@@ -543,15 +576,22 @@ def continue_analysis_from_step4():
     
     try:
         
+        # 실행 환경 정보 출력
+        import os
+        detail_container.write(f"🔧 실행 환경: {os.getcwd()}")
+        detail_container.write(f"🐍 Python 버전: {sys.version.split()[0]}")
+        
         s4 = Step4()
         topic_list = s4.ber()
         
-        # 토픽 결과 검증 및 로깅
-        print(f"🔍 Step4에서 받은 토픽 결과: {type(topic_list)}")
+        # 토픽 결과 검증 및 로깅 (웹페이지에 표시)
+        detail_container.write(f"🔍 Step4에서 받은 토픽 결과: {type(topic_list)}")
         if isinstance(topic_list, dict):
-            print(f"📊 토픽 개수: {len(topic_list)}개")
+            detail_container.write(f"📊 토픽 개수: {len(topic_list)}개")
+            detail_container.write("📝 각 토픽별 키워드 미리보기:")
             for topic_id, words in topic_list.items():
-                print(f"  - Topic {topic_id}: {words[:3]}...")
+                word_preview = words[:3] if words else ['키워드 없음']
+                detail_container.write(f"  - Topic {topic_id}: {word_preview}... ({len(words)}개 키워드)")
         
         if not topic_list or not isinstance(topic_list, dict):
             main_progress.progress(0.9)
@@ -1185,17 +1225,30 @@ def get_topic_patents(topic_num):
         import pandas as pd
         import os
         
-        # extract_end.csv 파일에서 특허 데이터 읽기
-        if not os.path.exists("./extract_end.csv"):
+        # CSV 파일 존재 확인 (여러 경로 시도)
+        csv_paths = ["./extract_end.csv", "../extract_end.csv", "/Users/shinseungmin/Documents/벌토픽_전체코드/extract_end.csv"]
+        csv_path = None
+        
+        for path in csv_paths:
+            if os.path.exists(path):
+                csv_path = path
+                break
+        
+        if csv_path is None:
+            print("❌ extract_end.csv 파일을 찾을 수 없습니다.")
             return []
             
-        df = pd.read_csv("./extract_end.csv")
+        df = pd.read_csv(csv_path)
+        print(f"📁 특허 정보 로드: {csv_path} ({len(df)}건)")
         
         # 토픽 키워드 가져오기
         if 'topic_results' in st.session_state and st.session_state.topic_results:
             topic_keywords = st.session_state.topic_results.get(topic_num, [])
             if not topic_keywords:
+                print(f"❌ 토픽 {topic_num}의 키워드가 없습니다.")
                 return []
+            
+            print(f"🔍 토픽 {topic_num} 키워드: {topic_keywords[:5]}")
             
             # 상위 5개 키워드로 특허 필터링
             top_keywords = topic_keywords[:5]
@@ -1203,19 +1256,23 @@ def get_topic_patents(topic_num):
             # 키워드가 포함된 특허들 찾기
             matched_patents = []
             for _, patent in df.iterrows():
-                # 발명명칭과 요약에서 키워드 매칭 확인
-                title = str(patent.get('발명명칭', ''))
-                abstract = str(patent.get('astrtCont', ''))
+                # 발명명칭과 요약에서 키워드 매칭 확인 (실제 컬럼명 사용)
+                title = str(patent.get('발명의명칭', ''))
+                abstract = str(patent.get('요약', ''))
                 search_text = (title + ' ' + abstract).lower()
                 
                 # 키워드 중 하나라도 포함되어 있으면 매칭
                 if any(keyword.lower() in search_text for keyword in top_keywords):
                     patent_info = {
                         'applicant': patent.get('출원인', 'N/A'),
-                        'title': patent.get('발명명칭', 'N/A'),
-                        'application_date': patent.get('출원일', 'N/A')
+                        'title': patent.get('발명의명칭', 'N/A'),
+                        'application_date': patent.get('출원일자', 'N/A'),
+                        'abstract': patent.get('요약', 'N/A'),
+                        'ipc_class': patent.get('IPC분류', 'N/A')
                     }
                     matched_patents.append(patent_info)
+            
+            print(f"✅ 매칭된 특허 수: {len(matched_patents)}건")
             
             # 중복 제거 및 최대 10개로 제한
             seen = set()
@@ -1955,22 +2012,52 @@ def show_home_page():
         # 날짜 범위 미리보기
         if start_year and end_year and start_year <= end_year:
             try:
-                df = pd.read_csv("./extract_end.csv")
+                # CSV 파일 존재 확인 (여러 경로 시도)
+                csv_paths = ["./extract_end.csv", "../extract_end.csv", "/Users/shinseungmin/Documents/벌토픽_전체코드/extract_end.csv"]
+                csv_path = None
                 
-                # openDate가 있는 데이터만 사용 (step3_5_특허그래프.py와 동일한 방식)
-                df = df.dropna(subset=['openDate'])
-                df["openDate"] = df["openDate"].astype(str).str.replace('.0', '').str.strip()
-                df["출원연도"] = pd.to_datetime(
-                    df["openDate"], format='%Y%m%d', errors="coerce"
-                ).dt.year
-                df = df.dropna(subset=['출원연도'])
+                for path in csv_paths:
+                    if os.path.exists(path):
+                        csv_path = path
+                        break
                 
-                total_count = len(df)
-                filtered_count = len(df[(df["출원연도"] >= start_year) & (df["출원연도"] <= end_year)])
-                
-                st.info(f"📊 선택한 날짜 범위의 특허 수: {filtered_count}/{total_count}건 ({filtered_count/total_count*100:.1f}%)")
-            except:
-                pass
+                if csv_path is None:
+                    st.error("❌ extract_end.csv 파일을 찾을 수 없습니다.")
+                else:
+                    df = pd.read_csv(csv_path)
+                    
+                    # step3_5_특허그래프.py와 동일한 날짜 처리 방식 적용
+                    if 'openDate' in df.columns:
+                        # openDate가 있는 경우
+                        df = df.dropna(subset=['openDate'])
+                        if len(df) > 0:
+                            df["openDate"] = df["openDate"].astype(str).str.replace('.0', '').str.strip()
+                            df["출원연도"] = pd.to_datetime(
+                                df["openDate"], format='%Y%m%d', errors="coerce"
+                            ).dt.year
+                            df = df.dropna(subset=['출원연도'])
+                    else:
+                        # openDate가 없는 경우 기존 컬럼들 사용
+                        if '출원연도' in df.columns:
+                            df = df.dropna(subset=['출원연도'])
+                        elif '출원일자' in df.columns:
+                            df = df.dropna(subset=['출원일자'])
+                            df['출원연도'] = pd.to_datetime(df['출원일자'], errors='coerce').dt.year
+                            df = df.dropna(subset=['출원연도'])
+                        elif '출원일' in df.columns:
+                            df = df.dropna(subset=['출원일'])
+                            df['출원연도'] = pd.to_datetime(df['출원일'], errors='coerce').dt.year
+                            df = df.dropna(subset=['출원연도'])
+                    
+                    if len(df) > 0 and '출원연도' in df.columns:
+                        total_count = len(df)
+                        filtered_count = len(df[(df["출원연도"] >= start_year) & (df["출원연도"] <= end_year)])
+                        
+                        st.info(f"📊 선택한 날짜 범위의 특허 수: {filtered_count}/{total_count}건 ({filtered_count/total_count*100:.1f}%)")
+                    else:
+                        st.warning("⚠️ 날짜 정보를 처리할 수 없습니다.")
+            except Exception as e:
+                st.warning(f"⚠️ 날짜 범위 미리보기 오류: {str(e)}")
 
     elif st.session_state.step_progress > 0 and not st.session_state.analysis_complete and not st.session_state.waiting_for_date_input:
         # 분석 진행 중 화면

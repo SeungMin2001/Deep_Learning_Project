@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 class Step3:
     def filter(self):
+        return
         import os  # 함수 내부에서 명시적으로 import
         
         # extract_end.csv 파일이 이미 존재하는지 확인

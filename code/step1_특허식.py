@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 class Step1:
     def __init__(self):
+        return
         # 환경변수에서 API 키 읽기, 없으면 기본값 사용
         load_dotenv()
         api_key = os.getenv('OPENAI_API_KEY')
@@ -14,17 +15,20 @@ class Step1:
         self.openai = OpenAI(api_key=api_key)
 
     def make(self, keyword):
+        return
         MODEL = 'gpt-3.5-turbo'
         # 1) 사용자 키워드 입력 (인자로 받음)
-
         # 2) LLM을 통해 검색식 생성
         system_prompt = (
-            #['로봇', '빅데이터', '센서', '알고리즘', '인공지능', '인터넷', '자율', '제어', '주행', '카메라']
-            "관련 키워드를 리스트 안에 키워드들을 담아서 만들어줘\n"
-            "예시 (키워드: 자율주행 로봇): ['자율','주행','바퀴]\n"
-            "리스트 안에 키워드를 다섯개만 만들어줘\n"
-            "['인공지능', '센서', '데이터', '알고리즘', '카메라'] 이렇게 5개 키워드 만들어줘"
-            #"1. 로봇,2. 빅데이터,3. 센서,4. 알고리즘,5. 인공지능,6. 인터넷,7. 자율,8. 제어,9. 주행,10. 카메라 이 10개의 키워드로 10개키워드 제공해줘"
+            "너는 특허 검색 전문가야.\n"
+            "사용자가 입력한 키워드를 기반으로 관련된 10개 내외의 복합 키워드를 만들어.\n"
+            "반드시 한글 키워드(동의어, 응용 포함)와 영어 키워드(약어 또는 full term)를 모두 포함해야 하고,\n"
+            "검색식에는 자율주행, 물류, AGV, SLAM, 플랫폼 등 응용 분야 키워드도 확장해서 넣어.\n"
+            "예: 키워드 '자율주행로봇' → 자율주행로봇, 자율이동로봇, AMR, Autonomous Mobile Robot, "
+            "무인운반로봇, AGV, Automated Guided Vehicle, Warehouse Robot, SLAM 로봇, 스마트로봇\n\n"
+            "출력은 반드시 다음 형식으로:\n"
+            "['키워드1','키워드2','키워드3']\n"
+            "다른 설명이나 문장은 출력하지 마."
         )
         user_prompt = f"키워드: {keyword}"
 
