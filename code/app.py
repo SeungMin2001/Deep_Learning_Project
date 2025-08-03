@@ -265,8 +265,7 @@ def run_analysis_pipeline(keyword):
         base_progress = step_weights[1]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 1 완료: 특허식 생성 완료")
-        detail_container.write(f"✅ 생성된 특허식: {sentence}")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 2: 특허 크롤링
         update_progress(2, "특허 크롤링 중...")
@@ -286,7 +285,7 @@ def run_analysis_pipeline(keyword):
         base_progress += step_weights[2]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 2 완료: 특허 데이터 수집 완료")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 3: 데이터 필터링
         update_progress(3, "특허 필터링 중...")
@@ -305,7 +304,7 @@ def run_analysis_pipeline(keyword):
         base_progress += step_weights[3]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 3 완료: 데이터 필터링 완료")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 3.5: 특허 그래프 표시
         update_progress("3_5", "특허 그래프 생성 중...")
@@ -331,7 +330,7 @@ def run_analysis_pipeline(keyword):
         main_progress.progress(base_progress)
         status_container.success("✅ Step 3.5 완료: 특허 그래프 생성 완료")
         detail_container.write("✅ 연도별 특허 출원 동향 그래프가 생성되었습니다.")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 4: 토픽 모델링
         update_progress(4, "토픽 추출 및 시각화 중...")
@@ -351,7 +350,7 @@ def run_analysis_pipeline(keyword):
         main_progress.progress(base_progress)
         status_container.success("✅ Step 4 완료: 토픽 추출 및 시각화 완료")
         detail_container.write(f"✅ {len(topic_list)}개의 주요 토픽을 발견했습니다.")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 5: 보고서 생성
         update_progress(5, "보고서 작성 중...")

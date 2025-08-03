@@ -616,10 +616,10 @@ class Step4:
         
         # 미리 설정된 최적 파라미터 (그리드서치 없이 바로 사용)
         PRESET_PARAMS = {
-            "n_neighbors": 10,
+            "n_neighbors": 35,
             "n_components": 7, 
-            "min_dist": 0.01,
-            "min_cluster_size": 40
+            "min_dist": 0.5,
+            "min_cluster_size": 50
         }
         
         if USE_GRID_SEARCH:
@@ -642,7 +642,7 @@ class Step4:
             # }
 
             param_grid = {
-                "n_neighbors": [10],
+                "n_neighbors": [35],
                 "n_components": [7],
                 "min_dist": [0.01],
                 "min_cluster_size": [40]
@@ -698,20 +698,22 @@ class Step4:
             all_topics = list(topic_model.get_topics().keys())
             print(f"🔍 전체 토픽 번호들: {all_topics}")
             
-            # 실제 생성된 토픽들을 기반으로 차트 데이터 생성
-            for topic_num in all_topics:
-                if topic_num != -1:  # 노이즈 토픽 제외
-                    terms_scores = topic_model.get_topic(topic_num)  # [(term, score), ...]
-                    if terms_scores:
-                        top_terms_scores = terms_scores[:top_n]
-                        terms = [term for term, score in top_terms_scores]
-                        scores = [score for term, score in top_terms_scores]
-                        topic_terms[topic_num] = terms
-                        topic_scores[topic_num] = scores
-                        print(f"✅ Topic {topic_num}: {len(terms)}개 키워드 - {terms[:5]}...")
-                    else:
-                        topic_terms[topic_num] = []
-                        topic_scores[topic_num] = []
+            # 실제 생성된 토픽들을 기반으로 차트 데이터 생성 (최대 6개로 제한)
+            valid_topics = sorted([t for t in all_topics if t != -1])[:6]  # 최대 6개만 선택
+            print(f"🔍 선택된 토픽들 (최대 6개): {valid_topics}")
+            
+            for topic_num in valid_topics:
+                terms_scores = topic_model.get_topic(topic_num)  # [(term, score), ...]
+                if terms_scores:
+                    top_terms_scores = terms_scores[:top_n]
+                    terms = [term for term, score in top_terms_scores]
+                    scores = [score for term, score in top_terms_scores]
+                    topic_terms[topic_num] = terms
+                    topic_scores[topic_num] = scores
+                    print(f"✅ Topic {topic_num}: {len(terms)}개 키워드 - {terms[:5]}...")
+                else:
+                    topic_terms[topic_num] = []
+                    topic_scores[topic_num] = []
             
             # Chrome 의존성 문제 해결을 위해 matplotlib으로 차트 생성
             fig_mpl, axes = plt.subplots(2, 3, figsize=(15, 10))
@@ -722,8 +724,8 @@ class Step4:
                 3: "#fdb462", 4: "#fb8072", 5: "#b30000"
             }
             
-            # 실제 토픽 수에 맞춰 차트 생성
-            for i, topic_num in enumerate(sorted([t for t in all_topics if t != -1])[:6]):
+            # 선택된 토픽들에 맞춰 차트 생성 (최대 6개)
+            for i, topic_num in enumerate(valid_topics):
                 row = i // 3
                 col = i % 3
                 ax = axes[row, col]
@@ -764,14 +766,13 @@ class Step4:
                 
             plt.close(fig_mpl)
             
-            # 토픽 결과 처리 후 반환
+            # 토픽 결과 처리 후 반환 (최대 6개로 제한)
             topics_dict = {}
-            for topic_num in all_topics:
-                if topic_num != -1:  # 노이즈 토픽 제외
-                    words = [word for word, _ in topic_model.get_topic(topic_num)]
-                    topics_dict[topic_num] = words
+            for topic_num in valid_topics:  # 이미 6개로 제한된 토픽들만 사용
+                words = [word for word, _ in topic_model.get_topic(topic_num)]
+                topics_dict[topic_num] = words
 
-            print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개")
+            print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개 (최대 6개로 제한)")
             return topics_dict
 
             # ========== 그리드서치 코드 (주석처리됨) ==========
@@ -948,14 +949,16 @@ class Step4:
             all_topics = list(topic_model.get_topics().keys())
             print(f"🔍 전체 토픽 번호들: {all_topics}")
             
-            # -1 토픽(노이즈) 제외하고 나머지 모든 토픽 포함
-            for topic_num in all_topics:
-                if topic_num != -1:  # 노이즈 토픽 제외
-                    words = [word for word, _ in topic_model.get_topic(topic_num)]
-                    topics_dict[topic_num] = words
-                    print(f"✅ Topic {topic_num}: {len(words)}개 키워드 - {words[:5]}...")
+            # -1 토픽(노이즈) 제외하고 최대 6개 토픽만 포함
+            valid_topics = sorted([t for t in all_topics if t != -1])[:6]  # 최대 6개로 제한
+            print(f"🔍 선택된 토픽들 (최대 6개): {valid_topics}")
+            
+            for topic_num in valid_topics:
+                words = [word for word, _ in topic_model.get_topic(topic_num)]
+                topics_dict[topic_num] = words
+                print(f"✅ Topic {topic_num}: {len(words)}개 키워드 - {words[:5]}...")
 
-            print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개")
+            print(f"🎯 최종 반환할 토픽 수: {len(topics_dict)}개 (최대 6개로 제한)")
             return topics_dict
 #------------------------------------------------------------------------                       
     

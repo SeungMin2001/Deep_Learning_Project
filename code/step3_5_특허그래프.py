@@ -22,14 +22,23 @@ class Step3_5:
         try:
             import os  # 함수 내부에서 명시적으로 import
             
-            # CSV 파일 존재 확인
-            if not os.path.exists("./extract_end.csv"):
-                print("❌ extract_end.csv 파일이 존재하지 않습니다.")
+            # CSV 파일 존재 확인 (여러 경로 시도)
+            csv_paths = ["./extract_end.csv", "../extract_end.csv", "/Users/shinseungmin/Documents/벌토픽_전체코드/extract_end.csv"]
+            csv_path = None
+            
+            for path in csv_paths:
+                if os.path.exists(path):
+                    csv_path = path
+                    break
+            
+            if csv_path is None:
+                print("❌ extract_end.csv 파일을 찾을 수 없습니다.")
+                print(f"현재 디렉토리: {os.getcwd()}")
                 return None
                 
-            print("📁 extract_end.csv 파일 읽는 중...")
+            print(f"📁 CSV 파일 읽는 중: {csv_path}")
             # CSV 읽기
-            df = pd.read_csv("./extract_end.csv")
+            df = pd.read_csv(csv_path)
             print(f"📊 CSV 데이터 로드 완료 - 행 수: {len(df)}")
             
             # 키워드 설정
@@ -48,11 +57,24 @@ class Step3_5:
             
             print(f"사용할 키워드: {KEYWORDS}")
             
-            # 📌 날짜 전처리: 포맷 통일 + 연도 추출
-            df["출원일"] = df["출원일"].astype(str).str.strip()  # 공백 제거
+            # 📌 날짜 전처리: openDate 사용 + 연도 추출
+            print(f"원본 데이터 수: {len(df)}")
+            print(f"openDate 컬럼의 NaN 개수: {df['openDate'].isna().sum()}")
+            
+            # openDate가 있는 데이터만 필터링
+            df = df.dropna(subset=['openDate'])
+            print(f"openDate가 있는 데이터 수: {len(df)}")
+            
+            # openDate 형식 변환 (20240202.0 -> 2024-02-02)
+            df["openDate"] = df["openDate"].astype(str).str.replace('.0', '').str.strip()
+            # YYYYMMDD 형식을 YYYY-MM-DD로 변환
             df["출원연도"] = pd.to_datetime(
-                df["출원일"], errors="coerce", infer_datetime_format=True
+                df["openDate"], format='%Y%m%d', errors="coerce"
             ).dt.year
+            
+            # 출원연도가 NaN인 경우 제거
+            df = df.dropna(subset=['출원연도'])
+            print(f"유효한 출원연도가 있는 데이터 수: {len(df)}")
 
             # 모든 키워드에 해당하는 특허 데이터 통합
             all_matched_patents = pd.DataFrame()
@@ -71,6 +93,12 @@ class Step3_5:
                 if not filtered_df.empty:
                     # 모든 매칭된 특허를 하나로 합침
                     all_matched_patents = pd.concat([all_matched_patents, filtered_df], ignore_index=True)
+            
+            print(f"키워드 매칭 후 all_matched_patents 크기: {len(all_matched_patents)}")
+            if not all_matched_patents.empty:
+                print(f"매칭된 데이터 연도 범위: {all_matched_patents['출원연도'].min()} ~ {all_matched_patents['출원연도'].max()}")
+            else:
+                print("❌ 키워드에 매칭된 데이터가 없습니다!")
 
             if not all_matched_patents.empty:
                 # 중복 제거 (같은 특허가 여러 키워드에 매칭될 수 있음)
@@ -89,10 +117,32 @@ class Step3_5:
                 # 출원연도를 인덱스로 설정
                 final_df = final_df.set_index("출원연도")
 
-                print(f"✅ 특허 그래프 데이터 생성 완료 - 총 {len(all_matched_patents)}건 (중복 제거 후)")
+                # 연도 범위별 특허 개수 통계 출력
+                print("\n📊 연도별 특허 출원 현황:")
+                print(f"• 전체 특허 수: {len(all_matched_patents)}건")
+                print(f"• 최초 출원연도: {int(all_matched_patents['출원연도'].min())}년")
+                print(f"• 최신 출원연도: {int(all_matched_patents['출원연도'].max())}년")
+                
+                # 주요 연도대별 통계
+                decades = {
+                    "1990년대": (1990, 1999),
+                    "2000년대": (2000, 2009), 
+                    "2010년대": (2010, 2019),
+                    "2020년대": (2020, 2025)
+                }
+                
+                for decade, (start, end) in decades.items():
+                    count = len(all_matched_patents[
+                        (all_matched_patents['출원연도'] >= start) & 
+                        (all_matched_patents['출원연도'] <= end)
+                    ])
+                    if count > 0:
+                        print(f"• {decade}: {count}건")
+
+                print(f"\n✅ 특허 그래프 데이터 생성 완료 - 총 {len(all_matched_patents)}건")
                 return final_df
             else:
-                print("❌ 모든 키워드에 대해 데이터가 없습니다.")
+                print("❌ 특허 데이터가 없습니다.")
                 return None
                 
         except Exception as e:

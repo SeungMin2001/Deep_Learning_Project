@@ -1,15 +1,16 @@
 import streamlit as st
 import json
-import os
 import glob
+import os
 from datetime import datetime
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
 from PIL import Image
 import pandas as pd
 import time
 import sys
 import importlib
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 # 한글 파일명 import 처리
 try:
@@ -118,155 +119,179 @@ if "date_filtered" not in st.session_state:
     st.session_state.date_filtered = False
 if "current_page" not in st.session_state:
     st.session_state.current_page = "home"
+if "selected_topic" not in st.session_state:
+    st.session_state.selected_topic = None
 
 def show_sidebar_logo():
-    """사이드바 상단에 클릭 가능한 로고 표시"""
+    """사이드바 상단에 세련된 그라데이션 로고 표시"""
+    import base64
+    
+    # icon.png 파일을 base64로 인코딩
     try:
-        # 여러 경로에서 icon.png 찾기
-        possible_paths = ["icon.png", "./icon.png", "code/icon.png", "../code/icon.png"]
-        logo_image = None
+        with open("./code/icon.png", "rb") as f:
+            icon_data = base64.b64encode(f.read()).decode()
+        icon_base64 = f"data:image/png;base64,{icon_data}"
         
-        for path in possible_paths:
-            try:
-                logo_image = Image.open(path)
-                break
-            except:
-                continue
-        
-        if logo_image is None:
-            return  # 로고 없으면 아무것도 표시하지 않음
-        
-        # 이미지를 base64로 변환하고 CSS 필터로 톤 조정
-        from io import BytesIO
-        import base64
-        
-        buffer = BytesIO()
-        logo_image.save(buffer, format='PNG')
-        img_str = base64.b64encode(buffer.getvalue()).decode()
-        
-        # 세련된 로고 컨테이너 (이미지 포함)
         st.markdown(f"""
-        <div style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0rem 0 1rem 0;
-            padding: 1.2rem;
-            background: linear-gradient(135deg, 
-                rgba(102, 126, 234, 0.1) 0%, 
-                rgba(118, 75, 162, 0.1) 50%,
-                rgba(255, 255, 255, 0.05) 100%);
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 8px 32px rgba(102, 126, 234, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        " class="logo-container">
-            <div style="
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-                background: radial-gradient(circle, 
-                    rgba(102, 126, 234, 0.1) 0%, 
-                    transparent 70%);
-                animation: logoGlow 3s ease-in-out infinite alternate;
-            "></div>
-            <img src="data:image/png;base64,{img_str}" 
-                 style="
-                     width: 180px;
-                     border-radius: 12px;
-                     filter: 
-                         drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1))
-                         brightness(0.95)
-                         contrast(1.4)
-                         hue-rotate(45deg)
-                         saturate(0.5)
-                         sepia(0.3)
-                         invert(0.1);
-                     z-index: 2;
-                     position: relative;
-                 " 
-                 alt="로고">
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # 로고 디자인과 클릭 기능을 위한 고급 스타일링
-        st.markdown("""
         <style>
-        /* 로고 글로우 애니메이션 */
-        @keyframes logoGlow {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 0.6; transform: scale(1.1); }
-        }
-        
-        /* 사이드바 첫 번째 요소 여백 조정 */
-        section[data-testid="stSidebar"] .element-container:first-child {
-            margin-top: -2rem !important;
-        }
-        
-        /* 로고 컨테이너 호버 효과 */
-        .logo-container:hover {
-            transform: translateY(-2px) scale(1.02) !important;
+        .premium-logo-container {{
+            position: relative;
+            background: 
+                linear-gradient(145deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%),
+                linear-gradient(to bottom right, 
+                    rgba(0, 122, 255, 0.08) 0%,
+                    rgba(88, 86, 214, 0.06) 25%,
+                    rgba(255, 45, 85, 0.04) 50%,
+                    rgba(255, 149, 0, 0.06) 75%,
+                    rgba(52, 199, 89, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 22px;
             box-shadow: 
-                0 12px 40px rgba(102, 126, 234, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-            background: linear-gradient(135deg, 
-                rgba(102, 126, 234, 0.15) 0%, 
-                rgba(118, 75, 162, 0.15) 50%,
-                rgba(255, 255, 255, 0.08) 100%) !important;
-        }
+                0 20px 40px -12px rgba(0, 0, 0, 0.12),
+                0 8px 16px -8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            overflow: hidden;
+        }}
         
-        /* 로고 컨테이너 클릭 시 효과 */
-        .logo-container:active {
-            transform: translateY(0px) scale(0.98) !important;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2) !important;
-        }
+        .premium-logo-container::before {{
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(0, 122, 255, 0.3) 0%,
+                rgba(88, 86, 214, 0.25) 20%,
+                rgba(255, 45, 85, 0.25) 40%,
+                rgba(255, 149, 0, 0.3) 60%,
+                rgba(52, 199, 89, 0.25) 80%,
+                rgba(0, 122, 255, 0.3) 100%);
+            border-radius: 24px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }}
         
-        /* 추가적인 프리미엄 효과 */
-        .logo-container::before {
+        .premium-logo-container::after {{
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.2), 
-                transparent);
-            transition: left 0.8s;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, 
+                rgba(255, 255, 255, 0.15) 0%,
+                transparent 60%);
+            border-radius: inherit;
             z-index: 1;
-        }
+        }}
         
-        .logo-container:hover::before {
-            left: 100%;
-        }
+        .logo-icon {{
+            position: relative;
+            z-index: 3;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.12))
+                   drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+        }}
+        
+        .premium-logo-container:hover {{
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 32px 64px -16px rgba(0, 0, 0, 0.18),
+                0 16px 32px -12px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+        }}
+        
+        .premium-logo-container:hover::before {{
+            opacity: 1;
+        }}
+        
+        .premium-logo-container:hover .logo-icon {{
+            transform: scale(1.05) rotateY(5deg);
+            filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.15))
+                   drop-shadow(0 6px 16px rgba(0, 0, 0, 0.1))
+                   brightness(1.08)
+                   contrast(1.02);
+        }}
+        
+        .premium-logo-container:active {{
+            transform: translateY(-2px) scale(1.01);
+            transition: all 0.1s ease;
+        }}
+        
+        /* Subtle animation */
+        @keyframes logoBreath {{
+            0%, 100% {{ transform: scale(1); }}
+            50% {{ transform: scale(1.01); }}
+        }}
+        
+        .premium-logo-container {{
+            animation: logoBreath 4s ease-in-out infinite;
+        }}
         </style>
+        
+        <div style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -3rem 0 5rem 0;
+            padding: 1.0rem 1.0rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        " class="premium-logo-container" onclick="window.location.reload();">
+            <img src="{icon_base64}" alt="AI Patent Intelligence System" class="logo-icon" style="
+                width: 130px;
+                height: 90px;
+                object-fit: contain;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            "/>
+        </div>
         """, unsafe_allow_html=True)
         
-        # 로고 클릭 시 홈으로 이동하는 기능
+    except FileNotFoundError:
+        # icon.png 파일이 없으면 기본 로고 표시
         st.markdown("""
-        <script>
-        setTimeout(function() {
-            const logoContainer = document.querySelector('.logo-container');
-            if (logoContainer) {
-                logoContainer.onclick = function() {
-                    window.location.href = window.location.href.split('?')[0];
-                };
-            }
-        }, 100);
-        </script>
+        <div style="
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: 
+                linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(to bottom right, 
+                    rgba(79, 172, 254, 0.12) 0%,
+                    rgba(0, 242, 254, 0.08) 35%,
+                    rgba(147, 51, 234, 0.06) 65%,
+                    rgba(79, 172, 254, 0.1) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 40px -12px rgba(79, 172, 254, 0.15),
+                0 8px 16px -8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(16px) saturate(120%);
+            margin: 1.5rem 0 2.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        " onclick="window.location.reload();">
+            <div style="
+                font-size: 3.5rem; 
+                margin-bottom: 0.8rem; 
+                filter: drop-shadow(0 4px 8px rgba(79, 172, 254, 0.2));
+            ">🔬</div>
+            <div style="
+                font-size: 1rem; 
+                font-weight: 700; 
+                background: linear-gradient(135deg, #007AFF 0%, #5856D6 50%, #FF2D55 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                line-height: 1.2;
+            ">AI Patent Intelligence</div>
+        </div>
         """, unsafe_allow_html=True)
-        
-    except:
-        pass
 
 def show_sidebar_footer():
     """사이드바 하단에 홈으로 가기 버튼"""
@@ -283,7 +308,21 @@ def show_sidebar_footer():
     """, unsafe_allow_html=True)
     
     if st.button("🏠 홈으로 가기", key="sidebar_home_button", help="홈 화면으로 이동", use_container_width=True):
+        # 세션 상태 완전 초기화 (완전히 처음 상태로 돌아가기)
         st.session_state.current_page = "home"
+        st.session_state.analysis_complete = False
+        st.session_state.step_progress = 0
+        st.session_state.topic_results = None
+        st.session_state.waiting_for_date_input = False
+        st.session_state.keyword_input = ""
+        if hasattr(st.session_state, 'date_filtered'):
+            st.session_state.date_filtered = False
+        if hasattr(st.session_state, 'selected_date_range'):
+            del st.session_state.selected_date_range
+        if hasattr(st.session_state, 'generated_keywords'):
+            del st.session_state.generated_keywords
+        if hasattr(st.session_state, 'graph_data'):
+            del st.session_state.graph_data
         st.rerun()
     
     st.markdown("</div>", unsafe_allow_html=True)
@@ -339,10 +378,13 @@ def filter_data_by_date(start_year, end_year):
     try:
         df = pd.read_csv("./extract_end.csv")
         
-        # 출원일 처리
-        df["출원일"] = df["출원일"].astype(str).str.strip()
+        # openDate가 있는 데이터만 필터링
+        df = df.dropna(subset=['openDate'])
+        
+        # openDate 처리 (step3_5_특허그래프.py와 동일한 방식)
+        df["openDate"] = df["openDate"].astype(str).str.replace('.0', '').str.strip()
         df["출원연도"] = pd.to_datetime(
-            df["출원일"], errors="coerce", infer_datetime_format=True
+            df["openDate"], format='%Y%m%d', errors="coerce"
         ).dt.year
         
         # 날짜 범위 필터링
@@ -407,8 +449,8 @@ def run_analysis_pipeline(keyword):
         base_progress = step_weights[1]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 1 완료: 특허식 생성 완료")
-        detail_container.write(f"✅ 생성된 특허식: {sentence}")
-        time.sleep(0.5)
+        #detail_container.write(f"✅ 생성된 특허식: {sentence}")
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 2: 특허 크롤링
         update_progress(2, "특허 크롤링 중...")
@@ -422,7 +464,7 @@ def run_analysis_pipeline(keyword):
         base_progress += step_weights[2]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 2 완료: 특허 데이터 수집 완료")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 3: 데이터 필터링
         update_progress(3, "특허 필터링 중...")
@@ -435,7 +477,7 @@ def run_analysis_pipeline(keyword):
         base_progress += step_weights[3]
         main_progress.progress(base_progress)
         status_container.success("✅ Step 3 완료: 데이터 필터링 완료")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 3.5: 특허 그래프 표시
         update_progress("3_5", "특허 그래프 생성 중...")
@@ -459,8 +501,8 @@ def run_analysis_pipeline(keyword):
         
         base_progress += step_weights["3_5"]
         main_progress.progress(base_progress)
-        status_container.success("✅ Step 3.5 완료: 특허 그래프 생성 완료")
-        detail_container.write("✅ 연도별 특허 출원 동향 그래프가 생성되었습니다.")
+        status_container.success("🎯 Step 3.5 완료: 특허 그래프 생성 완료")
+        detail_container.write("📈 연도별 특허 출원 동향 그래프가 생성되었습니다.")
         
         # Step 3.5 완료 후 사용자 날짜 입력 대기 상태로 전환
         st.session_state.waiting_for_date_input = True
@@ -521,7 +563,7 @@ def continue_analysis_from_step4():
         main_progress.progress(base_progress)
         status_container.success("✅ Step 4 완료: 토픽 추출 및 시각화 완료")
         detail_container.write(f"✅ {len(topic_list)}개의 주요 토픽을 발견했습니다.")
-        time.sleep(0.5)
+        time.sleep(5.0)  # 5초 동안 완료 메시지 유지
         
         # Step 5: 보고서 생성
         update_progress(5, "보고서 작성 중...")
@@ -552,19 +594,6 @@ def display_topic_visualization():
     """토픽 시각화 결과 표시"""
     st.subheader("📊 토픽 분석 시각화 결과")
     
-    # 새로고침 버튼 추가
-    col1, col2, col3 = st.columns([1, 1, 2])
-    with col1:
-        if st.button("🔄 시각화 새로고침"):
-            # 강제 페이지 새로고침을 위한 키 변경
-            if 'refresh_counter' not in st.session_state:
-                st.session_state.refresh_counter = 0
-            st.session_state.refresh_counter += 1
-            st.rerun()
-    
-    with col2:
-        st.caption("이미지가 업데이트되지 않으면 새로고침을 클릭하세요")
-    
     # UMAP 이미지 표시 (캐시 방지)
     st.markdown("### 🗺️ UMAP 2D 토픽 분포")
     umap_image_path = "umap2d_topics_custom_color_pret.png"
@@ -578,10 +607,7 @@ def display_topic_visualization():
         with open(umap_image_path, 'rb') as f:
             image_bytes = f.read()
         image = Image.open(umap_image_path)
-        st.image(image, caption=f"UMAP 2D 문서 임베딩과 BERTopic 토픽 분포 (업데이트: {time.ctime(file_mtime)})", use_column_width=True)
-        
-        # 이미지 정보 표시
-        st.caption(f"📅 파일 생성 시간: {time.ctime(file_mtime)}")
+        st.image(image, caption="UMAP 2D 토픽 분포도", use_container_width=True)
     else:
         st.warning("UMAP 시각화 이미지를 찾을 수 없습니다.")
     
@@ -597,12 +623,94 @@ def display_topic_visualization():
         with open(topic_words_image_path, 'rb') as f:
             image_bytes2 = f.read()
         image2 = Image.open(topic_words_image_path)
-        st.image(image2, caption=f"토픽별 상위 10개 주요 키워드 분포 (업데이트: {time.ctime(file_mtime2)})", use_column_width=True)
-        
-        # 이미지 정보 표시
-        st.caption(f"📅 파일 생성 시간: {time.ctime(file_mtime2)}")
+        st.image(image2, caption="토픽별 주요 키워드 차트", use_container_width=True)
     else:
         st.info("토픽 키워드 차트 이미지를 찾을 수 없습니다.")
+    
+    # 워드클라우드 표시
+    st.markdown("### ☁️ 워드 클라우드")
+    display_word_cloud()
+
+
+def display_word_cloud():
+    """주요 토픽의 상위 키워드로 워드클라우드 생성 및 표시"""
+    try:
+        # BERTopic 결과에서 토픽 키워드 추출
+        topic_keywords = {}
+        word_frequencies = {}
+        
+        # generated_reports 폴더에서 토픽 보고서 파일들 찾기
+        report_files = glob.glob("generated_reports/Topic_*.md.md")
+        
+        if report_files:
+            for report_file in report_files:
+                try:
+                    with open(report_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                        
+                    # 핵심 키워드 라인 찾기 (예: **핵심 키워드:** 센서, 카메라, 지능, 인공, 빅데이터, 알고리즘, 서버, 저장, 학습, 온도)
+                    lines = content.split('\n')
+                    
+                    for line in lines:
+                        if '핵심 키워드:' in line or '**핵심 키워드:**' in line:
+                            # 키워드 추출
+                            keyword_part = line.split('핵심 키워드:')[-1].strip()
+                            # ** 제거
+                            keyword_part = keyword_part.replace('**', '').strip()
+                            if keyword_part:
+                                # 쉼표로 분리된 키워드들 추출
+                                keywords = [kw.strip().replace('**', '') for kw in keyword_part.split(',')]
+                                for i, keyword in enumerate(keywords):
+                                    # 빈 문자열이나 특수문자만 있는 키워드 제외
+                                    keyword = keyword.strip()
+                                    if keyword and len(keyword) > 1 and not keyword.startswith('*'):
+                                        # 첫 번째 키워드가 가장 중요하다고 가정하고 가중치 부여
+                                        weight = 1.0 - (i * 0.05)  # 순서대로 가중치 감소
+                                        word_frequencies[keyword] = max(weight, 0.1)
+                            break
+                except Exception as e:
+                    continue
+        
+        # 세션 상태에서 토픽 정보 가져오기 (대안)
+        if not word_frequencies and hasattr(st.session_state, 'topic_results'):
+            try:
+                topics_info = st.session_state.topic_results
+                for topic_info in topics_info:
+                    if 'keywords' in topic_info:
+                        for keyword, weight in topic_info['keywords']:
+                            word_frequencies[keyword] = float(weight)
+            except:
+                pass
+        
+        if word_frequencies:
+            # 워드클라우드 생성
+            font_path = './data/Pretendard-1.3.9/public/variable/PretendardVariable.ttf'
+            wordcloud = WordCloud(
+                width=800, 
+                height=400,
+                background_color='white',
+                font_path=font_path if os.path.exists(font_path) else None,
+                max_words=50,
+                relative_scaling=0.5,
+                colormap='viridis',
+                prefer_horizontal=0.7
+            ).generate_from_frequencies(word_frequencies)
+            
+            # matplotlib로 이미지 생성
+            plt.figure(figsize=(10, 5))
+            plt.imshow(wordcloud, interpolation='bilinear')
+            plt.axis('off')
+            plt.tight_layout(pad=0)
+            
+            # Streamlit에 표시
+            st.pyplot(plt, use_container_width=True)
+            st.caption("📝 주요 토픽들의 상위 키워드 워드클라우드")
+        else:
+            st.warning("토픽 키워드 데이터를 찾을 수 없습니다. 토픽 분석을 먼저 완료해주세요.")
+            
+    except Exception as e:
+        st.error(f"워드클라우드 생성 중 오류 발생: {str(e)}")
+
 
 def display_patent_graph():
     """특허 연도별 그래프 표시 (step3_5 내용)"""
@@ -613,28 +721,44 @@ def display_patent_graph():
     if hasattr(st.session_state, 'graph_data') and st.session_state.graph_data is not None:
         final_df = st.session_state.graph_data
         
-        # 키워드별 건수 표시 (개별)
-        if hasattr(st.session_state, 'generated_keywords') and st.session_state.generated_keywords:
-            try:
-                df = pd.read_csv("./extract_end.csv")
-                st.write("**키워드별 매칭 건수:**")
-                total_individual = 0
-                for kw in st.session_state.generated_keywords:
-                    mask = df["검색 키워드"].astype(str).str.contains(kw, case=False, na=False)
-                    count = mask.sum()
-                    total_individual += count
-                    st.write(f"• **{kw}**: {count}건")
-                
-                # 통합 후 실제 건수 (중복 제거)
-                total_after_dedup = final_df["전체 특허 출원 건수"].sum()
-                st.info(f"📊 **총 특허 건수**: {int(total_after_dedup):,}건 (중복 제거 후)")
-                if total_individual != total_after_dedup:
-                    st.caption(f"※ 키워드별 합계: {int(total_individual):,}건 → 중복 제거: {int(total_after_dedup):,}건")
-            except:
-                pass
+        # 사용자 입력 키워드 기반 그래프 설명 (삭제됨)
         
-        # 📊 막대 차트 출력 (연도별 출원 건수)
-        st.bar_chart(final_df, use_container_width=True, color=["#667eea"])
+        # 📊 조건부 색상 막대 차트 출력 (이전년도 대비 증감에 따라 색상 변경)
+        
+        # 이전년도 대비 증감 계산
+        final_df_reset = final_df.reset_index()
+        final_df_reset['이전년도_건수'] = final_df_reset['전체 특허 출원 건수'].shift(1)
+        final_df_reset['증감'] = final_df_reset['전체 특허 출원 건수'] - final_df_reset['이전년도_건수']
+        
+        # 색상 조건 설정 (증가=빨간색, 감소=파란색, 동일=회색)
+        colors = []
+        for idx, row in final_df_reset.iterrows():
+            if pd.isna(row['증감']) or row['증감'] == 0:
+                colors.append('#808080')  # 회색 (첫해 또는 동일)
+            elif row['증감'] > 0:
+                colors.append('#FF4444')  # 빨간색 (증가)
+            else:
+                colors.append('#4444FF')  # 파란색 (감소)
+        
+        # Plotly 막대 차트 생성
+        fig = go.Figure(data=[
+            go.Bar(
+                x=final_df_reset['출원연도'],
+                y=final_df_reset['전체 특허 출원 건수'],
+                marker_color=colors,
+                hovertemplate='<b>%{x}년</b><br>특허 출원 건수: %{y}건<extra></extra>'
+            )
+        ])
+        
+        fig.update_layout(
+            title="연도별 특허 출원 동향 (빨간색: 증가, 파란색: 감소)",
+            xaxis_title="연도",
+            yaxis_title="특허 출원 건수",
+            showlegend=False,
+            height=500
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
     else:
         # 그래프 데이터가 없으면 Step3_5 클래스로 새로 생성
         try:
@@ -681,8 +805,7 @@ def display_sidebar_reports():
         st.info("📋 보고서 없음")
         return None, None
     
-    # 보고서 파일들을 수정시간순으로 정렬 (최신순)
-    report_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
+    # 이미 get_report_files()에서 최신순으로 정렬됨
     
     st.subheader("📚 분석 보고서")
     st.caption(f"총 {len(report_files)}개")
@@ -720,8 +843,7 @@ def display_selected_report():
         found_reports_dir, report_files = get_report_files()
         
         if found_reports_dir and report_files:
-            # 보고서 파일들을 수정시간순으로 정렬 (최신순)
-            report_files.sort(key=lambda x: os.path.getmtime(x), reverse=True)
+            # 이미 get_report_files()에서 최신순으로 정렬됨
             
             selected_index = st.session_state.sidebar_report_select
             if selected_index < len(report_files):
@@ -1057,6 +1179,141 @@ def get_topic_title_from_report(topic_num):
                 continue
     return None
 
+def get_topic_patents(topic_num):
+    """토픽에 해당하는 특허 정보를 반환"""
+    try:
+        import pandas as pd
+        import os
+        
+        # extract_end.csv 파일에서 특허 데이터 읽기
+        if not os.path.exists("./extract_end.csv"):
+            return []
+            
+        df = pd.read_csv("./extract_end.csv")
+        
+        # 토픽 키워드 가져오기
+        if 'topic_results' in st.session_state and st.session_state.topic_results:
+            topic_keywords = st.session_state.topic_results.get(topic_num, [])
+            if not topic_keywords:
+                return []
+            
+            # 상위 5개 키워드로 특허 필터링
+            top_keywords = topic_keywords[:5]
+            
+            # 키워드가 포함된 특허들 찾기
+            matched_patents = []
+            for _, patent in df.iterrows():
+                # 발명명칭과 요약에서 키워드 매칭 확인
+                title = str(patent.get('발명명칭', ''))
+                abstract = str(patent.get('astrtCont', ''))
+                search_text = (title + ' ' + abstract).lower()
+                
+                # 키워드 중 하나라도 포함되어 있으면 매칭
+                if any(keyword.lower() in search_text for keyword in top_keywords):
+                    patent_info = {
+                        'applicant': patent.get('출원인', 'N/A'),
+                        'title': patent.get('발명명칭', 'N/A'),
+                        'application_date': patent.get('출원일', 'N/A')
+                    }
+                    matched_patents.append(patent_info)
+            
+            # 중복 제거 및 최대 10개로 제한
+            seen = set()
+            unique_patents = []
+            for patent in matched_patents:
+                key = (patent['applicant'], patent['title'])
+                if key not in seen and len(unique_patents) < 10:
+                    seen.add(key)
+                    unique_patents.append(patent)
+            
+            return unique_patents
+            
+    except Exception as e:
+        print(f"특허 정보 로드 오류: {e}")
+        return []
+    
+    return []
+
+def find_docx_file(topic_num):
+    """해당 토픽의 워드 파일 찾기"""
+    docx_dir = "reports_docx.v8"
+    
+    # 상대 경로와 절대 경로 모두 확인
+    possible_paths = [
+        docx_dir,
+        f"./code/{docx_dir}",
+        f"/Users/shinseungmin/Documents/벌토픽_전체코드/{docx_dir}",
+        f"code/{docx_dir}"
+    ]
+    
+    found_docx_dir = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            found_docx_dir = path
+            break
+    
+    if not found_docx_dir:
+        return None
+    
+    # 해당 토픽 번호의 워드 파일 찾기
+    docx_files = glob.glob(os.path.join(found_docx_dir, "*.docx"))
+    for docx_file in docx_files:
+        file_name = os.path.basename(docx_file)
+        if file_name.startswith(f"{topic_num}_Topic_{topic_num}_"):
+            return docx_file
+    
+    return None
+
+def display_topic_report(topic_num):
+    """특정 토픽의 보고서 표시"""
+    found_reports_dir, report_files = get_report_files()
+    
+    if not found_reports_dir or not report_files:
+        st.error("보고서 파일을 찾을 수 없습니다.")
+        return
+    
+    # 해당 토픽 번호의 보고서 파일 찾기
+    target_report = None
+    for report_file in report_files:
+        file_name = os.path.basename(report_file)
+        if f"Topic_{topic_num}_" in file_name:
+            target_report = report_file
+            break
+    
+    if not target_report:
+        st.error(f"Topic {topic_num}에 대한 보고서를 찾을 수 없습니다.")
+        return
+    
+    try:
+        # 워드 파일 다운로드 버튼 추가
+        docx_file = find_docx_file(topic_num)
+        if docx_file:
+            col1, col2 = st.columns([4, 1])
+            with col2:
+                try:
+                    with open(docx_file, "rb") as file:
+                        docx_data = file.read()
+                    
+                    file_name = os.path.basename(docx_file)
+                    st.download_button(
+                        label="📥 워드파일 다운로드",
+                        data=docx_data,
+                        file_name=file_name,
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        use_container_width=True
+                    )
+                except Exception as e:
+                    st.error(f"워드 파일을 읽는 중 오류: {e}")
+        
+        with open(target_report, "r", encoding="utf-8") as f:
+            content = f.read()
+        
+        # 마크다운 내용을 streamlit에 표시
+        st.markdown(content)
+        
+    except Exception as e:
+        st.error(f"보고서를 읽는 중 오류가 발생했습니다: {e}")
+
 def display_topic_results():
     """토픽 분석 결과 표시"""
     if st.session_state.topic_results:
@@ -1065,6 +1322,14 @@ def display_topic_results():
         # 토픽 개수 정보 표시
         topic_count = len(st.session_state.topic_results)
         st.info(f"📊 총 **{topic_count}개**의 주요 토픽이 발견되었습니다.")
+        
+        # 선택된 토픽이 있으면 보고서 표시
+        if st.session_state.selected_topic is not None:
+            display_topic_report(st.session_state.selected_topic)
+            if st.button("⬅️ 토픽 목록으로 돌아가기"):
+                st.session_state.selected_topic = None
+                st.rerun()
+            return
         
         # 토픽들을 번호 순으로 정렬하여 표시
         sorted_topics = sorted(st.session_state.topic_results.items(), key=lambda x: int(x[0]) if str(x[0]).isdigit() else float('inf'))
@@ -1087,15 +1352,56 @@ def display_topic_results():
                 display_topic_id = str(topic_id)
                 expander_title = f"Topic {display_topic_id}"
                 
+            # expander를 사용해서 즉시 키워드 표시 (딜레이 없음)
             with st.expander(expander_title, expanded=False):
-                st.write("**주요 키워드:**")
+                # 토픽 이름을 클릭하면 보고서 표시하는 버튼
+                if st.button(f"📋 {expander_title} 보고서 보기", key=f"topic_report_{topic_id}", use_container_width=True):
+                    st.session_state.selected_topic = topic_num if isinstance(topic_num, int) and topic_num >= 0 else None
+                    st.rerun()
+                
+                st.markdown("**주요 키워드:**")
                 if isinstance(words, list) and len(words) > 0:
                     # 키워드를 더 보기 좋게 표시
                     keywords_text = ", ".join(words[:10])  # 상위 10개 키워드 표시
                     st.write(keywords_text)
-                    st.caption(f"총 {len(words)}개 키워드 중 상위 10개 표시")
+                    st.caption("상위 10개 주요키워드 표시")
                 else:
                     st.write("키워드 정보가 없습니다.")
+                
+                # 관련 특허 정보 표시
+                st.markdown("---")
+                st.markdown("**관련 특허 정보:**")
+                
+                try:
+                    topic_patents = get_topic_patents(topic_num if isinstance(topic_num, int) and topic_num >= 0 else -1)
+                    
+                    if topic_patents:
+                        st.caption(f"이 보고서 작성에 사용된 주요 특허 {len(topic_patents)}건")
+                        
+                        for i, patent in enumerate(topic_patents, 1):
+                            with st.expander(f"📄 {i}. {patent.get('title', 'N/A')[:60]}{'...' if len(patent.get('title', '')) > 60 else ''}"):
+                                col1, col2 = st.columns([3, 1])
+                                
+                                with col1:
+                                    st.markdown(f"**📋 특허명:** {patent.get('title', 'N/A')}")
+                                    st.markdown(f"**👤 출원인:** {patent.get('applicant', 'N/A')}")
+                                    
+                                with col2:
+                                    st.markdown(f"**📅 출원일:** {patent.get('application_date', 'N/A')}")
+                                
+                                # 추가 정보가 있다면 표시
+                                if patent.get('abstract'):
+                                    st.markdown("**📝 요약:**")
+                                    st.write(patent.get('abstract', '')[:200] + '...' if len(patent.get('abstract', '')) > 200 else patent.get('abstract', ''))
+                                
+                                if patent.get('ipc_class'):
+                                    st.markdown(f"**🏷️ IPC 분류:** {patent.get('ipc_class', 'N/A')}")
+                    else:
+                        st.info("💡 해당 토픽과 관련된 특허 정보를 찾을 수 없습니다.")
+                        
+                except Exception as e:
+                    st.error(f"특허 정보 로드 중 오류가 발생했습니다: {str(e)}")
+                    
     else:
         st.warning("🔍 토픽 분석이 아직 완료되지 않았습니다.")
         st.info("💡 **완전한 토픽 분석을 위해서는** 위의 특허 동향 그래프를 확인한 후, 원하는 날짜 범위를 선택하고 **'🚀 완전한 토픽 분석 실행'** 버튼을 클릭하세요.")
@@ -1434,8 +1740,10 @@ def show_home_page():
         show_sidebar_footer()
         
     
-    # 메인 컨텐츠 영역
-    if not st.session_state.analysis_complete and st.session_state.step_progress == 0:
+    # 메인 컨텐츠 영역 (완전한 초기 상태일 때)
+    if (st.session_state.step_progress == 0 and 
+        not st.session_state.analysis_complete and 
+        not st.session_state.waiting_for_date_input):
         # 탭 생성
         tab1, tab2 = st.tabs(["🏠 메인", "📋 보고서"])
         
@@ -1581,7 +1889,7 @@ def show_home_page():
     
     elif st.session_state.waiting_for_date_input:
         # Step 3.5 완료 후 날짜 입력 대기 화면
-        st.markdown("## 📊 특허 동향 그래프 생성 완료!")
+        st.markdown("## 🎯 특허 동향 그래프 생성 완료!")
         
         # 그래프 표시
         display_patent_graph()
@@ -1648,10 +1956,14 @@ def show_home_page():
         if start_year and end_year and start_year <= end_year:
             try:
                 df = pd.read_csv("./extract_end.csv")
-                df["출원일"] = df["출원일"].astype(str).str.strip()
+                
+                # openDate가 있는 데이터만 사용 (step3_5_특허그래프.py와 동일한 방식)
+                df = df.dropna(subset=['openDate'])
+                df["openDate"] = df["openDate"].astype(str).str.replace('.0', '').str.strip()
                 df["출원연도"] = pd.to_datetime(
-                    df["출원일"], errors="coerce", infer_datetime_format=True
+                    df["openDate"], format='%Y%m%d', errors="coerce"
                 ).dt.year
+                df = df.dropna(subset=['출원연도'])
                 
                 total_count = len(df)
                 filtered_count = len(df[(df["출원연도"] >= start_year) & (df["출원연도"] <= end_year)])
@@ -1752,7 +2064,7 @@ def show_results_page():
         st.info(f"🎯 **{period_text}** 기간으로 맞춤 분석이 완료되었습니다! 선택하신 **{date_info['filtered_count']}건**의 특허 데이터를 바탕으로 정밀한 인사이트를 제공합니다.")
     
     # 탭으로 결과 구분 - 특허 그래프 탭 추가
-    tab1, tab2, tab3, tab4 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화", "📋 기술 보고서"])
+    tab1, tab2, tab3 = st.tabs(["📈 특허 동향 그래프", "📊 토픽 분석 결과", "🖼️ 시각화"])
     
     with tab1:
         display_patent_graph()
@@ -1762,9 +2074,6 @@ def show_results_page():
     
     with tab3:
         display_topic_visualization()
-    
-    with tab4:
-        display_generated_reports()
 
 if __name__ == "__main__":
     main()

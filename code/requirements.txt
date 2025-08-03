@@ -95,6 +95,7 @@ pybithumb==1.0.21
 pycparser==2.22
 PyGetWindow==0.0.9
 Pygments==2.18.0
+wordcloud
 PyJWT==2.8.0
 pykiwoom==0.0.6
 pyloco==0.0.139

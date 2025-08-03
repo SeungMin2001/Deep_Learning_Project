@@ -242,13 +242,6 @@ class Step5:
         else:
             print("📄 DOCX 보고서가 이미 존재하므로 생성을 건너뜁니다.")
         
-        # 표 형태 출력 (딕셔너리를 리스트로 변환)
-        table_data = []
-        for topic_num, keywords in x.items():
-            table_data.append([f"Topic {topic_num}", f"Topic {topic_num}", ', '.join(keywords[:5])])
-        
-        headers = ["토픽 번호", "토픽", "주요 키워드"]
-        print(tabulate(table_data, headers=headers, tablefmt="github"))
 
 
         # 보고서 생성 및 저장
