@@ -137,101 +137,113 @@ def show_sidebar_logo():
         .premium-logo-container {{
             position: relative;
             background: 
-                linear-gradient(145deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%),
-                linear-gradient(to bottom right, 
-                    rgba(0, 122, 255, 0.08) 0%,
-                    rgba(88, 86, 214, 0.06) 25%,
-                    rgba(255, 45, 85, 0.04) 50%,
-                    rgba(255, 149, 0, 0.06) 75%,
-                    rgba(52, 199, 89, 0.05) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 22px;
+                linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
             box-shadow: 
-                0 20px 40px -12px rgba(0, 0, 0, 0.12),
-                0 8px 16px -8px rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.35),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.03);
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px) saturate(150%);
+            -webkit-backdrop-filter: blur(10px) saturate(150%);
             overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }}
         
         .premium-logo-container::before {{
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, 
-                rgba(0, 122, 255, 0.3) 0%,
-                rgba(88, 86, 214, 0.25) 20%,
-                rgba(255, 45, 85, 0.25) 40%,
-                rgba(255, 149, 0, 0.3) 60%,
-                rgba(52, 199, 89, 0.25) 80%,
-                rgba(0, 122, 255, 0.3) 100%);
-            border-radius: 24px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }}
-        
-        .premium-logo-container::after {{
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 30% 20%, 
-                rgba(255, 255, 255, 0.15) 0%,
-                transparent 60%);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                transparent 30%, 
+                transparent 70%, 
+                rgba(255, 255, 255, 0.05) 100%);
             border-radius: inherit;
             z-index: 1;
+            pointer-events: none;
+        }}
+        
+        .premium-logo-container::after {{
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+            border-radius: 19px;
+            z-index: 2;
+            pointer-events: none;
         }}
         
         .logo-icon {{
             position: relative;
             z-index: 3;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.12))
-                   drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: drop-shadow(0 8px 24px rgba(245, 158, 11, 0.3))
+                   drop-shadow(0 4px 12px rgba(168, 85, 247, 0.2))
+                   drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));
         }}
         
         .premium-logo-container:hover {{
-            transform: translateY(-4px) scale(1.02);
+            transform: translateY(-2px) scale(1.01);
+            background: 
+                linear-gradient(145deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 
-                0 32px 64px -16px rgba(0, 0, 0, 0.18),
-                0 16px 32px -12px rgba(0, 0, 0, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+                0 16px 48px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px) saturate(180%) brightness(1.1);
+            -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(1.1);
         }}
         
-        .premium-logo-container:hover::before {{
-            opacity: 1;
+        .premium-logo-container:hover::after {{
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.5) 0%, transparent 60%);
         }}
         
         .premium-logo-container:hover .logo-icon {{
-            transform: scale(1.05) rotateY(5deg);
-            filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.15))
-                   drop-shadow(0 6px 16px rgba(0, 0, 0, 0.1))
-                   brightness(1.08)
-                   contrast(1.02);
+            transform: scale(1.02);
+            filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.15))
+                   drop-shadow(0 3px 9px rgba(0, 0, 0, 0.1))
+                   brightness(1.05);
         }}
         
         .premium-logo-container:active {{
-            transform: translateY(-2px) scale(1.01);
+            transform: translateY(-3px) scale(1.01);
             transition: all 0.1s ease;
         }}
         
-        /* Subtle animation */
-        @keyframes logoBreath {{
-            0%, 100% {{ transform: scale(1); }}
-            50% {{ transform: scale(1.01); }}
+        /* Premium animations */
+        @keyframes logoFloat {{
+            0%, 100% {{ 
+                transform: translateY(0px) scale(1);
+            }}
+            50% {{ 
+                transform: translateY(-2px) scale(1.005);
+            }}
+        }}
+        
+        @keyframes rotateHalo {{
+            0% {{ transform: rotate(0deg); }}
+            100% {{ transform: rotate(360deg); }}
+        }}
+        
+        @keyframes shimmer {{
+            0%, 100% {{ opacity: 0.5; }}
+            50% {{ opacity: 1; }}
         }}
         
         .premium-logo-container {{
-            animation: logoBreath 4s ease-in-out infinite;
+            animation: logoFloat 6s ease-in-out infinite;
+        }}
+        
+        .premium-logo-container::after {{
+            animation: shimmer 4s ease-in-out infinite;
         }}
         </style>
         
@@ -245,7 +257,7 @@ def show_sidebar_logo():
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         " class="premium-logo-container" onclick="window.location.reload();">
             <img src="{icon_base64}" alt="AI Patent Intelligence System" class="logo-icon" style="
-                width: 130px;
+                width: 150px;
                 height: 90px;
                 object-fit: contain;
                 transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1869,76 +1881,171 @@ def show_home_page():
             
             # 상세 기능 소개 섹션
             st.markdown("""
-            <div style="margin: 6rem 0 4rem 0; padding-top: 4rem; border-top: 1px solid #e2e8f0;">
-                <h2 style="text-align: center; font-size: 2.5rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem;">✨ 상세 기능 소개</h2>
-                <p style="text-align: center; font-size: 1.1rem; color: #64748b; margin-bottom: 4rem; max-width: 700px; margin-left: auto; margin-right: auto;">
-                    6단계 인터랙티브 AI 분석 프로세스로 사용자가 직접 날짜를 선택하여<br>맞춤형 특허 분석 보고서를 생성합니다
+            <div style="margin: 6rem 0 4rem 0; padding: 4rem 2rem; 
+                        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+                        border-radius: 25px; border: 1px solid rgba(99, 102, 241, 0.1);">
+                <h2 style="text-align: center; font-size: 3rem; font-weight: 800; 
+                          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                          background-clip: text; -webkit-background-clip: text; color: transparent;
+                          margin-bottom: 1.5rem; text-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    ✨ AI 특허 분석 핵심 기능
+                </h2>
+                <p style="text-align: center; font-size: 1.3rem; color: #475569; margin-bottom: 4rem; 
+                          max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.7;
+                          font-weight: 500; letter-spacing: 0.02em;">
+                    6단계 <span style="color: #667eea; font-weight: 700;">인터랙티브 AI 분석</span> 프로세스로<br>
+                    사용자가 직접 날짜를 선택하여 <span style="color: #764ba2; font-weight: 700;">맞춤형 특허 분석 보고서</span>를 생성합니다
                 </p>
             </div>
             """, unsafe_allow_html=True)
             
-            # 기능 카드들을 2x3 그리드로 배치
-            col1, col2 = st.columns(2, gap="large")
+            # 기능 카드들을 3x2 그리드로 배치 (더 균등한 배치)
+            col1, col2, col3 = st.columns(3, gap="medium")
             
             with col1:
                 st.markdown("""
-                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); transform: translateY(0); transition: all 0.3s ease;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
-                    <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">스마트 특허식 생성</h3>
-                    <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">GPT-3.5 기반으로 입력 키워드를 분석하여 KIPRIS 검색에 최적화된 특허식을 자동 생성합니다.</p>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                           padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; 
+                           box-shadow: 0 12px 28px rgba(102, 126, 234, 0.3), 0 4px 12px rgba(0,0,0,0.1); 
+                           transform: translateY(0); transition: all 0.3s ease;
+                           border: 1px solid rgba(255,255,255,0.2); height: 280px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">🔍</div>
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: white; 
+                                  text-shadow: 0 2px 4px rgba(0,0,0,0.2);">스마트 특허식 생성</h3>
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.95; line-height: 1.5; color: white; 
+                             font-weight: 400; text-align: center;">
+                        <strong>GPT-3.5</strong> 기반으로 입력 키워드를 분석하여 특허식을 자동 생성합니다.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
                 
+            with col2:
                 st.markdown("""
-                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔧</div>
-                    <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">AI 데이터 필터링</h3>
-                    <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">OpenAI 임베딩을 활용한 의미론적 유사도 분석으로 관련성 높은 특허만 선별합니다.</p>
+                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+                           padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; 
+                           box-shadow: 0 12px 28px rgba(240, 147, 251, 0.3), 0 4px 12px rgba(0,0,0,0.1);
+                           border: 1px solid rgba(255,255,255,0.2); height: 280px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">🔧</div>
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: white;
+                                  text-shadow: 0 2px 4px rgba(0,0,0,0.2);">AI 데이터 필터링</h3>
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.95; line-height: 1.5; color: white;
+                             font-weight: 400; text-align: center;">
+                        <strong>OpenAI 임베딩</strong>을 활용한 의미론적 유사도 분석으로 관련성 높은 특허만 선별합니다.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
                 
+            with col3:
                 st.markdown("""
-                <div style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(255, 154, 158, 0.3);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
-                    <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">인터랙티브 트렌드 분석</h3>
-                    <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">연도별 특허 동향 그래프를 보고 사용자가 직접 분석 기간을 선택할 수 있습니다.</p>
+                <div style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); 
+                           padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; 
+                           box-shadow: 0 12px 28px rgba(255, 154, 158, 0.3), 0 4px 12px rgba(0,0,0,0.1);
+                           border: 1px solid rgba(255,255,255,0.2); height: 280px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">📊</div>
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: white;
+                                  text-shadow: 0 2px 4px rgba(0,0,0,0.2);">인터랙티브 트렌드 분석</h3>
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.95; line-height: 1.5; color: white;
+                             font-weight: 400; text-align: center;">
+                        연도별 특허 동향 그래프를 보고 사용자가 직접 분석 기간을 선택할 수 있습니다.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
             
-            with col2:
+            # 두 번째 행
+            col4, col5, col6 = st.columns(3, gap="medium")
+            
+            with col4:
                 st.markdown("""
-                <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(250, 112, 154, 0.3);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
-                    <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">대용량 특허 크롤링</h3>
-                    <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">KIPRIS API를 통해 관련 특허 데이터를 체계적으로 수집하고 구조화합니다.</p>
+                <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
+                           padding: 2rem; border-radius: 20px; color: #2d3748; margin-bottom: 1.5rem; 
+                           box-shadow: 0 12px 28px rgba(168, 237, 234, 0.3), 0 4px 12px rgba(0,0,0,0.1);
+                           border: 1px solid rgba(255,255,255,0.3); height: 280px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">🤖</div>
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #2d3748;
+                                  text-shadow: 0 1px 2px rgba(0,0,0,0.1);">맞춤형 토픽 모델링</h3>
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: #2d3748;
+                             font-weight: 500; text-align: center;">
+                        선택된 기간의 특허만으로 <strong>BERTopic 분석</strong>을 수행하여 정밀한 토픽을 추출합니다.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
-                
+            
+            with col5:
                 st.markdown("""
-                <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 2rem; border-radius: 20px; color: #333; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(168, 237, 234, 0.3);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
-                    <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: #333;">맞춤형 토픽 모델링</h3>
-                    <p style="font-size: 1rem; opacity: 0.8; line-height: 1.5; color: #333;">선택된 기간의 특허만으로 BERTopic 분석을 수행하여 더 정밀한 토픽을 추출합니다.</p>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                           padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; 
+                           box-shadow: 0 12px 28px rgba(102, 126, 234, 0.3), 0 4px 12px rgba(0,0,0,0.1);
+                           border: 1px solid rgba(255,255,255,0.2); height: 280px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">🧪</div>
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: white;
+                                  text-shadow: 0 2px 4px rgba(0,0,0,0.2);">고도화된 데이터 시각화</h3>
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.95; line-height: 1.5; color: white;
+                             font-weight: 400; text-align: center;">
+                        인터랙티브 차트와 그래프로 특허 데이터를 직관적으로 시각화합니다.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
-                
+            
+            with col6:
                 st.markdown("""
-                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
-                    <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 0.8rem; color: white;">전문 보고서 생성</h3>
-                    <p style="font-size: 1rem; opacity: 0.9; line-height: 1.5; color: white;">GPT-4를 활용하여 선별된 데이터를 바탕으로 전문적인 기술 보고서를 자동 작성합니다.</p>
+                <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+                           padding: 2rem; border-radius: 20px; color: white; margin-bottom: 1.5rem; 
+                           box-shadow: 0 12px 28px rgba(79, 172, 254, 0.3), 0 4px 12px rgba(0,0,0,0.1);
+                           border: 1px solid rgba(255,255,255,0.2); height: 280px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">📝</div>
+                        <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: white;
+                                  text-shadow: 0 2px 4px rgba(0,0,0,0.2);">전문 보고서 생성</h3>
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.95; line-height: 1.5; color: white;
+                             font-weight: 400; text-align: center;">
+                        <strong>GPT-4</strong>를 활용하여 선별된 데이터를 바탕으로 전문적인 기술 보고서를 자동 작성합니다.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
             
             # 시작하기 섹션
             st.markdown("""
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 3rem 2rem; border-radius: 25px; text-align: center; margin: 4rem 0; color: white; box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);">
-                <h2 style="font-size: 2rem; font-weight: 600; margin-bottom: 1rem; color: white;">🚀 지금 시작하세요</h2>
-                <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem; color: white;">왼쪽 사이드바에서 분석하고 싶은 기술 키워드를 입력하고 '분석 시작' 버튼을 클릭하세요</p>
-                <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 15px; backdrop-filter: blur(10px);">
-                    <p style="font-size: 1rem; margin: 0; color: white; opacity: 0.9;">💡 예시: 자율주행 로봇, 인공지능, 블록체인, 양자컴퓨팅</p>
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        padding: 4rem 3rem; border-radius: 32px; text-align: center; margin: 5rem 0; 
+                        color: white; box-shadow: 0 25px 50px rgba(102, 126, 234, 0.4), 0 10px 20px rgba(0,0,0,0.1);
+                        border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
+                           background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                           animation: pulse 4s ease-in-out infinite;"></div>
+                <div style="position: relative; z-index: 2;">
+                    <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; color: white;
+                              text-shadow: 0 4px 8px rgba(0,0,0,0.3);">🚀 지금 바로 시작하세요</h2>
+                    <p style="font-size: 1.4rem; opacity: 0.95; margin-bottom: 2.5rem; color: white;
+                             line-height: 1.6; font-weight: 400; letter-spacing: 0.02em;">
+                        왼쪽 사이드바에서 분석하고 싶은 <strong>기술 키워드</strong>를 입력하고<br>
+                        <strong>'분석 시작'</strong> 버튼을 클릭하세요
+                    </p>
+                    <div style="background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%); 
+                               padding: 1.5rem; border-radius: 20px; backdrop-filter: blur(15px);
+                               border: 1px solid rgba(255,255,255,0.3); margin-top: 1rem;">
+                        <p style="font-size: 1.1rem; margin: 0; color: white; opacity: 0.95; font-weight: 500;">
+                            💡 <strong>예시:</strong> 자율주행 로봇, 인공지능, 블록체인, 양자컴퓨팅
+                        </p>
+                    </div>
                 </div>
             </div>
+            <style>
+            @keyframes pulse {
+                0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+                50% { transform: scale(1.1) rotate(180deg); opacity: 0.1; }
+            }
+            </style>
             """, unsafe_allow_html=True)
         
         with tab2:
@@ -1968,7 +2075,7 @@ def show_home_page():
                 "시작 연도", 
                 min_value=1990, 
                 max_value=2025, 
-                value=2000,
+                value=2010,
                 step=1
             )
         
