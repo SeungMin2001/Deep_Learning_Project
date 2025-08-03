@@ -404,7 +404,8 @@ class Step4:
 
         topic_model = BERTopic(
             embedding_model=embedding_model,
-            umap_model=umap_2d  # 기존에 만든 umap_2d 사용
+            umap_model=umap_2d,  # 기존에 만든 umap_2d 사용
+            nr_topics=6  # 명시적으로 6개 토픽 요청
         )
         #print(f'check:{lemmatized_patents}')
         topics, probabilities = topic_model.fit_transform(lemmatized_patents)
@@ -678,7 +679,7 @@ class Step4:
             topic_model = BERTopic(
                 language="korean",
                 calculate_probabilities=True,
-                nr_topics='auto',
+                nr_topics=6,  # 명시적으로 6개 토픽 요청
                 top_n_words=15,
                 vectorizer_model=vectorizer_model,
                 embedding_model=embedding_model,
@@ -836,7 +837,7 @@ class Step4:
                 topic_model = BERTopic(
                     language="korean",
                     calculate_probabilities=True,
-                    nr_topics='auto',
+                    nr_topics=6,  # 명시적으로 6개 토픽 요청
                     top_n_words=15,
                     vectorizer_model=vectorizer_model,
                     embedding_model=embedding_model,
@@ -926,7 +927,7 @@ class Step4:
             topic_model = BERTopic(
                 language="korean",  # 언어 설정
                 calculate_probabilities=True,  # 확률 계산 여부
-                nr_topics='auto',  # 주제의 수 제한, auto로 해야 HDBSCAN 작동
+                nr_topics=6,  # 명시적으로 6개 토픽 요청
                 top_n_words=15,  # 각 주제의 상위 단어 수
                 # 주제의 최소 크기
                 vectorizer_model=vectorizer_model,  # 벡터화 모델
